@@ -15,18 +15,18 @@ export const useAuthStore = defineStore("auth", {
   },
 
   actions: {
-    doSign(payload) {
-      axios.post("/api/v1/sign", payload).then((response) => {});
+    async doSignup(payload) {
+      await axios.post("/api/v1/signup", payload);
     },
-    doLogin(payload) {
-      axios.post("/api/v1/login", payload).then((response) => {
+    async doLogin(payload) {
+      await axios.post("/api/v1/login", payload).then((response) => {
         const token = response.data;
         this.setToken(token);
         axios.defaults.headers.common.Authorization = "JWT " + token.access;
       });
     },
-    getMe(token) {
-      axios.get("/api/v1/users/me/", token.access).then((response) => {
+    async getMe(token) {
+      await axios.get("/api/v1/users/me/", token.access).then((response) => {
         this.me = response.data;
       });
     },
@@ -44,7 +44,7 @@ export const useAuthStore = defineStore("auth", {
       axios.defaults.headers.common.Authorization = "";
       this.removeToken();
     },
-    init() {
+    async init() {
       const token = localStorage.getItem("token");
       if (token) {
         this.setToken(token);

@@ -1,5 +1,4 @@
 <template>
-  <img src="~assets/wave.png" class="wave" alt="login-wave" />
   <div class="row" style="height: 90vh">
     <div class="col-0 col-md-4 flex justify-center content-center"></div>
     <div
@@ -56,13 +55,13 @@
 
 <script>
 import { useQuasar } from "quasar";
-import { onMounted, onBeforeUnmount } from "vue";
+import { onMounted, onBeforeUnmount, ref } from "vue";
 import { useAuthStore } from "src/stores/auth";
 import { useRouter } from "vue-router";
 
 const login = {
-  username: "admin",
-  password: "admin",
+  username: null,
+  password: null,
 };
 
 export default {
@@ -76,8 +75,8 @@ export default {
     onBeforeUnmount(() => {});
 
     return {
-      login,
-      onSubmit() {
+      login: ref(login),
+      async onSubmit() {
         if (!this.login.username || !this.login.password) {
           $q.notify({
             type: "negative",
@@ -90,7 +89,7 @@ export default {
           });
         } else {
           try {
-            store.doLogin(login);
+            await store.doLogin(login);
             $router.push("/");
           } catch (err) {
             if (err.response.data.detail) {

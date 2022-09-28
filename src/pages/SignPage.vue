@@ -1,5 +1,4 @@
 <template>
-  <img src="~assets/wave.png" class="wave" alt="login-wave" />
   <div class="row" style="height: 90vh">
     <div class="col-0 col-md-4 flex justify-center content-center"></div>
     <div
@@ -20,22 +19,22 @@
           <div class="q-pt-lg">
             <div class="col text-h6 ellipsis flex justify-center">
               <h2 class="text-h2 text-uppercase q-my-none text-weight-regular">
-                Sign
+                Signup
               </h2>
             </div>
           </div>
         </q-card-section>
         <q-card-section>
           <q-form class="q-gutter-md" @submit="onSubmit()">
-            <q-input label="Username *" v-model="login.username"> </q-input>
-            <q-input label="Email *" v-model="login.email"> </q-input>
+            <q-input label="Username *" v-model="signup.username"> </q-input>
+            <q-input label="Email *" v-model="signup.email"> </q-input>
             <q-input
               label="Password *"
               type="password"
-              v-model="login.password"
+              v-model="signup.password"
             >
             </q-input>
-            <q-input label="Repeat *" type="password" v-model="login.repeat">
+            <q-input label="Repeat *" type="password" v-model="repeat">
             </q-input>
             <div>
               <q-btn
@@ -60,15 +59,14 @@
 
 <script>
 import { useQuasar } from "quasar";
-import { onMounted, onBeforeUnmount } from "vue";
+import { onMounted, onBeforeUnmount, ref } from "vue";
 import { useAuthStore } from "src/stores/auth";
 import { useRouter } from "vue-router";
 
-const login = {
-  username: "",
-  email: "",
-  password: "",
-  repeat: "",
+const signup = {
+  username: "test",
+  email: "test@example.com",
+  password: "1234567",
 };
 
 export default {
@@ -77,36 +75,39 @@ export default {
     const $q = useQuasar();
     const $router = useRouter();
 
+    const repeat = ref("1234567");
+
     onMounted(() => {});
 
     onBeforeUnmount(() => {});
 
     return {
-      login,
-      onSubmit() {
+      signup: ref(signup),
+      repeat,
+      async onSubmit() {
         if (
-          !this.login.username ||
-          !this.login.password ||
-          !this.login.email ||
-          !this.login.repeat
+          !this.signup.username ||
+          !this.signup.password ||
+          !this.signup.email ||
+          !this.repeat
         ) {
           $q.notify({
             type: "negative",
             message: "The data provided is invalid.",
           });
-        } else if (this.login.password.length < 6) {
+        } else if (this.signup.password.length < 6) {
           $q.notify({
             type: "negative",
             message: "Password must be 6 or more characters.",
           });
-        } else if (this.login.password != this.login.repeat) {
+        } else if (this.signup.password != this.repeat) {
           $q.notify({
             type: "negative",
             message: "Passwords do not match.",
           });
         } else {
           try {
-            store.doSign(login);
+            await store.doSignup(signup);
             $router.push("/login");
           } catch (err) {
             if (err.response.data.detail) {
