@@ -3,7 +3,13 @@
     <q-header elevated>
       <q-toolbar>
         <q-btn flat dense round icon="mdi-menu" class="q-mr-sm" @click="toggleLeftDrawer" />
-        <q-toolbar-title>Meteo</q-toolbar-title>
+
+        <q-toolbar-title>
+          Meteo
+        </q-toolbar-title>
+
+        <q-btn stretch flat to="/login" v-if="!isAuthenticated">Login</q-btn>
+        <q-btn stretch flat @click="logout" v-else>Logout</q-btn>
 
         <q-btn flat round dense icon="mdi-dots-vertical" >
           <q-menu>
@@ -293,7 +299,10 @@
         </q-expansion-item>
       </q-expansion-item>
 
-      <q-expansion-item v-model="esp32">
+      <q-expansion-item
+      v-model="esp32"
+      v-if="isAuthenticated"
+      >
         <template v-slot:header>
           <q-item-section avatar>
             <q-icon color="blue" name="mdi-memory" />
@@ -357,6 +366,7 @@
       <q-expansion-item
       v-model="services"
       expand-separator
+      v-if="isAuthenticated"
       >
         <template v-slot:header>
           <q-item-section avatar>
@@ -702,10 +712,10 @@
 <script>
 import { defineComponent, ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useLayoutStore } from 'src/stores/layout'
+import { useAuthStore } from 'src/stores/auth'
 import LoadInner from 'components/LoadInner.vue'
 import GearInner from 'components/GearInner.vue'
-//import axios from 'axios'
-
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'MainLayout',
@@ -720,6 +730,8 @@ export default defineComponent({
     let timer
 
     const store = useLayoutStore()
+    const auth = useAuthStore()
+    const $router = useRouter()
 
     const leftDrawerOpen = ref(false)
     const mainFilter = ref('avg')
@@ -739,13 +751,20 @@ export default defineComponent({
     const servers = ref(false)
 
     onMounted(() => {
+      auth.init()
       const path = store.current_path.split('/')
-      const menu = path[1]
-      const submenu = path[2]
+      let menu, submenu
+      if(path.length > 2){
+        menu = path[1]
+        submenu = path[2]
+      }else{
+        menu="/"
+        submenu = ""
+      }
       store.set_selected_menu(menu)
       store.set_selected_submenu(submenu)
 
-      if(menu.length > 0){
+      if(submenu.length > 0){
         console.log(menu)
         eval(menu).value = true
         let parent = ''
@@ -782,6 +801,7 @@ export default defineComponent({
     })
 
     return {
+      isAuthenticated: computed(() => auth.isAuthenticated),
       leftDrawerOpen,
       mainFilter,
       isActivePeripheral,
@@ -854,6 +874,10 @@ export default defineComponent({
         if(menu != 'home'){
           store.set_filter(mainFilter)
         }
+      },
+      logout () {
+        auth.signOut()
+        $router.push('/')
       },
     }
   },
