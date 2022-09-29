@@ -38,6 +38,7 @@ export default route(function (/* { store, ssrContext } */) {
   });
 
   Router.beforeEach((to, from, next) => {
+    useAuthStore().init();
     useLayoutStore().set_current_path(to.path);
     if (
       to.matched.some((record) => record.meta.requireAuth) &&

@@ -40,7 +40,7 @@
               <q-btn
                 class="full-width"
                 color="primary"
-                label="Login"
+                label="Signup"
                 type="submit"
                 rounded
               ></q-btn>
