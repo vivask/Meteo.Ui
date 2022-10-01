@@ -21,17 +21,21 @@ export const useAuthStore = defineStore("auth", {
     async doLogin(payload) {
       await axios.post("/api/v1/login", payload).then((response) => {
         const token = response.data;
+        console.log("Token: ", token.token);
         this.setToken(token);
         axios.defaults.headers.common.Authorization = "Bearer " + token.token;
-        console.log("HEader: ", axios.defaults.headers);
       });
     },
     async getMe(token) {
-      console.log("Token: ", token);
-      await axios.get("/api/v1/admin/user/", token.access).then((response) => {
-        this.me = response.data;
-        console.log("Me: ", this.me);
-      });
+      await axios
+        .get("/api/v1/admin/user/")
+        .then((response) => {
+          this.me = response.data;
+          //console.log("Me: ", this.me);
+        })
+        .catch(() => {
+          this.removeToken();
+        });
     },
     setToken(token) {
       this.token = token;
@@ -63,21 +67,11 @@ export const useAuthStore = defineStore("auth", {
     async init() {
       const token = localStorage.getItem("token");
       if (token) {
-        console.log("Current token: ", token);
-        console.log("Headers: ", axios.defaults.headers);
-        this.setToken(token);
+        const restored = JSON.parse(token);
         axios.defaults.headers.common.Authorization =
-          "Bearer " + JSON.parse(token).token;
-
-        await axios
-          .get("/api/v1/admin/user/")
-          .then((response) => {
-            console.log("Init resp: ", response);
-          })
-          .catch((err) => {
-            console.log("Init err: ", err);
-            this.removeToken();
-          });
+          "Bearer " + restored.token;
+        this.setToken(restored);
+        this.getMe();
       } else {
         this.removeToken();
       }

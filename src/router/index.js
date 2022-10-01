@@ -38,14 +38,17 @@ export default route(function (/* { store, ssrContext } */) {
   });
 
   Router.beforeEach((to, from, next) => {
-    useAuthStore().init();
-    useLayoutStore().set_current_path(to.path);
-    if (
-      to.matched.some((record) => record.meta.requireAuth) &&
-      !useAuthStore().isAuthenticated
-    ) {
-      next({ name: "account-signin", query: { next: to.fullPath } });
+    if (to.matched.some((record) => record.meta.requireAuth)) {
+      useAuthStore().init();
+      if (!useAuthStore().isAuthenticated) {
+        useLayoutStore().set_current_path(to.fullPath);
+        next({ name: "login", query: { next: to.fullPath } });
+      } else {
+        useLayoutStore().set_current_path(to.path);
+        next();
+      }
     } else {
+      useLayoutStore().set_current_path(to.path);
       next();
     }
   });

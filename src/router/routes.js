@@ -8,6 +8,7 @@ const routes = [
     children: [
       {
         path: "",
+        name: "home",
         component: () => import("pages/HomePage.vue"),
         meta: {
           requireAuth: false,
@@ -15,6 +16,7 @@ const routes = [
       },
       {
         path: "/login",
+        name: "login",
         component: () => import("pages/LoginPage.vue"),
         meta: {
           requireAuth: false,
@@ -22,6 +24,7 @@ const routes = [
       },
       {
         path: "/sign",
+        name: "sign",
         component: () => import("pages/SignPage.vue"),
         meta: {
           requireAuth: false,
