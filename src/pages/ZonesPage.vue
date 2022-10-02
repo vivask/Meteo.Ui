@@ -1,14 +1,11 @@
 <template>
   <div class="q-pa-md">
     <div class="row justify-center items-start crisper">
-      <div
-      class="square rounded-borders"
-      :class="cols"
-      >
+      <div class="square rounded-borders" :class="cols">
         <q-item class="bot-line">
-            <q-item-label class="text-bold text-h6">Local hosts</q-item-label>
-            <q-space />
-            <q-btn
+          <q-item-label class="text-bold text-h6">Local hosts</q-item-label>
+          <q-space />
+          <q-btn
             v-if="isShowHeaderButton"
             class="wd-100"
             dense
@@ -16,29 +13,52 @@
             size="md"
             label="Add"
             @click="create = true"
-            />
+          />
         </q-item>
         <q-table
-        hide-header
-        :rows="rows"
-        :columns="columns"
-        row-key="name"
-        :rows-per-page-options="[10, 50, 100, 0]"
+          hide-header
+          :rows="rows"
+          :columns="columns"
+          row-key="name"
+          :rows-per-page-options="[10, 50, 100, 0]"
         >
           <template v-slot:body-cell-state="props">
             <q-td :props="props">
               <q-icon
-              :name="activeIcon(props.row)"
-              size="1.2rem"
-              :color="activeColor(props.row)"
+                :name="activeIcon(props.row)"
+                size="1.2rem"
+                :color="activeColor(props.row)"
               />
             </q-td>
           </template>
           <template v-slot:body-cell-actions="props">
             <q-td :props="props">
-              <q-btn dense round color="primary" size="md" icon="add" @click="create = true" />
-              <q-btn class="q-ml-xs" dense round color="positive" size="md" icon="mode_edit" @click="onEdit(props.row)" />
-              <q-btn class="q-ml-xs" dense round color="negative" size="md" icon="delete" @click="onDelete(props.row)" />
+              <q-btn
+                dense
+                round
+                color="primary"
+                size="md"
+                icon="add"
+                @click="onAdd()"
+              />
+              <q-btn
+                class="q-ml-xs"
+                dense
+                round
+                color="positive"
+                size="md"
+                icon="mode_edit"
+                @click="onEdit(props.row)"
+              />
+              <q-btn
+                class="q-ml-xs"
+                dense
+                round
+                color="negative"
+                size="md"
+                icon="delete"
+                @click="onDelete(props.row)"
+              />
             </q-td>
           </template>
         </q-table>
@@ -49,118 +69,219 @@
   <q-dialog v-model="create" transition-show="rotate" transition-hide="rotate">
     <q-card style="min-width: 350px">
       <q-card-section>
-        <q-form
-          @submit="onSubmit(create)"
-          class="q-gutter-md"
-        >
+        <q-form @submit="onSubmit(create)" class="q-gutter-md">
           <q-input
-            v-model="name"
+            v-model="zone.name"
             outlined
             hint="Host Name *"
             lazy-rules
-            :rules="[ val => val && val.length > 0 || 'Please type something']"
+            :rules="[
+              (val) => (val && val.length > 0) || 'Please type something',
+            ]"
           />
           <q-input
-            v-model="address"
+            v-model="zone.address"
             outlined
             hint="IP Address *"
             lazy-rules
-            :rules="[ val => val && val.length > 0 || 'Please type something']"
+            :rules="[
+              (val) => (val && val.length > 0) || 'Please type something',
+            ]"
           />
-          <q-input
-            v-model="mac"
-            outlined
-            hint="MAC Address"
-          />
-          <q-input
-            v-model="note"
-            outlined
-            hint="Note"
-          />
+          <q-input v-model="zone.mac" outlined hint="MAC Address" />
+          <q-input v-model="zone.note" outlined hint="Note" />
           <q-card-actions align="left" class="text-primary">
             <q-btn label="Submit" type="submit" color="primary " />
-            <q-btn label="Cancel" color="primary" flat class="q-ml-sm" v-close-popup />
+            <q-btn
+              label="Cancel"
+              color="primary"
+              flat
+              class="q-ml-sm"
+              v-close-popup
+            />
           </q-card-actions>
         </q-form>
       </q-card-section>
     </q-card>
   </q-dialog>
 
+  <q-dialog
+    v-model="warning"
+    persistent
+    transition-show="rotate"
+    transition-hide="rotate"
+  >
+    <q-card style="width: 300px">
+      <q-card-section>
+        <div class="text-h6">Alert</div>
+      </q-card-section>
+
+      <q-card-section class="row items-center">
+        <span class="q-ml-sm">Are you sure to delete this item?</span>
+      </q-card-section>
+
+      <q-card-actions align="right">
+        <q-btn
+          flat
+          label="Cancel"
+          color="primary"
+          v-close-popup
+          @click="accept = false"
+        />
+        <q-btn
+          flat
+          label="Ok"
+          color="primary"
+          v-close-popup
+          @click="accept = true"
+        />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script>
-import { useQuasar } from 'quasar'
-import { computed, ref } from 'vue'
-
+import { useQuasar } from "quasar";
+import { computed, ref } from "vue";
+import { useLayoutStore } from "src/stores/layout";
+import axios from "axios";
 
 const columns = [
-  { name: 'state'},
-  { name: 'address', align: 'left', field: 'address', sortable: true },
-  { name: 'name', align: 'left', field: 'name', sortable: true },
-  { name: 'mac', align: 'left', field: 'mac', sortable: true },
-  { name: 'actions'},
-]
+  { name: "state" },
+  { name: "id" },
+  { name: "address", align: "left", field: "address", sortable: true },
+  { name: "name", align: "left", field: "name", sortable: true },
+  { name: "mac", align: "left", field: "mac", sortable: true },
+  { name: "note", align: "left", field: "note", sortable: true },
+  { name: "actions" },
+];
 
-const rows = [
-  {
-    active: false,
-    address: '192.168.1.1',
-    name: 'time.windows.com',
-    mac: 'b8:69:f4:18:ca:5b',
-  },
-]
+const rows = [];
+
+const zone = {
+  id: null,
+  name: null,
+  address: null,
+  mac: null,
+  note: null,
+};
 
 export default {
-  setup () {
-
-    const $q = useQuasar()
-
-    const name = ref(null)
-    const address = ref(null)
-    const mac = ref(null)
-    const note = ref(null)
-    const isShowHeaderButton = ref(false)
+  setup() {
+    const $q = useQuasar();
+    const actionEdit = ref(false);
 
     return {
       create: ref(false),
+      warning: ref(false),
       columns,
-      rows,
-      name,
-      address,
-      mac,
-      note,
-      isShowHeaderButton: computed(() => (rows.length===0)),
-      cols: computed(() => `col-${($q.screen.name=='sm') ? 8 : ($q.screen.name=='xs') ? 11 : 5}`),
-      onEdit (row) {
-        console.log(row)
+      rows: ref(rows),
+      zone: ref(zone),
+      actionEdit,
+      accept: ref(false),
+      isShowHeaderButton: computed(() => rows.length === 0),
+      cols: computed(
+        () =>
+          `col-${$q.screen.name == "sm" ? 8 : $q.screen.name == "xs" ? 11 : 5}`
+      ),
+      async GetZones() {
+        await axios
+          .get("/api/v1/admin/proxy/zones/get")
+          .then((response) => {
+            this.rows = response.data.data;
+          })
+          .catch(() => {
+            $q.notify({ type: "negative", message: err.response.data.message });
+          });
       },
-      onDelete (row) {
-        console.log(row)
+      onAdd() {
+        actionEdit.value = false;
+        this.zone.name = "";
+        this.zone.address = "";
+        this.zone.mac = "";
+        this.zone.note = "";
+        this.create = true;
       },
-      activeIcon (row) {
-        return (row.active) ? "task_alt" : "highlight_off"
+      onEdit(row) {
+        actionEdit.value = true;
+        this.zone.id = row.id;
+        this.zone.name = row.name;
+        this.zone.address = row.address;
+        this.zone.mac = row.mac;
+        this.zone.note = row.note;
+        this.create = true;
       },
-      activeColor (row) {
-        return (row.active) ? "positive" : "grey"
+      async onDelete(row) {
+        this.warning = true;
+        if (this.accept) {
+          const url = "/api/v1/admin/proxy/zones/" + row.id;
+          await axios
+            .delete(url, this.zone)
+            .then(() => {
+              this.GetZones();
+            })
+            .catch((err) => {
+              console.log(err);
+              $q.notify({
+                type: "negative",
+                message: err.response.data.message,
+              });
+            });
+        }
       },
-      onSubmit (dlg) {
-        this.create = false
-      }
-
-    }
+      activeIcon(row) {
+        return row.active ? "task_alt" : "highlight_off";
+      },
+      activeColor(row) {
+        return row.active ? "positive" : "grey";
+      },
+      async onSubmit() {
+        this.create = false;
+        useLayoutStore().load_spinner_show();
+        if (actionEdit.value) {
+          await axios
+            .post("/api/v1/admin/proxy/zones/edit", this.zone)
+            .then(() => {
+              this.GetZones();
+            })
+            .catch((err) => {
+              $q.notify({
+                type: "negative",
+                message: err.response.data.message,
+              });
+            });
+        } else {
+          await axios
+            .post("/api/v1/admin/proxy/zones/add", this.zone)
+            .then(() => {
+              this.GetZones();
+            })
+            .catch((err) => {
+              $q.notify({
+                type: "negative",
+                message: err.response.data.message,
+              });
+            });
+        }
+        useLayoutStore().load_spinner_hide();
+      },
+    };
   },
-  methods: {
-  }
-
-}
+  async mounted() {
+    useLayoutStore().load_spinner_show();
+    await this.GetZones();
+    useLayoutStore().load_spinner_hide();
+  },
+  methods: {},
+};
 </script>
 
 <style lang="sass" scoped>
-  .bot-line
-    border-bottom: 1px solid rgba(86, 61, 124, .2)
-  .crisper
-    .square
-      margin: 5px
-      background: rgba(86, 61, 124, .15)
-      border: 1px solid rgba(86, 61, 124, .2)
+.bot-line
+  border-bottom: 1px solid rgba(86, 61, 124, .2)
+.crisper
+  .square
+    margin: 5px
+    background: rgba(86, 61, 124, .15)
+    border: 1px solid rgba(86, 61, 124, .2)
 </style>

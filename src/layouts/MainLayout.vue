@@ -744,6 +744,7 @@ export default defineComponent({
     const servers = ref(false);
 
     onMounted(() => {
+      //auth.init();
       const path = store.current_path.split("/");
       let menu, submenu;
       if (path.length > 2) {

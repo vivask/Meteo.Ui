@@ -58,7 +58,13 @@ const routes = [
           requireAuth: true,
         },
       },
-      { path: "/proxy/zones", component: () => import("pages/ZonesPage.vue") },
+      {
+        path: "/proxy/zones",
+        component: () => import("pages/ZonesPage.vue"),
+        meta: {
+          requireAuth: true,
+        },
+      },
       {
         path: "/proxy/autovpn",
         component: () => import("pages/AutoVpnPage.vue"),
@@ -94,7 +100,13 @@ const routes = [
           requireAuth: true,
         },
       },
-      { path: "/schedule/cron", component: () => import("pages/CronPage.vue") },
+      {
+        path: "/schedule/cron",
+        component: () => import("pages/CronPage.vue"),
+        meta: {
+          requireAuth: true,
+        },
+      },
       {
         path: "/secure/sshkeys",
         component: () => import("pages/SshKeysPage.vue"),

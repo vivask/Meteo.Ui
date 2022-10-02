@@ -19,6 +19,9 @@ import { useAuthStore } from "src/stores/auth";
  */
 
 export default route(function (/* { store, ssrContext } */) {
+  const auth = useAuthStore();
+  auth.init();
+
   const createHistory = process.env.SERVER
     ? createMemoryHistory
     : process.env.VUE_ROUTER_MODE === "history"
@@ -38,18 +41,32 @@ export default route(function (/* { store, ssrContext } */) {
   });
 
   Router.beforeEach((to, from, next) => {
-    if (to.matched.some((record) => record.meta.requireAuth)) {
-      useAuthStore().init();
-      if (!useAuthStore().isAuthenticated) {
-        useLayoutStore().set_current_path(to.fullPath);
-        next({ name: "login", query: { next: to.fullPath } });
-      } else {
-        useLayoutStore().set_current_path(to.path);
-        next();
-      }
-    } else {
+    let requiresAuth = to.matched.some((record) => record.meta.requireAuth);
+    if (!requiresAuth) {
       useLayoutStore().set_current_path(to.path);
       next();
+    } else {
+      auth
+        .GetUser()
+        .then((currentUser) => {
+          if (requiresAuth && !currentUser) {
+            //useLayoutStore().set_current_path("/login");
+            //next("login");
+            console.log("FULL PATH: ", to.fullPath);
+            next({ name: "login", query: { next: to.fullPath } });
+            useLayoutStore().set_current_path(to.fullPath);
+          } else {
+            useLayoutStore().set_current_path(to.path);
+            next();
+          }
+        })
+        .catch(() => {
+          //useLayoutStore().set_current_path("/login");
+          //next("login");
+          console.log("FULL PATH: ", to.fullPath);
+          next({ name: "login", query: { next: to.fullPath } });
+          useLayoutStore().set_current_path(to.fullPath);
+        });
     }
   });
 

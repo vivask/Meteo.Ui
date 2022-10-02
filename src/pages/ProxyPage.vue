@@ -151,7 +151,7 @@ export default defineComponent({
             }
           })
           .catch(() => {
-            $q.notify({ type: "negative", message: err.response.data });
+            $q.notify({ type: "negative", message: err.response.data.message });
           });
       },
       SetStateProxy(master, slave) {
@@ -173,7 +173,10 @@ export default defineComponent({
               this.GetStateProxy();
             })
             .catch((err) => {
-              $q.notify({ type: "negative", message: err.response.data });
+              $q.notify({
+                type: "negative",
+                message: err.response.data.message,
+              });
             });
         } else {
           await axios
@@ -182,7 +185,10 @@ export default defineComponent({
               this.GetStateProxy();
             })
             .catch((err) => {
-              $q.notify({ type: "negative", message: err.response.data });
+              $q.notify({
+                type: "negative",
+                message: err.response.data.message,
+              });
             });
         }
         useLayoutStore().load_spinner_hide();
@@ -196,7 +202,10 @@ export default defineComponent({
               this.GetStateProxy();
             })
             .catch((err) => {
-              $q.notify({ type: "negative", message: err.response.data });
+              $q.notify({
+                type: "negative",
+                message: err.response.data.message,
+              });
             });
         } else {
           await axios
@@ -205,21 +214,27 @@ export default defineComponent({
               this.GetStateProxy();
             })
             .catch((err) => {
-              $q.notify({ type: "negative", message: err.response.data });
+              $q.notify({
+                type: "negative",
+                message: err.response.data.message,
+              });
             });
         }
         useLayoutStore().load_spinner_hide();
       },
       async onMasterCache() {
         useLayoutStore().load_spinner_show();
-        if (masterAdBlock.value) {
+        if (masterCache.value) {
           await axios
             .put("/api/v1/admin/proxy/master/cache/on")
             .then(() => {
               this.GetStateProxy();
             })
             .catch((err) => {
-              $q.notify({ type: "negative", message: err.response.data });
+              $q.notify({
+                type: "negative",
+                message: err.response.data.message,
+              });
             });
         } else {
           await axios
@@ -228,21 +243,27 @@ export default defineComponent({
               this.GetStateProxy();
             })
             .catch((err) => {
-              $q.notify({ type: "negative", message: err.response.data });
+              $q.notify({
+                type: "negative",
+                message: err.response.data.message,
+              });
             });
         }
         useLayoutStore().load_spinner_hide();
       },
       async onMasterUnlock() {
         useLayoutStore().load_spinner_show();
-        if (masterAdBlock.value) {
+        if (masterUnlock.value) {
           await axios
             .put("/api/v1/admin/proxy/master/unlock/on")
             .then(() => {
               this.GetStateProxy();
             })
             .catch((err) => {
-              $q.notify({ type: "negative", message: err.response.data });
+              $q.notify({
+                type: "negative",
+                message: err.response.data.message,
+              });
             });
         } else {
           await axios
@@ -251,21 +272,27 @@ export default defineComponent({
               this.GetStateProxy();
             })
             .catch((err) => {
-              $q.notify({ type: "negative", message: err.response.data });
+              $q.notify({
+                type: "negative",
+                message: err.response.data.message,
+              });
             });
         }
         useLayoutStore().load_spinner_hide();
       },
       async onSlaveActive() {
         useLayoutStore().load_spinner_show();
-        if (masterActive.value) {
+        if (slaveActive.value) {
           await axios
             .put("/api/v1/admin/proxy/slave/server/start")
             .then(() => {
               this.GetStateProxy();
             })
             .catch((err) => {
-              $q.notify({ type: "negative", message: err.response.data });
+              $q.notify({
+                type: "negative",
+                message: err.response.data.message,
+              });
             });
         } else {
           await axios
@@ -274,21 +301,27 @@ export default defineComponent({
               this.GetStateProxy();
             })
             .catch((err) => {
-              $q.notify({ type: "negative", message: err.response.data });
+              $q.notify({
+                type: "negative",
+                message: err.response.data.message,
+              });
             });
         }
         useLayoutStore().load_spinner_hide();
       },
       async onSlaveAdBlock() {
         useLayoutStore().load_spinner_show();
-        if (masterAdBlock.value) {
+        if (slaveAdBlock.value) {
           await axios
             .put("/api/v1/admin/proxy/slave/adblock/on")
             .then(() => {
               this.GetStateProxy();
             })
             .catch((err) => {
-              $q.notify({ type: "negative", message: err.response.data });
+              $q.notify({
+                type: "negative",
+                message: err.response.data.message,
+              });
             });
         } else {
           await axios
@@ -297,21 +330,27 @@ export default defineComponent({
               this.GetStateProxy();
             })
             .catch((err) => {
-              $q.notify({ type: "negative", message: err.response.data });
+              $q.notify({
+                type: "negative",
+                message: err.response.data.message,
+              });
             });
         }
         useLayoutStore().load_spinner_hide();
       },
       async onSlaveCache() {
         useLayoutStore().load_spinner_show();
-        if (masterAdBlock.value) {
+        if (slaveCache.value) {
           await axios
             .put("/api/v1/admin/proxy/slave/cache/on")
             .then(() => {
               this.GetStateProxy();
             })
             .catch((err) => {
-              $q.notify({ type: "negative", message: err.response.data });
+              $q.notify({
+                type: "negative",
+                message: err.response.data.message,
+              });
             });
         } else {
           await axios
@@ -320,21 +359,27 @@ export default defineComponent({
               this.GetStateProxy();
             })
             .catch((err) => {
-              $q.notify({ type: "negative", message: err.response.data });
+              $q.notify({
+                type: "negative",
+                message: err.response.data.message,
+              });
             });
         }
         useLayoutStore().load_spinner_hide();
       },
       async onSlaveUnlock() {
         useLayoutStore().load_spinner_show();
-        if (masterAdBlock.value) {
+        if (slaveUnlock.value) {
           await axios
             .put("/api/v1/admin/proxy/slave/unlock/on")
             .then(() => {
               this.GetStateProxy();
             })
             .catch((err) => {
-              $q.notify({ type: "negative", message: err.response.data });
+              $q.notify({
+                type: "negative",
+                message: err.response.data.message,
+              });
             });
         } else {
           await axios
@@ -343,7 +388,10 @@ export default defineComponent({
               this.GetStateProxy();
             })
             .catch((err) => {
-              $q.notify({ type: "negative", message: err.response.data });
+              $q.notify({
+                type: "negative",
+                message: err.response.data.message,
+              });
             });
         }
         useLayoutStore().load_spinner_hide();

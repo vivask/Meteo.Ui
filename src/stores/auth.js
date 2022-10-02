@@ -24,14 +24,14 @@ export const useAuthStore = defineStore("auth", {
         console.log("Token: ", token.token);
         this.setToken(token);
         axios.defaults.headers.common.Authorization = "Bearer " + token.token;
+        this.getMe();
       });
     },
-    async getMe(token) {
+    async getMe() {
       await axios
         .get("/api/v1/admin/user/")
         .then((response) => {
           this.me = response.data;
-          //console.log("Me: ", this.me);
         })
         .catch(() => {
           this.removeToken();
@@ -75,6 +75,14 @@ export const useAuthStore = defineStore("auth", {
       } else {
         this.removeToken();
       }
+    },
+    async GetUser() {
+      return await axios
+        .get("/api/v1/admin/user/")
+        .then(
+          (response) => response.data.data.username == this.me.data.username
+        )
+        .catch(() => false);
     },
   },
 });

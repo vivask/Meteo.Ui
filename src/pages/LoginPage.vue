@@ -57,7 +57,7 @@
 import { useQuasar } from "quasar";
 import { onMounted, onBeforeUnmount, ref } from "vue";
 import { useAuthStore } from "src/stores/auth";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 
 const login = {
   username: null,
@@ -69,6 +69,7 @@ export default {
     const store = useAuthStore();
     const $q = useQuasar();
     const $router = useRouter();
+    const route = useRoute();
 
     onMounted(() => {});
 
@@ -90,6 +91,7 @@ export default {
         } else {
           try {
             await store.doLogin(login);
+            console.log("ROUTE: ", route.query.to);
             $router.push("/");
           } catch (err) {
             if (err.response.data.detail) {
