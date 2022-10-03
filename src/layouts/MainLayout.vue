@@ -677,6 +677,7 @@
         </q-expansion-item>
       </q-expansion-item>
     </q-drawer>
+    <q-ajax-bar position="bottom" color="accent" size="10px" />
     <q-footer elevated>
       <q-toolbar>
         <q-spinner-bars color="primary" size="2em" v-if="isActivePeripheral" />
@@ -744,7 +745,6 @@ export default defineComponent({
     const servers = ref(false);
 
     onMounted(() => {
-      //auth.init();
       const path = store.current_path.split("/");
       let menu, submenu;
       if (path.length > 2) {

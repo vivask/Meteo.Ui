@@ -23,7 +23,7 @@
           :rows-per-page-options="[10, 50, 100, 0]"
         >
           <template v-slot:body-cell-state="props">
-            <q-td :props="props">
+            <q-td :props="props" class="wd-20">
               <q-icon
                 :name="activeIcon(props.row)"
                 size="1.2rem"
@@ -104,46 +104,11 @@
       </q-card-section>
     </q-card>
   </q-dialog>
-
-  <q-dialog
-    v-model="warning"
-    persistent
-    transition-show="rotate"
-    transition-hide="rotate"
-  >
-    <q-card style="width: 300px">
-      <q-card-section>
-        <div class="text-h6">Alert</div>
-      </q-card-section>
-
-      <q-card-section class="row items-center">
-        <span class="q-ml-sm">Are you sure to delete this item?</span>
-      </q-card-section>
-
-      <q-card-actions align="right">
-        <q-btn
-          flat
-          label="Cancel"
-          color="primary"
-          v-close-popup
-          @click="accept = false"
-        />
-        <q-btn
-          flat
-          label="Ok"
-          color="primary"
-          v-close-popup
-          @click="accept = true"
-        />
-      </q-card-actions>
-    </q-card>
-  </q-dialog>
 </template>
 
 <script>
 import { useQuasar } from "quasar";
 import { computed, ref } from "vue";
-import { useLayoutStore } from "src/stores/layout";
 import axios from "axios";
 
 const columns = [
@@ -173,12 +138,10 @@ export default {
 
     return {
       create: ref(false),
-      warning: ref(false),
       columns,
       rows: ref(rows),
       zone: ref(zone),
       actionEdit,
-      accept: ref(false),
       isShowHeaderButton: computed(() => rows.length === 0),
       cols: computed(
         () =>
@@ -212,22 +175,25 @@ export default {
         this.create = true;
       },
       async onDelete(row) {
-        this.warning = true;
-        if (this.accept) {
+        $q.dialog({
+          title: "Confirm",
+          message: "Are you sure to delete this item?",
+          cancel: true,
+          persistent: true,
+        }).onOk(() => {
           const url = "/api/v1/admin/proxy/zones/" + row.id;
-          await axios
-            .delete(url, this.zone)
+          axios
+            .delete(url)
             .then(() => {
               this.GetZones();
             })
             .catch((err) => {
-              console.log(err);
               $q.notify({
                 type: "negative",
                 message: err.response.data.message,
               });
             });
-        }
+        });
       },
       activeIcon(row) {
         return row.active ? "task_alt" : "highlight_off";
@@ -237,7 +203,6 @@ export default {
       },
       async onSubmit() {
         this.create = false;
-        useLayoutStore().load_spinner_show();
         if (actionEdit.value) {
           await axios
             .post("/api/v1/admin/proxy/zones/edit", this.zone)
@@ -263,14 +228,11 @@ export default {
               });
             });
         }
-        useLayoutStore().load_spinner_hide();
       },
     };
   },
   async mounted() {
-    useLayoutStore().load_spinner_show();
     await this.GetZones();
-    useLayoutStore().load_spinner_hide();
   },
   methods: {},
 };

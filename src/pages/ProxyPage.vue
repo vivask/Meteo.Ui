@@ -112,7 +112,6 @@
 import { defineComponent, ref, computed } from "vue";
 import { useQuasar } from "quasar";
 import axios from "axios";
-import { useLayoutStore } from "src/stores/layout";
 
 export default defineComponent({
   setup() {
@@ -165,7 +164,6 @@ export default defineComponent({
         slaveUnlock.value = slave.unlockeron;
       },
       async onMasterActive() {
-        useLayoutStore().load_spinner_show();
         if (masterActive.value) {
           await axios
             .put("/api/v1/admin/proxy/master/server/start")
@@ -191,10 +189,8 @@ export default defineComponent({
               });
             });
         }
-        useLayoutStore().load_spinner_hide();
       },
       async onMasterAdBlock() {
-        useLayoutStore().load_spinner_show();
         if (masterAdBlock.value) {
           await axios
             .put("/api/v1/admin/proxy/master/adblock/on")
@@ -220,10 +216,8 @@ export default defineComponent({
               });
             });
         }
-        useLayoutStore().load_spinner_hide();
       },
       async onMasterCache() {
-        useLayoutStore().load_spinner_show();
         if (masterCache.value) {
           await axios
             .put("/api/v1/admin/proxy/master/cache/on")
@@ -249,10 +243,8 @@ export default defineComponent({
               });
             });
         }
-        useLayoutStore().load_spinner_hide();
       },
       async onMasterUnlock() {
-        useLayoutStore().load_spinner_show();
         if (masterUnlock.value) {
           await axios
             .put("/api/v1/admin/proxy/master/unlock/on")
@@ -278,10 +270,8 @@ export default defineComponent({
               });
             });
         }
-        useLayoutStore().load_spinner_hide();
       },
       async onSlaveActive() {
-        useLayoutStore().load_spinner_show();
         if (slaveActive.value) {
           await axios
             .put("/api/v1/admin/proxy/slave/server/start")
@@ -307,10 +297,8 @@ export default defineComponent({
               });
             });
         }
-        useLayoutStore().load_spinner_hide();
       },
       async onSlaveAdBlock() {
-        useLayoutStore().load_spinner_show();
         if (slaveAdBlock.value) {
           await axios
             .put("/api/v1/admin/proxy/slave/adblock/on")
@@ -336,10 +324,8 @@ export default defineComponent({
               });
             });
         }
-        useLayoutStore().load_spinner_hide();
       },
       async onSlaveCache() {
-        useLayoutStore().load_spinner_show();
         if (slaveCache.value) {
           await axios
             .put("/api/v1/admin/proxy/slave/cache/on")
@@ -365,10 +351,8 @@ export default defineComponent({
               });
             });
         }
-        useLayoutStore().load_spinner_hide();
       },
       async onSlaveUnlock() {
-        useLayoutStore().load_spinner_show();
         if (slaveUnlock.value) {
           await axios
             .put("/api/v1/admin/proxy/slave/unlock/on")
@@ -394,14 +378,11 @@ export default defineComponent({
               });
             });
         }
-        useLayoutStore().load_spinner_hide();
       },
     };
   },
   async mounted() {
-    useLayoutStore().load_spinner_show();
     await this.GetStateProxy();
-    useLayoutStore().load_spinner_hide();
   },
   methods: {},
 });

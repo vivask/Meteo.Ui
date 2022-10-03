@@ -50,9 +50,6 @@ export default route(function (/* { store, ssrContext } */) {
         .GetUser()
         .then((currentUser) => {
           if (requiresAuth && !currentUser) {
-            //useLayoutStore().set_current_path("/login");
-            //next("login");
-            console.log("FULL PATH: ", to.fullPath);
             next({ name: "login", query: { next: to.fullPath } });
             useLayoutStore().set_current_path(to.fullPath);
           } else {
@@ -61,9 +58,6 @@ export default route(function (/* { store, ssrContext } */) {
           }
         })
         .catch(() => {
-          //useLayoutStore().set_current_path("/login");
-          //next("login");
-          console.log("FULL PATH: ", to.fullPath);
           next({ name: "login", query: { next: to.fullPath } });
           useLayoutStore().set_current_path(to.fullPath);
         });

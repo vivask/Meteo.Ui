@@ -69,7 +69,6 @@ export default {
     const store = useAuthStore();
     const $q = useQuasar();
     const $router = useRouter();
-    const route = useRoute();
 
     onMounted(() => {});
 
@@ -91,8 +90,8 @@ export default {
         } else {
           try {
             await store.doLogin(login);
-            console.log("ROUTE: ", route.query.to);
-            $router.push("/");
+            const to = $router.currentRoute.value.query.next || "/";
+            $router.push(to);
           } catch (err) {
             if (err.response.data.detail) {
               $q.notify({
