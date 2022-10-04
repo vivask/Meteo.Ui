@@ -1,59 +1,77 @@
 <template>
   <div class="q-pa-md">
     <div class="row justify-center items-start crisper">
-      <div
-      class="square rounded-borders"
-      :class="cols"
-      >
+      <div class="square rounded-borders" :class="cols">
         <q-item class="bot-line">
-            <q-item-label class="text-bold text-h6">Git key management</q-item-label>
-            <q-space />
-            <q-btn
+          <q-item-label class="text-bold text-h6"
+            >Git key management</q-item-label
+          >
+          <q-space />
+          <q-btn
             v-if="isShowHeaderButton"
             class="wd-100"
             dense
             color="primary"
             size="md"
             label="Add"
-            @click="create = true"
-            />
+            @click="onAdd()"
+          >
+            <q-tooltip>Add new git key </q-tooltip>
+          </q-btn>
         </q-item>
         <q-table
-        hide-header
-        :rows="rows"
-        :columns="columns"
-        row-key="name"
-        :rows-per-page-options="[10, 50, 100, 0]"
+          hide-header
+          :rows="rows"
+          :columns="columns"
+          row-key="name"
+          :rows-per-page-options="[10, 50, 100, 0]"
         >
           <template v-slot:body-cell-state="props">
-            <q-td :props="props"  class="wd-20">
+            <q-td :props="props" class="wd-20">
               <q-icon
-              :name="activeIcon(props.row)"
-              size="1.2rem"
-              :color="activeColor(props.row)"
+                :name="activeIcon(props.row)"
+                size="1.2rem"
+                :color="activeColor(props.row)"
               />
             </q-td>
           </template>
           <template v-slot:body-cell-icon="props">
-            <q-td :props="props"  class="wd-80">
-              <q-icon
-              name="mdi-key-variant"
-              size="md"
-              />
+            <q-td :props="props" class="wd-80">
+              <q-icon name="mdi-key-variant" size="md" />
             </q-td>
           </template>
           <template v-slot:body-cell-key="props">
             <q-td :props="props" class="wd-100">
-              <div class="text-subtitle1 text-bold key-name">{{props.row.name}}</div>
-              <div class="text-subtitle2">{{props.row.finger}}</div>
-              <div class="text-subtitle2">{{props.row.createdat}}</div>
+              <div class="text-subtitle1 text-bold key-owner">
+                {{ props.row.owner }}
+              </div>
+              <div class="text-subtitle2">{{ props.row.finger }}</div>
+              <div class="text-subtitle2">{{ props.row.createdat }}</div>
             </q-td>
           </template>
           <template v-slot:body-cell-actions="props">
             <q-td :props="props">
-              <q-btn dense round color="primary" size="md" icon="add" @click="create = true"></q-btn>
-              <q-btn class="q-ml-xs" dense round color="positive" size="md" icon="mode_edit" @click="onEdit(props.row)"></q-btn>
-              <q-btn class="q-ml-xs" dense round color="negative" size="md" icon="delete" @click="onDelete(props.row)"></q-btn>
+              <q-btn
+                dense
+                round
+                color="primary"
+                size="md"
+                icon="add"
+                @click="onAdd()"
+              >
+                <q-tooltip>Add new git key </q-tooltip>
+              </q-btn>
+              <q-btn
+                class="q-ml-xs"
+                dense
+                round
+                color="negative"
+                size="md"
+                icon="delete"
+                @click="onDelete(props.row)"
+              >
+                <q-tooltip>Delete git key </q-tooltip>
+              </q-btn>
             </q-td>
           </template>
         </q-table>
@@ -64,109 +82,158 @@
   <q-dialog v-model="create" transition-show="rotate" transition-hide="rotate">
     <q-card style="min-width: 350px">
       <q-card-section>
-        <q-form
-          @submit="onSubmit(create)"
-          class="q-gutter-md"
-        >
-        <q-input
-            v-model="name"
+        <q-form @submit="onSubmit(create)" class="q-gutter-md">
+          <q-input
+            v-model="key.owner"
             outlined
+            dense
             hint="Key Name *"
             lazy-rules
-            :rules="[ val => val && val.length > 0 || 'Please type something']"
+            :rules="[
+              (val) => (val && val.length > 0) || 'Please type something',
+            ]"
           />
           <q-input
-            v-model="content"
+            v-model="key.finger"
             outlined
+            dense
             hint="Content *"
             type="textarea"
             lazy-rules
-            :rules="[ val => val && val.length > 0 || 'Please type something']"
+            :rules="[
+              (val) => (val && val.length > 0) || 'Please type something',
+            ]"
           />
           <q-card-actions align="left" class="text-primary">
             <q-btn label="Submit" type="submit" color="primary " />
-            <q-btn label="Cancel" color="primary" flat class="q-ml-sm" v-close-popup />
+            <q-btn
+              label="Cancel"
+              color="primary"
+              flat
+              class="q-ml-sm"
+              v-close-popup
+            />
           </q-card-actions>
         </q-form>
       </q-card-section>
     </q-card>
   </q-dialog>
-
 </template>
 
 <script>
-import { useQuasar } from 'quasar'
-import { computed, ref } from 'vue'
-
+import { useQuasar } from "quasar";
+import { computed, ref } from "vue";
+import axios from "axios";
 
 const columns = [
-  { name: 'state'},
-  { name: 'icon'},
-  { name: 'key'},
-  { name: 'name' },
-  { name: 'finger' },
-  { name: 'createdat', },
-  { name: 'actions'},
-]
+  { name: "state" },
+  { name: "icon" },
+  { name: "key" },
+  { name: "owner" },
+  { name: "finger" },
+  { name: "createdat" },
+  { name: "actions" },
+];
 
-const rows = [
-  {
-    active: true,
-    name: 'odroid-xu4',
-    finger: 'b3BlbnNzaC1rZXkt',
-    createdat: 'Добавлено Aug 12, 2022 10:51:36',
-  },
-]
+const rows = [];
+
+const key = {
+  id: null,
+  owner: null,
+  finger: null,
+  created: null,
+  used: null,
+  activity: null,
+  short_finger: null,
+};
 
 export default {
-  setup () {
-
-    const $q = useQuasar()
-
-    const name = ref(null)
-    const content = ref(null)
+  setup() {
+    const $q = useQuasar();
 
     return {
       create: ref(false),
       columns,
-      rows,
-      name,
-      content,
-      isShowHeaderButton: computed(() => (rows.length===0)),
-      cols: computed(() => `col-${($q.screen.name=='sm') ? 8 : ($q.screen.name=='xs') ? 11 : 4}`),
-      onEdit (row) {
-        console.log(row)
+      rows: ref(rows),
+      key: ref(key),
+      isShowHeaderButton: ref(false),
+      cols: computed(
+        () =>
+          `col-${$q.screen.name == "sm" ? 8 : $q.screen.name == "xs" ? 11 : 4}`
+      ),
+      async GetKeys() {
+        await axios
+          .get("/api/v1/admin/sshclient/gitkeys/get")
+          .then((response) => {
+            this.rows = response.data.data;
+            this.isShowHeaderButton = this.rows.length === 0;
+          })
+          .catch(() => {
+            $q.notify({ type: "negative", message: err.response.data.message });
+          });
       },
-      onDelete (row) {
-        console.log(row)
+      onAdd() {
+        this.key.owner = "";
+        this.key.finger = "";
+        this.create = true;
       },
-      onSubmit (dlg) {
-        this.create = false
+      onDelete(row) {
+        $q.dialog({
+          title: "Confirm",
+          message: "Are you sure to delete this item?",
+          cancel: true,
+          persistent: true,
+        }).onOk(() => {
+          const url = "/api/v1/admin/sshclient/gitkeys/" + row.id;
+          axios
+            .delete(url)
+            .then(() => {
+              this.GetKeys();
+            })
+            .catch((err) => {
+              $q.notify({
+                type: "negative",
+                message: err.response.data.message,
+              });
+            });
+        });
       },
-      activeIcon (row) {
-        return (row.active) ? "task_alt" : "highlight_off"
+      async onSubmit(dlg) {
+        this.create = false;
+        await axios
+          .post("/api/v1/admin/sshclient/gitkeys/add", this.key)
+          .then(() => {
+            this.GetKeys();
+          })
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
       },
-      activeColor (row) {
-        return (row.active) ? "positive" : "grey"
+      activeIcon(row) {
+        return row.activity ? "task_alt" : "highlight_off";
       },
-
-    }
+      activeColor(row) {
+        return row.activity ? "positive" : "grey";
+      },
+    };
   },
-  methods: {
-  }
-
-}
+  async mounted() {
+    await this.GetKeys();
+  },
+};
 </script>
 
 <style lang="sass" scoped>
-  .bot-line
-    border-bottom: 1px solid rgba(86, 61, 124, .2)
-  .crisper
-    .square
-      margin: 5px
-      background: rgba(86, 61, 124, .15)
-      border: 1px solid rgba(86, 61, 124, .2)
-  .key-name
-    color: #1976D2
-
+.bot-line
+  border-bottom: 1px solid rgba(86, 61, 124, .2)
+.crisper
+  .square
+    margin: 5px
+    background: rgba(86, 61, 124, .15)
+    border: 1px solid rgba(86, 61, 124, .2)
+.key-name
+  color: #1976D2
 </style>

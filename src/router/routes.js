@@ -129,8 +129,8 @@ const routes = [
         },
       },
       {
-        path: "/secure/githosts",
-        component: () => import("pages/GitHostsPage.vue"),
+        path: "/secure/gitusers",
+        component: () => import("pages/GitUsersPage.vue"),
         meta: {
           requireAuth: true,
         },

@@ -278,16 +278,19 @@ export default {
       createParam: ref(false),
       paramName,
       paramValue,
-      isShowHeaderButton: computed(() => rows.length === 0),
+      isShowHeaderButton: ref(false),
       cols: computed(
         () =>
-          `col-${$q.screen.name == "sm" ? 8 : $q.screen.name == "xs" ? 11 : 5}`
+          `col-${
+            $q.screen.name === "sm" ? 8 : $q.screen.name === "xs" ? 11 : 5
+          }`
       ),
       async GetTasks() {
         await axios
           .get("/api/v1/admin/schedule/tasks/get")
           .then((response) => {
             this.rows = response.data.data;
+            this.isShowHeaderButton = this.rows.length === 0;
           })
           .catch(() => {
             $q.notify({ type: "negative", message: err.response.data.message });
@@ -368,7 +371,7 @@ export default {
         }
       },
       ShowParams() {
-        this.showBtnAddParam = this.params.length == 0;
+        this.showBtnAddParam = this.params.length === 0;
         this.showParams = !this.showBtnAddParam;
       },
       HideParams() {

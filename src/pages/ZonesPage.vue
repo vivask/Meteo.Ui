@@ -142,7 +142,7 @@ export default {
       rows: ref(rows),
       zone: ref(zone),
       actionEdit,
-      isShowHeaderButton: computed(() => rows.length === 0),
+      isShowHeaderButton: ref(false),
       cols: computed(
         () =>
           `col-${$q.screen.name == "sm" ? 8 : $q.screen.name == "xs" ? 11 : 5}`
@@ -152,6 +152,7 @@ export default {
           .get("/api/v1/admin/proxy/zones/get")
           .then((response) => {
             this.rows = response.data.data;
+            this.isShowHeaderButton = this.rows.length === 0;
           })
           .catch(() => {
             $q.notify({ type: "negative", message: err.response.data.message });

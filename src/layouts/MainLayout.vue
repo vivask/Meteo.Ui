@@ -581,14 +581,14 @@
               clickable
               v-close-popup
               :active="secureGitHosts"
-              :href="getRef('secure', 'githosts')"
-              @click="setMenu('secure', 'githosts')"
+              :href="getRef('secure', 'gitusers')"
+              @click="setMenu('secure', 'gitusers')"
             >
               <q-item-section>
-                <q-item-label>Git Hosts</q-item-label>
+                <q-item-label>Git Users</q-item-label>
               </q-item-section>
               <q-item-section side>
-                <q-icon name="mdi-lan-pending" />
+                <q-icon name="mdi-account" />
               </q-item-section>
             </q-item>
           </q-list>

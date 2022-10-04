@@ -4,7 +4,7 @@
       <div class="square rounded-borders" :class="cols">
         <q-item class="bot-line">
           <q-item-label class="text-bold text-h6"
-            >SSH key management</q-item-label
+            >Git users management</q-item-label
           >
           <q-space />
           <q-btn
@@ -16,14 +16,14 @@
             label="Add"
             @click="onAdd()"
           >
-            <q-tooltip> Add new ssh key </q-tooltip>
+            <q-tooltip>Add new git user</q-tooltip>
           </q-btn>
         </q-item>
         <q-table
           hide-header
           :rows="rows"
           :columns="columns"
-          row-key="owner"
+          row-key="name"
           :rows-per-page-options="[10, 50, 100, 0]"
         >
           <template v-slot:body-cell-state="props">
@@ -37,16 +37,17 @@
           </template>
           <template v-slot:body-cell-icon="props">
             <q-td :props="props" class="wd-80">
-              <q-icon name="mdi-key-variant" size="md" />
+              <q-icon name="mdi-account" size="md" />
             </q-td>
           </template>
           <template v-slot:body-cell-key="props">
             <q-td :props="props" class="wd-100">
-              <div class="text-subtitle1 text-bold key-owner">
-                {{ props.row.owner }}
+              <div class="text-subtitle1 text-bold key-name">
+                {{ props.row.name }}
               </div>
-              <div class="text-subtitle2">{{ props.row.finger }}</div>
+              <div class="text-subtitle2">User: {{ props.row.user }}</div>
               <div class="text-subtitle2">{{ props.row.createdat }}</div>
+              <div class="text-subtitle2">{{ props.row.used }}</div>
             </q-td>
           </template>
           <template v-slot:body-cell-actions="props">
@@ -59,7 +60,18 @@
                 icon="add"
                 @click="onAdd()"
               >
-                <q-tooltip> Add new ssh key </q-tooltip>
+                <q-tooltip>Add new git user</q-tooltip>
+              </q-btn>
+              <q-btn
+                class="q-ml-xs"
+                dense
+                round
+                color="positive"
+                size="md"
+                icon="mode_edit"
+                @click="onEdit(props.row)"
+              >
+                <q-tooltip>Edit git user</q-tooltip>
               </q-btn>
               <q-btn
                 class="q-ml-xs"
@@ -70,7 +82,7 @@
                 icon="delete"
                 @click="onDelete(props.row)"
               >
-                <q-tooltip> Delete ssh key </q-tooltip>
+                <q-tooltip>Delete git user</q-tooltip>
               </q-btn>
             </q-td>
           </template>
@@ -83,22 +95,45 @@
     <q-card style="min-width: 350px">
       <q-card-section>
         <q-form @submit="onSubmit(create)" class="q-gutter-md">
-          <q-input
-            v-model="key.owner"
+          <q-select
             outlined
             dense
-            hint="Key Name *"
+            v-model="user.service"
+            :options="services"
+            hint="Service *"
             lazy-rules
             :rules="[
               (val) => (val && val.length > 0) || 'Please type something',
             ]"
           />
           <q-input
-            v-model="key.finger"
-            dense
+            v-model="user.username"
             outlined
-            hint="Content *"
-            type="textarea"
+            dense
+            hint="User name *"
+            lazy-rules
+            :rules="[
+              (val) => (val && val.length > 0) || 'Please type something',
+            ]"
+          />
+          <q-input
+            v-model="user.password"
+            outlined
+            dense
+            hint="Password *"
+            type="password"
+            lazy-rules
+            :rules="[
+              (val) => (val && val.length > 0) || 'Please type something',
+            ]"
+          />
+          <q-input
+            v-if="visible"
+            v-model="confirm"
+            outlined
+            dense
+            hint="Confirm password *"
+            type="password"
             lazy-rules
             :rules="[
               (val) => (val && val.length > 0) || 'Please type something',
@@ -129,41 +164,47 @@ const columns = [
   { name: "state" },
   { name: "icon" },
   { name: "key" },
-  { name: "owner" },
-  { name: "finger" },
+  { name: "name" },
+  { name: "user" },
   { name: "createdat" },
   { name: "actions" },
 ];
 
 const rows = [];
 
-const key = {
+const user = {
   id: null,
-  owner: null,
-  finger: null,
+  username: null,
+  password: null,
+  service: null,
   created: null,
   used: null,
   activity: null,
-  short_finger: null,
 };
 
 export default {
   setup() {
     const $q = useQuasar();
+    const actionEdit = ref(false);
+    const confirm = ref(null);
 
     return {
       create: ref(false),
+      actionEdit,
       columns,
       rows: ref(rows),
-      key: ref(key),
+      user: ref(user),
+      confirm,
+      visible: ref(true),
+      services: ["Mikrotik router backup"],
       isShowHeaderButton: ref(false),
       cols: computed(
         () =>
           `col-${$q.screen.name == "sm" ? 8 : $q.screen.name == "xs" ? 11 : 4}`
       ),
-      async GetKeys() {
+      async GetUsers() {
         await axios
-          .get("/api/v1/admin/sshclient/sshkeys/get")
+          .get("/api/v1/admin/sshclient/gitusers/get")
           .then((response) => {
             this.rows = response.data.data;
             this.isShowHeaderButton = this.rows.length === 0;
@@ -173,8 +214,22 @@ export default {
           });
       },
       onAdd() {
-        this.key.owner = "";
-        this.key.finger = "";
+        this.visible = true;
+        actionEdit.value = false;
+        this.user.username = "";
+        this.user.password = "";
+        this.user.service = "";
+        this.create = true;
+      },
+      onEdit(row) {
+        this.visible = false;
+        actionEdit.value = true;
+        this.user.id = row.id;
+        this.user.username = row.username;
+        this.user.password = row.password;
+        this.user.service = row.service;
+        this.user.created = row.create;
+        this.user.used = row.used;
         this.create = true;
       },
       onDelete(row) {
@@ -184,11 +239,11 @@ export default {
           cancel: true,
           persistent: true,
         }).onOk(() => {
-          const url = "/api/v1/admin/sshclient/sshkeys/" + row.id;
+          const url = "/api/v1/admin/sshclient/gitusers/" + row.id;
           axios
             .delete(url)
             .then(() => {
-              this.GetKeys();
+              this.GetUsers();
             })
             .catch((err) => {
               $q.notify({
@@ -200,17 +255,31 @@ export default {
       },
       async onSubmit(dlg) {
         this.create = false;
-        await axios
-          .post("/api/v1/admin/sshclient/sshkeys/add", this.key)
-          .then(() => {
-            this.GetKeys();
-          })
-          .catch((err) => {
-            $q.notify({
-              type: "negative",
-              message: err.response.data.message,
+        if (actionEdit.value) {
+          await axios
+            .post("/api/v1/admin/sshclient/gitusers/edit", this.user)
+            .then(() => {
+              this.GetUsers();
+            })
+            .catch((err) => {
+              $q.notify({
+                type: "negative",
+                message: err.response.data.message,
+              });
             });
-          });
+        } else {
+          await axios
+            .post("/api/v1/admin/sshclient/gitusers/add", this.user)
+            .then(() => {
+              this.GetUsers();
+            })
+            .catch((err) => {
+              $q.notify({
+                type: "negative",
+                message: err.response.data.message,
+              });
+            });
+        }
       },
       activeIcon(row) {
         return row.activity ? "task_alt" : "highlight_off";
@@ -221,7 +290,7 @@ export default {
     };
   },
   async mounted() {
-    await this.GetKeys();
+    await this.GetUsers();
   },
 };
 </script>

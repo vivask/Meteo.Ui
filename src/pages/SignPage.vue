@@ -34,7 +34,11 @@
               v-model="signup.password"
             >
             </q-input>
-            <q-input label="Repeat *" type="password" v-model="repeat">
+            <q-input
+              label="Confirm password *"
+              type="password"
+              v-model="confirm"
+            >
             </q-input>
             <div>
               <q-btn
@@ -75,7 +79,7 @@ export default {
     const $q = useQuasar();
     const $router = useRouter();
 
-    const repeat = ref("1234567");
+    const confirm = ref("1234567");
 
     onMounted(() => {});
 
@@ -83,13 +87,13 @@ export default {
 
     return {
       signup: ref(signup),
-      repeat,
+      confirm,
       async onSubmit() {
         if (
           !this.signup.username ||
           !this.signup.password ||
           !this.signup.email ||
-          !this.repeat
+          !this.confirm
         ) {
           $q.notify({
             type: "negative",
@@ -100,7 +104,7 @@ export default {
             type: "negative",
             message: "Password must be 6 or more characters.",
           });
-        } else if (this.signup.password != this.repeat) {
+        } else if (this.signup.password != this.confirm) {
           $q.notify({
             type: "negative",
             message: "Passwords do not match.",
