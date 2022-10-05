@@ -23,7 +23,7 @@
           hide-header
           :rows="rows"
           :columns="columns"
-          row-key="owner"
+          row-key="id"
           :rows-per-page-options="[10, 50, 100, 0]"
         >
           <template v-slot:body-cell-state="props">
@@ -42,11 +42,16 @@
           </template>
           <template v-slot:body-cell-key="props">
             <q-td :props="props" class="wd-100">
-              <div class="text-subtitle1 text-bold key-owner">
+              <div class="text-subtitle1 text-bold text-left text-primary">
                 {{ props.row.owner }}
               </div>
               <div class="text-subtitle2">{{ props.row.finger }}</div>
-              <div class="text-subtitle2">{{ props.row.createdat }}</div>
+              <div class="text-body1 text-weight-thin">
+                Created {{ format(props.row.created) }}
+              </div>
+              <div v-if="props.row.used" class="text-body1 text-weight-thin">
+                Last used {{ format(props.row.used) }}
+              </div>
             </q-td>
           </template>
           <template v-slot:body-cell-actions="props">
@@ -121,7 +126,7 @@
 </template>
 
 <script>
-import { useQuasar } from "quasar";
+import { date, useQuasar } from "quasar";
 import { computed, ref } from "vue";
 import axios from "axios";
 
@@ -129,9 +134,6 @@ const columns = [
   { name: "state" },
   { name: "icon" },
   { name: "key" },
-  { name: "owner" },
-  { name: "finger" },
-  { name: "createdat" },
   { name: "actions" },
 ];
 
@@ -161,6 +163,9 @@ export default {
         () =>
           `col-${$q.screen.name == "sm" ? 8 : $q.screen.name == "xs" ? 11 : 4}`
       ),
+      format(time) {
+        return date.formatDate(time, "MMM DD, YYYY HH:mm:ss");
+      },
       async GetKeys() {
         await axios
           .get("/api/v1/admin/sshclient/sshkeys/get")
@@ -173,8 +178,7 @@ export default {
           });
       },
       onAdd() {
-        this.key.owner = "";
-        this.key.finger = "";
+        this.key = {};
         this.create = true;
       },
       onDelete(row) {
@@ -234,6 +238,4 @@ export default {
     margin: 5px
     background: rgba(86, 61, 124, .15)
     border: 1px solid rgba(86, 61, 124, .2)
-.key-name
-  color: #1976D2
 </style>

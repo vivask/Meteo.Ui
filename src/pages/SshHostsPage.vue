@@ -6,6 +6,18 @@
           <q-item-label class="text-bold text-h6"
             >SSH hosts management</q-item-label
           >
+          <q-space />
+          <q-btn
+            v-if="isShowHeaderButton"
+            class="wd-100"
+            dense
+            color="primary"
+            size="md"
+            label="Add"
+            @click="onAdd()"
+          >
+            <q-tooltip> Add new ssh host </q-tooltip>
+          </q-btn>
         </q-item>
         <q-table
           hide-header
@@ -28,13 +40,13 @@
               <q-icon name="computer" size="md" />
             </q-td>
           </template>
-          <template v-slot:body-cell-key="props">
+          <template v-slot:body-cell-host="props">
             <q-td :props="props" class="wd-100">
-              <div class="text-subtitle1 text-bold host">
+              <div class="text-subtitle1 text-bold text-left text-primary">
                 {{ props.row.host }}
               </div>
-              <div class="text-subtitle2">{{ props.row.finger }}</div>
-              <div class="text-subtitle2">{{ props.row.createdat }}</div>
+              <div class="text-subtitle2">{{ props.row.short_finger }}</div>
+              <div class="text-subtitle2">{{ props.row.created }}</div>
               <div class="text-subtitle2">{{ props.row.usedat }}</div>
             </q-td>
           </template>
@@ -44,43 +56,103 @@
                 class="q-ml-xs"
                 dense
                 round
+                color="primary"
+                size="md"
+                icon="add"
+                @click="onAdd()"
+              >
+                <q-tooltip> Add new ssh host </q-tooltip>
+              </q-btn>
+              <q-btn
+                class="q-ml-xs"
+                dense
+                round
+                color="positive"
+                size="md"
+                icon="mode_edit"
+                @click="onEdit(props.row)"
+              >
+                <q-tooltip> Edit ssh host </q-tooltip>
+              </q-btn>
+              <q-btn
+                class="q-ml-xs"
+                dense
+                round
                 color="negative"
                 size="md"
                 icon="delete"
                 @click="onDelete(props.row)"
-              />
+              >
+                <q-tooltip> Delete ssh host </q-tooltip>
+              </q-btn>
             </q-td>
           </template>
         </q-table>
       </div>
     </div>
   </div>
+
+  <q-dialog v-model="create" transition-show="rotate" transition-hide="rotate">
+    <q-card style="min-width: 350px">
+      <q-card-section>
+        <q-form @submit="onSubmit(create)" class="q-gutter-md">
+          <q-input
+            v-model="host.host"
+            outlined
+            dense
+            hint="Host Name/IP *"
+            lazy-rules
+            :rules="[
+              (val) => (val && val.length > 0) || 'Please type something',
+            ]"
+          />
+          <q-select
+            outlined
+            dense
+            v-model="host.ssh_key"
+            :options="ssh_keys"
+            option-label="owner"
+            hint="Service *"
+          />
+          <q-card-actions align="left" class="text-primary">
+            <q-btn label="Submit" type="submit" color="primary " />
+            <q-btn
+              label="Cancel"
+              color="primary"
+              flat
+              class="q-ml-sm"
+              v-close-popup
+            />
+          </q-card-actions>
+        </q-form>
+      </q-card-section>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script>
 import { useQuasar } from "quasar";
 import { computed, ref } from "vue";
+import axios from "axios";
 
 const columns = [
   { name: "state" },
   { name: "icon" },
-  { name: "key" },
   { name: "host" },
-  { name: "finger" },
-  { name: "createdat" },
-  { name: "usedat" },
   { name: "actions" },
 ];
 
-const rows = [
-  {
-    active: true,
-    host: "192.168.1.6",
-    finger: "b3BlbnNzaC1rZXkt",
-    createdat: "Добавлено Aug 12, 2022 10:51:36",
-    used: " Последний раз использовался Sep 20, 2022 02:00:05",
-  },
-];
+const rows = [];
+
+const ssh_keys = {
+  id: null,
+  owner: null,
+  finger: null,
+  created: null,
+  used: null,
+  activity: null,
+  short_finger: null,
+};
 
 const host = {
   id: null,
@@ -88,7 +160,15 @@ const host = {
   finger: null,
   created: null,
   used: null,
-  ssh_keys_id: null,
+  ssh_key: {
+    id: null,
+    owner: null,
+    finger: null,
+    created: null,
+    used: null,
+    activity: null,
+    short_finger: null,
+  },
   activity: null,
   short_finger: null,
 };
@@ -96,34 +176,112 @@ const host = {
 export default {
   setup() {
     const $q = useQuasar();
+    const actionEdit = ref(false);
 
     return {
       create: ref(false),
+      actionEdit,
       columns,
       rows: ref(rows),
-      isShowHeaderButton: computed(() => rows.length === 0),
+      host: ref(host),
+      ssh_keys: ref(ssh_keys),
+      isShowHeaderButton: ref(false),
       cols: computed(
         () =>
           `col-${$q.screen.name == "sm" ? 8 : $q.screen.name == "xs" ? 11 : 4}`
       ),
+      async GetKeys() {
+        await axios
+          .get("/api/v1/admin/sshclient/sshkeys/get")
+          .then((response) => {
+            this.ssh_keys = response.data.data;
+          })
+          .catch(() => {
+            $q.notify({ type: "negative", message: err.response.data.message });
+          });
+      },
+      async GetHosts() {
+        await axios
+          .get("/api/v1/admin/sshclient/sshhosts/get")
+          .then((response) => {
+            this.rows = response.data.data;
+            this.isShowHeaderButton = this.rows.length === 0;
+          })
+          .catch(() => {
+            $q.notify({ type: "negative", message: err.response.data.message });
+          });
+      },
+      onAdd() {
+        actionEdit.value = false;
+        this.host = {};
+        this.create = true;
+      },
       onEdit(row) {
-        console.log(row);
+        actionEdit.value = true;
+        this.host = row;
+        this.create = true;
       },
       onDelete(row) {
-        console.log(row);
+        $q.dialog({
+          title: "Confirm",
+          message: "Are you sure to delete this item?",
+          cancel: true,
+          persistent: true,
+        }).onOk(() => {
+          const url = "/api/v1/admin/sshclient/sshhosts/" + row.id;
+          axios
+            .delete(url)
+            .then(() => {
+              this.GetHosts();
+            })
+            .catch((err) => {
+              $q.notify({
+                type: "negative",
+                message: err.response.data.message,
+              });
+            });
+        });
       },
-      onSubmit(dlg) {
+      async onSubmit() {
         this.create = false;
+        if (actionEdit.value) {
+          await axios
+            .post("/api/v1/admin/sshclient/sshhosts/edit", this.host)
+            .then(() => {
+              this.GetHosts();
+            })
+            .catch((err) => {
+              $q.notify({
+                type: "negative",
+                message: err.response.data.message,
+              });
+            });
+        } else {
+          await axios
+            .post("/api/v1/admin/sshclient/sshhosts/add", this.host)
+            .then(() => {
+              this.GetHosts();
+            })
+            .catch((err) => {
+              $q.notify({
+                type: "negative",
+                message: err.response.data.message,
+              });
+            });
+        }
       },
       activeIcon(row) {
-        return row.active ? "task_alt" : "highlight_off";
+        return row.activity ? "task_alt" : "highlight_off";
       },
       activeColor(row) {
-        return row.active ? "positive" : "grey";
+        return row.activity ? "positive" : "grey";
       },
     };
   },
-  methods: {},
+  async mounted() {
+    await this.GetKeys();
+    await this.GetHosts();
+  },
 };
 </script>
 
@@ -135,6 +293,4 @@ export default {
     margin: 5px
     background: rgba(86, 61, 124, .15)
     border: 1px solid rgba(86, 61, 124, .2)
-.host-name
-  color: #1976D2
 </style>

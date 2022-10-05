@@ -73,6 +73,7 @@
           <q-input
             v-model="zone.name"
             outlined
+            dense
             hint="Host Name *"
             lazy-rules
             :rules="[
@@ -82,14 +83,15 @@
           <q-input
             v-model="zone.address"
             outlined
+            dense
             hint="IP Address *"
             lazy-rules
             :rules="[
               (val) => (val && val.length > 0) || 'Please type something',
             ]"
           />
-          <q-input v-model="zone.mac" outlined hint="MAC Address" />
-          <q-input v-model="zone.note" outlined hint="Note" />
+          <q-input v-model="zone.mac" dense outlined hint="MAC Address" />
+          <q-input v-model="zone.note" dense outlined hint="Note" />
           <q-card-actions align="left" class="text-primary">
             <q-btn label="Submit" type="submit" color="primary " />
             <q-btn
@@ -113,7 +115,6 @@ import axios from "axios";
 
 const columns = [
   { name: "state" },
-  { name: "id" },
   { name: "address", align: "left", field: "address", sortable: true },
   { name: "name", align: "left", field: "name", sortable: true },
   { name: "mac", align: "left", field: "mac", sortable: true },
@@ -160,19 +161,12 @@ export default {
       },
       onAdd() {
         actionEdit.value = false;
-        this.zone.name = "";
-        this.zone.address = "";
-        this.zone.mac = "";
-        this.zone.note = "";
+        this.zone = {};
         this.create = true;
       },
       onEdit(row) {
         actionEdit.value = true;
-        this.zone.id = row.id;
-        this.zone.name = row.name;
-        this.zone.address = row.address;
-        this.zone.mac = row.mac;
-        this.zone.note = row.note;
+        this.zone = row;
         this.create = true;
       },
       async onDelete(row) {
@@ -235,7 +229,6 @@ export default {
   async mounted() {
     await this.GetZones();
   },
-  methods: {},
 };
 </script>
 

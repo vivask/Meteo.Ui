@@ -40,13 +40,13 @@
               <q-icon name="mdi-account" size="md" />
             </q-td>
           </template>
-          <template v-slot:body-cell-key="props">
+          <template v-slot:body-cell-user="props">
             <q-td :props="props" class="wd-100">
-              <div class="text-subtitle1 text-bold key-name">
-                {{ props.row.name }}
+              <div class="text-subtitle1 text-bold text-left text-primary">
+                {{ props.row.username }}
               </div>
-              <div class="text-subtitle2">User: {{ props.row.user }}</div>
-              <div class="text-subtitle2">{{ props.row.createdat }}</div>
+              <div class="text-subtitle2">User: {{ props.row.username }}</div>
+              <div class="text-subtitle2">{{ props.row.created }}</div>
               <div class="text-subtitle2">{{ props.row.used }}</div>
             </q-td>
           </template>
@@ -163,10 +163,7 @@ import axios from "axios";
 const columns = [
   { name: "state" },
   { name: "icon" },
-  { name: "key" },
-  { name: "name" },
   { name: "user" },
-  { name: "createdat" },
   { name: "actions" },
 ];
 
@@ -216,20 +213,13 @@ export default {
       onAdd() {
         this.visible = true;
         actionEdit.value = false;
-        this.user.username = "";
-        this.user.password = "";
-        this.user.service = "";
+        this.user = {};
         this.create = true;
       },
       onEdit(row) {
         this.visible = false;
         actionEdit.value = true;
-        this.user.id = row.id;
-        this.user.username = row.username;
-        this.user.password = row.password;
-        this.user.service = row.service;
-        this.user.created = row.create;
-        this.user.used = row.used;
+        this.user = row;
         this.create = true;
       },
       onDelete(row) {
@@ -303,6 +293,4 @@ export default {
     margin: 5px
     background: rgba(86, 61, 124, .15)
     border: 1px solid rgba(86, 61, 124, .2)
-.key-name
-  color: #1976D2
 </style>

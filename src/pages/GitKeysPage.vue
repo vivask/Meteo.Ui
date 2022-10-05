@@ -42,11 +42,11 @@
           </template>
           <template v-slot:body-cell-key="props">
             <q-td :props="props" class="wd-100">
-              <div class="text-subtitle1 text-bold key-owner">
+              <div class="text-subtitle1 text-bold text-left text-primary">
                 {{ props.row.owner }}
               </div>
-              <div class="text-subtitle2">{{ props.row.finger }}</div>
-              <div class="text-subtitle2">{{ props.row.createdat }}</div>
+              <div class="text-subtitle2">{{ props.row.short_finger }}</div>
+              <div class="text-subtitle2">{{ props.row.created }}</div>
             </q-td>
           </template>
           <template v-slot:body-cell-actions="props">
@@ -129,9 +129,6 @@ const columns = [
   { name: "state" },
   { name: "icon" },
   { name: "key" },
-  { name: "owner" },
-  { name: "finger" },
-  { name: "createdat" },
   { name: "actions" },
 ];
 
@@ -173,8 +170,7 @@ export default {
           });
       },
       onAdd() {
-        this.key.owner = "";
-        this.key.finger = "";
+        this.key = {};
         this.create = true;
       },
       onDelete(row) {
@@ -234,6 +230,4 @@ export default {
     margin: 5px
     background: rgba(86, 61, 124, .15)
     border: 1px solid rgba(86, 61, 124, .2)
-.key-name
-  color: #1976D2
 </style>

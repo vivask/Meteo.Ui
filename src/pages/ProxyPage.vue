@@ -3,7 +3,7 @@
     <div class="row justify-center items-start crisper">
       <div class="square rounded-borders" :class="cols">
         <q-item class="bot-line">
-          <q-item-label class="text-bold text-h6">Серверы</q-item-label>
+          <q-item-label class="text-bold text-h6">Proxy Servers</q-item-label>
         </q-item>
         <q-list>
           <q-item>
@@ -11,13 +11,13 @@
               <q-icon name="dns" />
             </q-item-section>
             <q-item-section>
-              <q-item-label class="text-bold">Основной сервер</q-item-label>
+              <q-item-label class="text-bold">Main Server</q-item-label>
             </q-item-section>
           </q-item>
           <q-item dense>
             <q-checkbox
-              v-model="masterActive"
-              label="Активен"
+              v-model="master.active"
+              label="Active"
               checked-icon="task_alt"
               unchecked-icon="highlight_off"
               class="ml-30"
@@ -26,8 +26,8 @@
           </q-item>
           <q-item dense>
             <q-checkbox
-              v-model="masterAdBlock"
-              label="Блокировка рекламы"
+              v-model="master.adblock"
+              label="Ad blocking"
               checked-icon="task_alt"
               unchecked-icon="highlight_off"
               class="ml-30"
@@ -36,8 +36,8 @@
           </q-item>
           <q-item dense>
             <q-checkbox
-              v-model="masterCache"
-              label="Кэш"
+              v-model="master.cache"
+              label="Cache"
               checked-icon="task_alt"
               unchecked-icon="highlight_off"
               class="ml-30"
@@ -46,8 +46,8 @@
           </q-item>
           <q-item dense class="bot-line">
             <q-checkbox
-              v-model="masterUnlock"
-              label="Деблокировка сайтов"
+              v-model="master.unlock"
+              label="Website unblocking"
               checked-icon="task_alt"
               unchecked-icon="highlight_off"
               class="ml-30"
@@ -59,13 +59,13 @@
               <q-icon name="dns" />
             </q-item-section>
             <q-item-section>
-              <q-item-label class="text-bold">Резервный сервер</q-item-label>
+              <q-item-label class="text-bold">Backup server</q-item-label>
             </q-item-section>
           </q-item>
           <q-item dense>
             <q-checkbox
-              v-model="slaveActive"
-              label="Активен"
+              v-model="slave.active"
+              label="Active"
               checked-icon="task_alt"
               unchecked-icon="highlight_off"
               class="ml-30"
@@ -74,8 +74,8 @@
           </q-item>
           <q-item dense>
             <q-checkbox
-              v-model="slaveAdBlock"
-              label="Блокировка рекламы"
+              v-model="slave.adblock"
+              label="Ad blocking"
               checked-icon="task_alt"
               unchecked-icon="highlight_off"
               class="ml-30"
@@ -84,8 +84,8 @@
           </q-item>
           <q-item dense>
             <q-checkbox
-              v-model="slaveCache"
-              label="Кэш"
+              v-model="slave.cache"
+              label="Cache"
               checked-icon="task_alt"
               unchecked-icon="highlight_off"
               class="ml-30"
@@ -94,8 +94,8 @@
           </q-item>
           <q-item dense>
             <q-checkbox
-              v-model="slaveUnlock"
-              label="Деблокировка сайтов"
+              v-model="slave.unlock"
+              label="Website unblocking"
               checked-icon="task_alt"
               unchecked-icon="highlight_off"
               class="ml-30"
@@ -113,28 +113,29 @@ import { defineComponent, ref, computed } from "vue";
 import { useQuasar } from "quasar";
 import axios from "axios";
 
+const master = {
+  active: false,
+  master: false,
+  adblock: false,
+  cache: false,
+  unlock: false,
+};
+
+const slave = {
+  active: false,
+  master: false,
+  adblock: false,
+  cache: false,
+  unlock: false,
+};
+
 export default defineComponent({
   setup() {
     const $q = useQuasar();
 
-    const masterActive = ref(false);
-    const masterAdBlock = ref(false);
-    const masterCache = ref(false);
-    const masterUnlock = ref(false);
-    const slaveActive = ref(false);
-    const slaveAdBlock = ref(false);
-    const slaveCache = ref(false);
-    const slaveUnlock = ref(false);
-
     return {
-      masterActive,
-      masterAdBlock,
-      masterCache,
-      masterUnlock,
-      slaveActive,
-      slaveAdBlock,
-      slaveCache,
-      slaveUnlock,
+      master: ref(master),
+      slave: ref(slave),
       cols: computed(
         () =>
           `col-${$q.screen.name == "sm" ? 4 : $q.screen.name == "xs" ? 11 : 3}`
@@ -144,27 +145,19 @@ export default defineComponent({
           .get("/api/v1/admin/proxy/status/get")
           .then((response) => {
             if (response.data.data[0].master) {
-              this.SetStateProxy(response.data.data[0], response.data.data[1]);
+              this.master = response.data.data[0];
+              this.slave = response.data.data[1];
             } else {
-              this.SetStateProxy(response.data.data[1], response.data.data[0]);
+              this.master = response.data.data[1];
+              this.slave = response.data.data[0];
             }
           })
           .catch(() => {
             $q.notify({ type: "negative", message: err.response.data.message });
           });
       },
-      SetStateProxy(master, slave) {
-        masterActive.value = master.active;
-        masterAdBlock.value = master.blkliston;
-        masterCache.value = master.cacheon;
-        masterUnlock.value = master.unlockeron;
-        slaveActive.value = slave.active;
-        slaveAdBlock.value = slave.blkliston;
-        slaveCache.value = slave.cacheon;
-        slaveUnlock.value = slave.unlockeron;
-      },
       async onMasterActive() {
-        if (masterActive.value) {
+        if (this.master.active) {
           await axios
             .put("/api/v1/admin/proxy/master/server/start")
             .then(() => {
@@ -191,7 +184,7 @@ export default defineComponent({
         }
       },
       async onMasterAdBlock() {
-        if (masterAdBlock.value) {
+        if (this.master.adblock) {
           await axios
             .put("/api/v1/admin/proxy/master/adblock/on")
             .then(() => {
@@ -218,7 +211,7 @@ export default defineComponent({
         }
       },
       async onMasterCache() {
-        if (masterCache.value) {
+        if (this.master.cache) {
           await axios
             .put("/api/v1/admin/proxy/master/cache/on")
             .then(() => {
@@ -245,7 +238,7 @@ export default defineComponent({
         }
       },
       async onMasterUnlock() {
-        if (masterUnlock.value) {
+        if (this.master.unlock) {
           await axios
             .put("/api/v1/admin/proxy/master/unlock/on")
             .then(() => {
@@ -272,7 +265,7 @@ export default defineComponent({
         }
       },
       async onSlaveActive() {
-        if (slaveActive.value) {
+        if (this.slave.active) {
           await axios
             .put("/api/v1/admin/proxy/slave/server/start")
             .then(() => {
@@ -299,7 +292,7 @@ export default defineComponent({
         }
       },
       async onSlaveAdBlock() {
-        if (slaveAdBlock.value) {
+        if (this.slave.adblock) {
           await axios
             .put("/api/v1/admin/proxy/slave/adblock/on")
             .then(() => {
@@ -326,7 +319,7 @@ export default defineComponent({
         }
       },
       async onSlaveCache() {
-        if (slaveCache.value) {
+        if (this.slave.cache) {
           await axios
             .put("/api/v1/admin/proxy/slave/cache/on")
             .then(() => {
@@ -353,7 +346,7 @@ export default defineComponent({
         }
       },
       async onSlaveUnlock() {
-        if (slaveUnlock.value) {
+        if (this.slave.unlock) {
           await axios
             .put("/api/v1/admin/proxy/slave/unlock/on")
             .then(() => {
@@ -384,7 +377,6 @@ export default defineComponent({
   async mounted() {
     await this.GetStateProxy();
   },
-  methods: {},
 });
 </script>
 
