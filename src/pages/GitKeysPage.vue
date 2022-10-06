@@ -46,7 +46,12 @@
                 {{ props.row.owner }}
               </div>
               <div class="text-subtitle2">{{ props.row.short_finger }}</div>
-              <div class="text-subtitle2">{{ props.row.created }}</div>
+              <div class="text-meta">
+                Created {{ utils.formatTime(props.row.created) }}
+              </div>
+              <div v-if="!utils.emptyTime(props.row.used)" class="text-meta">
+                Last used {{ utils.formatTime(props.row.used) }}
+              </div>
             </q-td>
           </template>
           <template v-slot:body-cell-actions="props">
@@ -123,6 +128,7 @@
 <script>
 import { useQuasar } from "quasar";
 import { computed, ref } from "vue";
+import { useUtils } from "src/stores/utils";
 import axios from "axios";
 
 const columns = [
@@ -147,13 +153,21 @@ const key = {
 export default {
   setup() {
     const $q = useQuasar();
+    const utils = useUtils();
 
     return {
+      utils,
       create: ref(false),
       columns,
       rows: ref(rows),
       key: ref(key),
       isShowHeaderButton: ref(false),
+      format(time) {
+        return date.formatDate(time, "MMM DD, YYYY HH:mm:ss");
+      },
+      empty(time) {
+        return date.formatDate(time, "X") == -62135596800;
+      },
       cols: computed(
         () =>
           `col-${$q.screen.name == "sm" ? 8 : $q.screen.name == "xs" ? 11 : 4}`

@@ -46,8 +46,12 @@
                 {{ props.row.host }}
               </div>
               <div class="text-subtitle2">{{ props.row.short_finger }}</div>
-              <div class="text-subtitle2">{{ props.row.created }}</div>
-              <div class="text-subtitle2">{{ props.row.usedat }}</div>
+              <div class="text-meta">
+                Created {{ utils.formatTime(props.row.created) }}
+              </div>
+              <div v-if="!utils.emptyTime(props.row.used)" class="text-meta">
+                Last used {{ utils.formatTime(props.row.used) }}
+              </div>
             </q-td>
           </template>
           <template v-slot:body-cell-actions="props">
@@ -103,7 +107,9 @@
             hint="Host Name/IP *"
             lazy-rules
             :rules="[
-              (val) => (val && val.length > 0) || 'Please type something',
+              (val) =>
+                (val && val.length > 0 && utils.validateHost(val)) ||
+                'Invalid inputs',
             ]"
           />
           <q-select
@@ -112,7 +118,10 @@
             v-model="host.ssh_key"
             :options="ssh_keys"
             option-label="owner"
+            option-value="id"
             hint="Service *"
+            lazy-rules
+            :rules="[() => host.ssh_key || 'Please type something']"
           />
           <q-card-actions align="left" class="text-primary">
             <q-btn label="Submit" type="submit" color="primary " />
@@ -133,6 +142,7 @@
 <script>
 import { useQuasar } from "quasar";
 import { computed, ref } from "vue";
+import { useUtils } from "src/stores/utils";
 import axios from "axios";
 
 const columns = [
@@ -176,9 +186,11 @@ const host = {
 export default {
   setup() {
     const $q = useQuasar();
+    const utils = useUtils();
     const actionEdit = ref(false);
 
     return {
+      utils,
       create: ref(false),
       actionEdit,
       columns,
@@ -193,8 +205,9 @@ export default {
       async GetKeys() {
         await axios
           .get("/api/v1/admin/sshclient/sshkeys/get")
-          .then((response) => {
+          .then(async (response) => {
             this.ssh_keys = response.data.data;
+            await this.GetHosts();
           })
           .catch(() => {
             $q.notify({ type: "negative", message: err.response.data.message });
@@ -206,6 +219,7 @@ export default {
           .then((response) => {
             this.rows = response.data.data;
             this.isShowHeaderButton = this.rows.length === 0;
+            console.log("ROWS:", this.rows);
           })
           .catch(() => {
             $q.notify({ type: "negative", message: err.response.data.message });
@@ -219,6 +233,7 @@ export default {
       onEdit(row) {
         actionEdit.value = true;
         this.host = row;
+        console.log("ROW:", row);
         this.create = true;
       },
       onDelete(row) {
@@ -247,8 +262,8 @@ export default {
         if (actionEdit.value) {
           await axios
             .post("/api/v1/admin/sshclient/sshhosts/edit", this.host)
-            .then(() => {
-              this.GetHosts();
+            .then(async () => {
+              await this.GetHosts();
             })
             .catch((err) => {
               $q.notify({
@@ -259,8 +274,8 @@ export default {
         } else {
           await axios
             .post("/api/v1/admin/sshclient/sshhosts/add", this.host)
-            .then(() => {
-              this.GetHosts();
+            .then(async () => {
+              await this.GetHosts();
             })
             .catch((err) => {
               $q.notify({
@@ -280,7 +295,6 @@ export default {
   },
   async mounted() {
     await this.GetKeys();
-    await this.GetHosts();
   },
 };
 </script>

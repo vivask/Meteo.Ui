@@ -46,8 +46,12 @@
                 {{ props.row.username }}
               </div>
               <div class="text-subtitle2">User: {{ props.row.username }}</div>
-              <div class="text-subtitle2">{{ props.row.created }}</div>
-              <div class="text-subtitle2">{{ props.row.used }}</div>
+              <div class="text-meta">
+                Created {{ utils.formatTime(props.row.created) }}
+              </div>
+              <div v-if="!utils.emptyTime(props.row.used)" class="text-meta">
+                Last used {{ utils.formatTime(props.row.used) }}
+              </div>
             </q-td>
           </template>
           <template v-slot:body-cell-actions="props">
@@ -100,11 +104,10 @@
             dense
             v-model="user.service"
             :options="services"
+            option-label="name"
             hint="Service *"
             lazy-rules
-            :rules="[
-              (val) => (val && val.length > 0) || 'Please type something',
-            ]"
+            :rules="[() => user.service || 'Please type something']"
           />
           <q-input
             v-model="user.username"
@@ -128,7 +131,6 @@
             ]"
           />
           <q-input
-            v-if="visible"
             v-model="confirm"
             outlined
             dense
@@ -158,6 +160,7 @@
 <script>
 import { useQuasar } from "quasar";
 import { computed, ref } from "vue";
+import { useUtils } from "src/stores/utils";
 import axios from "axios";
 
 const columns = [
@@ -169,11 +172,19 @@ const columns = [
 
 const rows = [];
 
+const service = {
+  id: null,
+  name: null,
+};
+
 const user = {
   id: null,
   username: null,
   password: null,
-  service: null,
+  service: {
+    id: null,
+    name: null,
+  },
   created: null,
   used: null,
   activity: null,
@@ -182,23 +193,35 @@ const user = {
 export default {
   setup() {
     const $q = useQuasar();
+    const utils = useUtils();
     const actionEdit = ref(false);
     const confirm = ref(null);
 
     return {
+      utils,
       create: ref(false),
       actionEdit,
       columns,
       rows: ref(rows),
       user: ref(user),
+      services: ref(service),
       confirm,
-      visible: ref(true),
-      services: ["Mikrotik router backup"],
       isShowHeaderButton: ref(false),
       cols: computed(
         () =>
           `col-${$q.screen.name == "sm" ? 8 : $q.screen.name == "xs" ? 11 : 4}`
       ),
+      async GetServices() {
+        await axios
+          .get("/api/v1/admin/sshclient/gitservices/get")
+          .then(async (response) => {
+            this.services = response.data.data;
+            await this.GetUsers();
+          })
+          .catch(() => {
+            $q.notify({ type: "negative", message: err.response.data.message });
+          });
+      },
       async GetUsers() {
         await axios
           .get("/api/v1/admin/sshclient/gitusers/get")
@@ -211,13 +234,11 @@ export default {
           });
       },
       onAdd() {
-        this.visible = true;
         actionEdit.value = false;
         this.user = {};
         this.create = true;
       },
       onEdit(row) {
-        this.visible = false;
         actionEdit.value = true;
         this.user = row;
         this.create = true;
@@ -232,8 +253,8 @@ export default {
           const url = "/api/v1/admin/sshclient/gitusers/" + row.id;
           axios
             .delete(url)
-            .then(() => {
-              this.GetUsers();
+            .then(async () => {
+              await this.GetUsers();
             })
             .catch((err) => {
               $q.notify({
@@ -243,13 +264,20 @@ export default {
             });
         });
       },
-      async onSubmit(dlg) {
+      async onSubmit() {
+        if (this.user.password != this.confirm) {
+          $q.notify({
+            type: "negative",
+            message: "Passwords do not match.",
+          });
+          return;
+        }
         this.create = false;
         if (actionEdit.value) {
           await axios
             .post("/api/v1/admin/sshclient/gitusers/edit", this.user)
-            .then(() => {
-              this.GetUsers();
+            .then(async () => {
+              await this.GetUsers();
             })
             .catch((err) => {
               $q.notify({
@@ -260,8 +288,8 @@ export default {
         } else {
           await axios
             .post("/api/v1/admin/sshclient/gitusers/add", this.user)
-            .then(() => {
-              this.GetUsers();
+            .then(async () => {
+              await this.GetUsers();
             })
             .catch((err) => {
               $q.notify({
@@ -280,7 +308,7 @@ export default {
     };
   },
   async mounted() {
-    await this.GetUsers();
+    await this.GetServices();
   },
 };
 </script>

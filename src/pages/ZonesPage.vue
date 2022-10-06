@@ -87,7 +87,9 @@
             hint="IP Address *"
             lazy-rules
             :rules="[
-              (val) => (val && val.length > 0) || 'Please type something',
+              (val) =>
+                (val && val.length > 0 && utils.validateIP(val)) ||
+                'Invalid inputs',
             ]"
           />
           <q-input v-model="zone.mac" dense outlined hint="MAC Address" />
@@ -111,6 +113,7 @@
 <script>
 import { useQuasar } from "quasar";
 import { computed, ref } from "vue";
+import { useUtils } from "src/stores/utils";
 import axios from "axios";
 
 const columns = [
@@ -135,9 +138,11 @@ const zone = {
 export default {
   setup() {
     const $q = useQuasar();
+    const utils = useUtils();
     const actionEdit = ref(false);
 
     return {
+      utils,
       create: ref(false),
       columns,
       rows: ref(rows),
