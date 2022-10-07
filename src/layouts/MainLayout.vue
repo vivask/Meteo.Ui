@@ -418,22 +418,6 @@
               class="sub-menu-item"
               clickable
               v-close-popup
-              :active="proxyAutoVPN"
-              :href="getRef('proxy', 'autovpn')"
-              @click="setMenu('proxy', 'autovpn')"
-            >
-              <q-item-section>
-                <q-item-label>Auto VPN</q-item-label>
-              </q-item-section>
-              <q-item-section side>
-                <q-icon name="mdi-playlist-check" />
-              </q-item-section>
-            </q-item>
-            <q-item
-              active-class="menu-item"
-              class="sub-menu-item"
-              clickable
-              v-close-popup
               :active="proxyManualVPN"
               :href="getRef('proxy', 'manualvpn')"
               @click="setMenu('proxy', 'manualvpn')"
@@ -443,6 +427,22 @@
               </q-item-section>
               <q-item-section side>
                 <q-icon name="mdi-playlist-star" />
+              </q-item-section>
+            </q-item>
+            <q-item
+              active-class="menu-item"
+              class="sub-menu-item"
+              clickable
+              v-close-popup
+              :active="proxyAutoVPN"
+              :href="getRef('proxy', 'autovpn')"
+              @click="setMenu('proxy', 'autovpn')"
+            >
+              <q-item-section>
+                <q-item-label>Auto VPN</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-icon name="mdi-playlist-check" />
               </q-item-section>
             </q-item>
             <q-item
@@ -557,22 +557,6 @@
               </q-item-section>
               <q-item-section side>
                 <q-icon name="mdi-lan-pending" />
-              </q-item-section>
-            </q-item>
-            <q-item
-              active-class="menu-item"
-              class="sub-menu-item"
-              clickable
-              v-close-popup
-              :active="secureGitKeys"
-              :href="getRef('secure', 'gitkeys')"
-              @click="setMenu('secure', 'gitkeys')"
-            >
-              <q-item-section>
-                <q-item-label>Git Keys</q-item-label>
-              </q-item-section>
-              <q-item-section side>
-                <q-icon name="mdi-key-variant" />
               </q-item-section>
             </q-item>
             <q-item

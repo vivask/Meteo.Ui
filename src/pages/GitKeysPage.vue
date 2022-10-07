@@ -45,11 +45,16 @@
               <div class="text-subtitle1 text-bold text-left text-primary">
                 {{ props.row.owner }}
               </div>
-              <div class="text-subtitle2">{{ props.row.short_finger }}</div>
-              <div class="text-meta">
+              <div class="text-subtitle2 text-left">
+                {{ props.row.short_finger }}
+              </div>
+              <div class="text-meta text-left">
                 Created {{ utils.formatTime(props.row.created) }}
               </div>
-              <div v-if="!utils.emptyTime(props.row.used)" class="text-meta">
+              <div
+                v-if="!utils.emptyTime(props.row.used)"
+                class="text-meta text-left"
+              >
                 Last used {{ utils.formatTime(props.row.used) }}
               </div>
             </q-td>

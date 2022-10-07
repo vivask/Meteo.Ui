@@ -45,11 +45,16 @@
               <div class="text-subtitle1 text-bold text-left text-primary">
                 {{ props.row.username }}
               </div>
-              <div class="text-subtitle2">User: {{ props.row.username }}</div>
-              <div class="text-meta">
+              <div class="text-subtitle2 text-left">
+                Key: {{ props.row.ssh_key.owner }}
+              </div>
+              <div class="text-meta text-left">
                 Created {{ utils.formatTime(props.row.created) }}
               </div>
-              <div v-if="!utils.emptyTime(props.row.used)" class="text-meta">
+              <div
+                v-if="!utils.emptyTime(props.row.used)"
+                class="text-meta text-left"
+              >
                 Last used {{ utils.formatTime(props.row.used) }}
               </div>
             </q-td>
@@ -102,12 +107,12 @@
           <q-select
             outlined
             dense
-            v-model="user.service"
-            :options="services"
-            option-label="name"
+            v-model="user.ssh_key"
+            :options="ssh_keys"
+            option-label="owner"
             hint="Service *"
             lazy-rules
-            :rules="[() => user.service || 'Please type something']"
+            :rules="[() => user.ssh_key || 'Please select something']"
           />
           <q-input
             v-model="user.username"
@@ -172,18 +177,28 @@ const columns = [
 
 const rows = [];
 
-const service = {
+const ssh_keys = {
   id: null,
-  name: null,
+  owner: null,
+  finger: null,
+  created: null,
+  used: null,
+  activity: null,
+  short_finger: null,
 };
 
 const user = {
   id: null,
   username: null,
   password: null,
-  service: {
+  ssh_key: {
     id: null,
-    name: null,
+    owner: null,
+    finger: null,
+    created: null,
+    used: null,
+    activity: null,
+    short_finger: null,
   },
   created: null,
   used: null,
@@ -204,18 +219,18 @@ export default {
       columns,
       rows: ref(rows),
       user: ref(user),
-      services: ref(service),
+      ssh_keys: ref(ssh_keys),
       confirm,
       isShowHeaderButton: ref(false),
       cols: computed(
         () =>
           `col-${$q.screen.name == "sm" ? 8 : $q.screen.name == "xs" ? 11 : 4}`
       ),
-      async GetServices() {
+      async GetKeys() {
         await axios
-          .get("/api/v1/admin/sshclient/gitservices/get")
+          .get("/api/v1/admin/sshclient/sshkeys/get")
           .then(async (response) => {
-            this.services = response.data.data;
+            this.ssh_keys = response.data.data;
             await this.GetUsers();
           })
           .catch(() => {
@@ -241,6 +256,7 @@ export default {
       onEdit(row) {
         actionEdit.value = true;
         this.user = row;
+        this.confirm = row.password;
         this.create = true;
       },
       onDelete(row) {
@@ -308,7 +324,7 @@ export default {
     };
   },
   async mounted() {
-    await this.GetServices();
+    await this.GetKeys();
   },
 };
 </script>

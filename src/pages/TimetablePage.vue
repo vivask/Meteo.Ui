@@ -118,7 +118,7 @@
             hint="Task *"
             lazy-rules
             :rules="[
-              (val) => (val && val.length > 0) || 'Please type something',
+              (val) => (val && val.length > 0) || 'Please select something',
             ]"
           />
           <q-select
@@ -128,7 +128,7 @@
             hint="Executor *"
             lazy-rules
             :rules="[
-              (val) => (val && val.length > 0) || 'Please type something',
+              (val) => (val && val.length > 0) || 'Please select something',
             ]"
           />
           <div class="row">
@@ -160,7 +160,7 @@
                 hint="Period *"
                 lazy-rules
                 :rules="[
-                  (val) => (val && val.length > 0) || 'Please type something',
+                  (val) => (val && val.length > 0) || 'Please select something',
                 ]"
                 @update:model-value="(val) => onPeriodChange(val)"
               />

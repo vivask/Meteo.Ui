@@ -45,11 +45,19 @@
               <div class="text-subtitle1 text-bold text-left text-primary">
                 {{ props.row.host }}
               </div>
-              <div class="text-subtitle2">{{ props.row.short_finger }}</div>
-              <div class="text-meta">
+              <div class="text-subtitle2 text-left">
+                Key: {{ props.row.ssh_key.owner }}
+              </div>
+              <div class="text-subtitle2 text-left">
+                {{ props.row.short_finger }}
+              </div>
+              <div class="text-meta text-left">
                 Created {{ utils.formatTime(props.row.created) }}
               </div>
-              <div v-if="!utils.emptyTime(props.row.used)" class="text-meta">
+              <div
+                v-if="!utils.emptyTime(props.row.used)"
+                class="text-meta text-left"
+              >
                 Last used {{ utils.formatTime(props.row.used) }}
               </div>
             </q-td>
@@ -118,10 +126,9 @@
             v-model="host.ssh_key"
             :options="ssh_keys"
             option-label="owner"
-            option-value="id"
             hint="Service *"
             lazy-rules
-            :rules="[() => host.ssh_key || 'Please type something']"
+            :rules="[() => host.ssh_key || 'Please select something']"
           />
           <q-card-actions align="left" class="text-primary">
             <q-btn label="Submit" type="submit" color="primary " />
@@ -219,7 +226,6 @@ export default {
           .then((response) => {
             this.rows = response.data.data;
             this.isShowHeaderButton = this.rows.length === 0;
-            console.log("ROWS:", this.rows);
           })
           .catch(() => {
             $q.notify({ type: "negative", message: err.response.data.message });
@@ -233,7 +239,6 @@ export default {
       onEdit(row) {
         actionEdit.value = true;
         this.host = row;
-        console.log("ROW:", row);
         this.create = true;
       },
       onDelete(row) {
