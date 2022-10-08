@@ -14,8 +14,10 @@
             color="primary"
             size="12px"
             label="Add"
-            @click="createJob = true"
-          />
+            @click="onAdd()"
+          >
+            <q-tooltip>Create new job</q-tooltip>
+          </q-btn>
         </q-item>
         <q-table
           hide-header
@@ -41,11 +43,9 @@
             <q-td :props="props">
               <q-card square flat>
                 <q-card-section align="left">
-                  <div class="text-subtitle1 text-bold job-name">
+                  <div class="text-subtitle1 text-bold text-left text-primary">
                     {{ props.row.name }}
                   </div>
-                  <div class="text-subtitle2">{{ props.row.period_1 }}</div>
-                  <div class="text-subtitle2">{{ props.row.period_2 }}</div>
                 </q-card-section>
               </q-card>
             </q-td>
@@ -58,8 +58,10 @@
                 color="primary"
                 size="md"
                 icon="add"
-                @click="createJob = true"
-              />
+                @click="onAdd()"
+              >
+                <q-tooltip>Create new job</q-tooltip>
+              </q-btn>
               <q-btn
                 class="q-ml-xs"
                 dense
@@ -68,7 +70,9 @@
                 size="md"
                 icon="mdi-run"
                 @click="onRun(props.row)"
-              />
+              >
+                <q-tooltip>Run job</q-tooltip>
+              </q-btn>
               <q-btn
                 class="q-ml-xs"
                 dense
@@ -77,7 +81,9 @@
                 size="md"
                 icon="mode_edit"
                 @click="onEdit(props.row)"
-              />
+              >
+                <q-tooltip>Edit job</q-tooltip>
+              </q-btn>
               <q-btn
                 class="q-ml-xs"
                 dense
@@ -86,7 +92,9 @@
                 size="md"
                 icon="delete"
                 @click="onDelete(props.row)"
-              />
+              >
+                <q-tooltip>Delete job</q-tooltip>
+              </q-btn>
             </q-td>
           </template>
         </q-table>
@@ -104,7 +112,8 @@
         <q-form @submit="onSubmit(createJob)" class="q-gutter-md">
           <q-input
             outlined
-            v-model="name"
+            dense
+            v-model="job.note"
             hint="Job description *"
             lazy-rules
             :rules="[
@@ -113,62 +122,59 @@
           />
           <q-select
             outlined
-            v-model="task"
+            dense
+            v-model="job.task"
             :options="tasks"
+            option-label="name"
             hint="Task *"
             lazy-rules
-            :rules="[
-              (val) => (val && val.length > 0) || 'Please select something',
-            ]"
+            :rules="[() => job.task || 'Please select something']"
+            @update:model-value="(val) => onTaskParamSelect(val)"
           />
           <q-select
             outlined
-            v-model="executor"
+            dense
+            v-model="job.executor"
             :options="executors"
+            option-label="id"
             hint="Executor *"
             lazy-rules
-            :rules="[
-              (val) => (val && val.length > 0) || 'Please select something',
-            ]"
+            :rules="[() => job.executor || 'Please select something']"
           />
           <div class="row">
             <div class="wd-50" v-if="isShowValue">
-              <q-input
-                outlined
-                v-model="value"
-                lazy-rules
-                :rules="[(val) => (val && val.length > 0) || '']"
-              />
+              <q-input outlined dense v-model="job.value" />
             </div>
             <div class="wd-100 ml-10" v-if="isShowDays">
               <q-select
                 outlined
-                v-model="day"
+                dense
+                v-model="job.day"
                 :options="days"
+                option-label="name"
                 hint="Day *"
                 lazy-rules
-                :rules="[
-                  (val) => (val && val.length > 0) || 'Please type something',
-                ]"
+                :rules="[() => job.day || 'Please select something']"
               />
             </div>
             <div :class="periodState">
               <q-select
                 outlined
-                v-model="period"
+                dense
+                v-model="job.period"
                 :options="periods"
+                option-label="name"
                 hint="Period *"
                 lazy-rules
-                :rules="[
-                  (val) => (val && val.length > 0) || 'Please select something',
-                ]"
+                :rules="[() => job.period || 'Please select something']"
                 @update:model-value="(val) => onPeriodChange(val)"
               />
             </div>
           </div>
           <q-input
             outlined
-            v-model="time"
+            dense
+            v-model="job.time"
             type="time"
             step="2"
             :disable="disabled"
@@ -192,8 +198,9 @@
           </q-input>
           <q-input
             outlined
+            dense
             v-model="date"
-            type="date"
+            type="job.date"
             :disable="disabled"
             hint="Start date"
           >
@@ -214,7 +221,8 @@
             </template>
           </q-input>
           <q-btn
-            dense=""
+            dense
+            :disable="paramsDisabled"
             class="wd-310"
             outline
             color="grey"
@@ -237,7 +245,7 @@
                     color="primary"
                     size="md"
                     icon="add"
-                    @click="createParam = true"
+                    @click="onAddParam()"
                   />
                   <q-btn
                     class="q-ml-xs"
@@ -255,7 +263,7 @@
                     color="negative"
                     size="md"
                     icon="delete"
-                    @click="onDeleteParam(props.row)"
+                    @click="onDeleteParam(props.rowIndex)"
                   />
                 </q-td>
               </template>
@@ -267,7 +275,7 @@
               dense
               label="Add"
               color="primary"
-              @click="createParam = true"
+              @click="onAddParam()"
             />
           </div>
           <q-card-actions align="left" class="text-primary">
@@ -291,19 +299,29 @@
     transition-hide="rotate"
   >
     <q-card style="min-width: 300px">
+      <q-badge color="secondary" multi-line>
+        Model: "{{ param.name }}"
+      </q-badge>
       <q-card-section>
         <q-form @submit="onSubmitParam(createParam)" class="q-gutter-md">
-          <q-input
-            v-model="paramName"
+          <q-select
             outlined
+            dense
+            v-model="param.name"
+            :options="job.task.params"
+            option-label="name"
+            option-value="name"
             hint="Parameter name *"
+            emit-value
+            map-options
             lazy-rules
             :rules="[
-              (val) => (val && val.length > 0) || 'Please type something',
+              (val) => (val && val.length > 0) || 'Please select something',
             ]"
           />
           <q-input
-            v-model="paramValue"
+            v-model="param.value"
+            dense
             outlined
             hint="Parameter value *"
             lazy-rules
@@ -325,129 +343,122 @@
       </q-card-section>
     </q-card>
   </q-dialog>
-
-  <q-dialog
-    v-model="warning"
-    persistent
-    transition-show="rotate"
-    transition-hide="rotate"
-  >
-    <q-card style="width: 300px">
-      <q-card-section>
-        <div class="text-h6">Alert</div>
-      </q-card-section>
-
-      <q-card-section class="row items-center">
-        <span class="q-ml-sm">Are you sure to delete this item?</span>
-      </q-card-section>
-
-      <q-card-actions align="right">
-        <q-btn
-          flat
-          label="Cancel"
-          color="primary"
-          v-close-popup
-          @click="accept = false"
-        />
-        <q-btn
-          flat
-          label="Ok"
-          color="primary"
-          v-close-popup
-          @click="accept = true"
-        />
-      </q-card-actions>
-    </q-card>
-  </q-dialog>
 </template>
 
 <script>
 import { useQuasar } from "quasar";
 import { computed, ref } from "vue";
+import axios from "axios";
 
 const columns = [{ name: "state" }, { name: "job" }, { name: "actions" }];
-
-const rows = [
-  {
-    active: false,
-    name: "ByFly PPP check time",
-    period_1: "Повторять каждый час",
-    period_2: "",
+const rows = [];
+const job = {
+  id: null,
+  note: null,
+  active: null,
+  value: null,
+  time: null,
+  date: null,
+  verbose: null,
+  executor: {
+    id: null,
   },
-  {
-    active: true,
-    name: "Sync ESP32 tables",
-    period_1: "Повторять каждый день ",
-    period_2: "Начиная с 02:30:00 ",
+  task: {
+    id: null,
+    name: null,
+    api: null,
+    note: null,
+    params: [],
   },
-];
+  period: {
+    id: null,
+    name: null,
+    idx: null,
+  },
+  day: {
+    id: null,
+    name: null,
+  },
+  params: [],
+};
 
 const scheme = [
-  { name: "name", align: "left", field: "name", sortable: true },
-  { name: "value", align: "left", field: "value", sortable: true },
+  {
+    name: "name",
+    align: "left",
+    field: "name",
+    style: "max-width: 40px; width: 40px;",
+  },
+  {
+    name: "value",
+    align: "left",
+    field: "value",
+    style: "font-style: italic; max-width: 70px; width: 70px;",
+  },
+  { name: "job_id" },
   { name: "actions" },
 ];
+const params = [];
+const param = {
+  id: null,
+  name: null,
+  value: null,
+  job_id: null,
+};
 
-const params = [
-  {
-    name: "msg",
-    value: "message",
-  },
-];
+const executors = {
+  id: null,
+};
+
+const tasks = {
+  id: null,
+  name: null,
+  note: null,
+  params: [],
+};
+
+const periods = {
+  id: null,
+  name: null,
+  idx: null,
+};
+
+const days = {
+  id: null,
+  name: null,
+};
 
 export default {
   setup() {
     const $q = useQuasar();
 
-    const name = ref(null);
-    const task = ref(null);
-    const executor = ref(null);
-    const value = ref(null);
-    const day = ref(null);
-    const period = ref(null);
+    const actionEdit = ref(false);
+    const actionEditParams = ref(false);
     const isShowValue = ref(false);
     const isShowDays = ref(false);
-    const time = ref(null);
-    const date = ref(null);
     const labelBtnParams = ref(">>");
-    const paramName = ref(null);
-    const paramValue = ref(null);
     const disabled = ref(false);
+    const paramsDisabled = ref(false);
+    const reloadJobsFail = "reload jobs error";
+    const reloadJobsWarning = "Jobs reload fail";
 
     return {
       createJob: ref(false),
-      warning: ref(false),
+      actionEdit,
+      actionEditParams,
+      disabled,
+      paramsDisabled,
       columns,
-      rows,
-      name,
-      task,
-      tasks: ["Telegramm msanger"],
-      executor,
-      executors: ["All", "Leader", "Master", "Slave"],
-      value,
-      day,
-      days: [
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-        "Sunday",
-      ],
-      period,
-      periods: [
-        "Once",
-        "Second",
-        "Minute",
-        "Hour",
-        "Day",
-        "Week",
-        "Day of week",
-        "Month",
-        "Year",
-      ],
-      isShowHeaderButton: computed(() => rows.length === 0),
+      rows: ref(rows),
+      job: ref(job),
+      scheme,
+      params,
+      param: ref(param),
+      tasks: ref(tasks),
+      executors: ref(executors),
+      periods: ref(periods),
+      days: ref(days),
+      isShowHeaderButton: ref(false),
       cols: computed(
         () =>
           `col-${$q.screen.name == "sm" ? 8 : $q.screen.name == "xs" ? 11 : 5}`
@@ -461,21 +472,78 @@ export default {
           ? "wd-260 ml-10"
           : "wd-150 ml-10"
       ),
-      time,
-      date,
       labelBtnParams,
-      scheme,
-      params,
-      showParams: computed(
-        () => labelBtnParams.value === "<<" && params.length != 0
-      ),
-      showBtnAddParam: computed(
-        () => labelBtnParams.value === "<<" && params.length == 0
-      ),
+      showParams: ref(false),
+      showBtnAddParam: ref(false),
       createParam: ref(false),
-      paramName,
-      paramValue,
-      disabled,
+      async GetExecutors() {
+        await axios
+          .get("/api/v1/admin/schedule/executors/get")
+          .then(async (response) => {
+            this.executors = response.data.data;
+            await this.GetTasks();
+          })
+          .catch(() => {
+            $q.notify({ type: "negative", message: err.response.data.message });
+          });
+      },
+      async GetTasks() {
+        await axios
+          .get("/api/v1/admin/schedule/tasks/get")
+          .then(async (response) => {
+            this.tasks = response.data.data;
+            await this.GetPeriods();
+          })
+          .catch(() => {
+            $q.notify({ type: "negative", message: err.response.data.message });
+          });
+      },
+      async GetPeriods() {
+        await axios
+          .get("/api/v1/admin/schedule/periods/get")
+          .then(async (response) => {
+            this.periods = response.data.data;
+            await this.GetDays();
+          })
+          .catch(() => {
+            $q.notify({ type: "negative", message: err.response.data.message });
+          });
+      },
+      async GetDays() {
+        await axios
+          .get("/api/v1/admin/schedule/days/get")
+          .then(async (response) => {
+            this.days = response.data.data;
+            await this.GetJobs();
+          })
+          .catch(() => {
+            $q.notify({ type: "negative", message: err.response.data.message });
+          });
+      },
+      async GetJobs() {
+        await axios
+          .get("/api/v1/admin/schedule/jobs/get")
+          .then(async (response) => {
+            this.rows = response.data.data;
+            this.isShowHeaderButton = this.rows.length === 0;
+          })
+          .catch(() => {
+            $q.notify({ type: "negative", message: err.response.data.message });
+          });
+      },
+      onTaskParamSelect(val) {
+        paramsDisabled.value = val ? false : true;
+      },
+      onAdd() {
+        actionEdit.value = false;
+        disabled.value = false;
+        paramsDisabled.value = true;
+        this.job = {};
+        this.params = [];
+        labelBtnParams.value = ">>";
+        this.HideParams();
+        this.createJob = true;
+      },
       onActivate(row) {
         console.log(row);
       },
@@ -483,10 +551,44 @@ export default {
         console.log(row);
       },
       onEdit(row) {
-        console.log(row);
+        console.log("ROW: ", row);
+        actionEdit.value = true;
+        disabled.value = true;
+        paramsDisabled.value = false;
+        this.job = row;
+        this.params = row.params;
+        labelBtnParams.value = "<<";
+        this.ShowParams();
+        this.createJob = true;
       },
       onDelete(row) {
-        console.log(row);
+        $q.dialog({
+          title: "Confirm",
+          message: "Are you sure to delete this item?",
+          cancel: true,
+          persistent: true,
+        }).onOk(() => {
+          const url = "/api/v1/admin/schedule/jobs/" + row.id;
+          axios
+            .delete(url)
+            .then(async () => {
+              await this.GetJobs();
+            })
+            .catch(async (err) => {
+              if (err.response.data.message === reloadJobsFail) {
+                $q.notify({
+                  type: "warning",
+                  message: reloadJobsWarning,
+                });
+                await this.GetJobs();
+              } else {
+                $q.notify({
+                  type: "negative",
+                  message: err.response.data.message,
+                });
+              }
+            });
+        });
       },
       activeIcon(row) {
         return row.active ? "alarm" : "alarm_off";
@@ -494,49 +596,134 @@ export default {
       activeColor(row) {
         return row.active ? "positive" : "grey";
       },
-      onSubmit(dlg) {
+      async onSubmit() {
         this.createJob = false;
+        this.job.params = this.params;
+        this.job.value = parseInt(this.job.value, 10);
+        if (actionEdit.value) {
+          await axios
+            .post("/api/v1/admin/schedule/jobs/edit", this.job)
+            .then(async () => {
+              await this.GetJobs();
+            })
+            .catch(async (err) => {
+              if (err.response.data.message === reloadJobsFail) {
+                $q.notify({
+                  type: "warning",
+                  message: reloadJobsWarning,
+                });
+                await this.GetJobs();
+              } else {
+                $q.notify({
+                  type: "negative",
+                  message: err.response.data.message,
+                });
+              }
+            });
+        } else {
+          await axios
+            .post("/api/v1/admin/schedule/jobs/add", this.job)
+            .then(async () => {
+              await this.GetJobs();
+            })
+            .catch(async (err) => {
+              if (err.response.data.message === reloadJobsFail) {
+                $q.notify({
+                  type: "warning",
+                  message: reloadJobsWarning,
+                });
+                await this.GetJobs();
+              } else {
+                $q.notify({
+                  type: "negative",
+                  message: err.response.data.message,
+                });
+              }
+            });
+        }
       },
       onPeriodChange(val) {
-        switch (val) {
-          case "Once":
+        switch (val.id) {
+          case "once":
             isShowValue.value = false;
             isShowDays.value = false;
             disabled.value = true;
             break;
-          case "Second":
-          case "Minute":
-          case "Hour":
-          case "Day":
-          case "Week":
-          case "Month":
-          case "Year":
+          case "second":
+          case "minute":
+          case "hour":
+          case "day":
+          case "week":
+          case "month":
+          case "year":
             isShowValue.value = true;
             isShowDays.value = false;
             disabled.value = false;
             break;
-          case "Day of week":
+          case "day_of_week":
             isShowValue.value = true;
             isShowDays.value = true;
             disabled.value = false;
             break;
           default:
-            console.log("Unknown period: ", val);
+            $q.notify({
+              type: "negative",
+              message: "Unknown period: " + val,
+            });
         }
       },
       onParams() {
         if (labelBtnParams.value == ">>") {
           labelBtnParams.value = "<<";
+          this.ShowParams();
         } else {
+          this.HideParams();
           labelBtnParams.value = ">>";
         }
       },
-      onSubmitParam(dlg) {
+      onAddParam() {
+        actionEditParams.value = false;
+        this.param = {};
+        this.createParam = true;
+      },
+      onEditParam(row) {
+        actionEditParams.value = true;
+        this.param = row;
+        this.createParam = true;
+      },
+      onDeleteParam(rowIndex) {
+        $q.dialog({
+          title: "Confirm",
+          message: "Are you sure to delete this item?",
+          cancel: true,
+          persistent: true,
+        }).onOk(() => {
+          if (rowIndex !== -1) {
+            this.params.splice(rowIndex, 1);
+            this.ShowParams();
+          }
+        });
+      },
+      onSubmitParam() {
+        this.param.id = null;
+        this.param.job_id = null;
+        this.params.push(this.param);
         this.createParam = false;
+        this.ShowParams();
+      },
+      ShowParams() {
+        this.showBtnAddParam = this.params.length === 0;
+        this.showParams = !this.showBtnAddParam;
+      },
+      HideParams() {
+        this.showBtnAddParam = false;
+        this.showParams = false;
       },
     };
   },
-  methods: {},
+  async mounted() {
+    await this.GetExecutors();
+  },
 };
 </script>
 
@@ -548,8 +735,6 @@ export default {
     margin: 5px
     background: rgba(86, 61, 124, .15)
     border: 1px solid rgba(86, 61, 124, .2)
-.job-name
-  color: #1976D2
 .right
   margin-left: auto
 </style>

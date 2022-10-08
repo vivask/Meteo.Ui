@@ -101,6 +101,16 @@
               (val) => (val && val.length > 0) || 'Please type something',
             ]"
           />
+          <q-input
+            v-model="task.api"
+            dense
+            hint="Api *"
+            outlined
+            lazy-rules
+            :rules="[
+              (val) => (val && val.length > 0) || 'Please type something',
+            ]"
+          />
           <q-input v-model="task.note" dense outlined hint="Description" />
 
           <q-btn
@@ -231,14 +241,19 @@ const rows = [];
 const task = {
   id: null,
   name: null,
+  api: null,
   note: null,
   params: [],
 };
 
 const scheme = [
-  { name: "id" },
-  { name: "name", align: "left", field: "name", sortable: true },
-  { name: "task_id" },
+  {
+    name: "name",
+    align: "left",
+    field: "name",
+    sortable: true,
+    style: "max-width: 50px; width: 50px;",
+  },
   { name: "actions" },
 ];
 
@@ -255,8 +270,6 @@ export default {
     const $q = useQuasar();
 
     const labelBtnParams = ref(">>");
-    const paramName = ref(null);
-    const paramValue = ref(null);
     const actionEdit = ref(false);
     const actionEditParams = ref(false);
     const disable = ref(false);
@@ -276,8 +289,6 @@ export default {
       showParams: ref(false),
       showBtnAddParam: ref(false),
       createParam: ref(false),
-      paramName,
-      paramValue,
       isShowHeaderButton: ref(false),
       cols: computed(
         () =>
@@ -299,10 +310,7 @@ export default {
       onAdd() {
         actionEdit.value = false;
         disable.value = false;
-        this.task.id = "";
-        this.task.name = "";
-        this.task.note = "";
-        this.task.params = [];
+        this.task = {};
         this.params = [];
         labelBtnParams.value = ">>";
         this.HideParams();
@@ -311,10 +319,7 @@ export default {
       onEdit(row) {
         actionEdit.value = true;
         disable.value = true;
-        this.task.id = row.id;
-        this.task.name = row.name;
-        this.task.note = row.note;
-        this.task.params = row.params;
+        this.task = row;
         this.params = row.params;
         labelBtnParams.value = "<<";
         this.ShowParams();
@@ -389,16 +394,12 @@ export default {
       },
       onAddParam() {
         actionEditParams.value = false;
-        this.param.id = "";
-        this.param.name = "";
-        this.param.task_is = "";
+        this.param = {};
         this.createParam = true;
       },
       onEditParam(row) {
         actionEditParams.value = true;
-        this.param.id = row.id;
-        this.param.name = row.name;
-        this.param.task_is = row.task_id;
+        this.param = row;
         this.createParam = true;
       },
       onDeleteParam(rowIndex) {
