@@ -178,7 +178,7 @@ export default {
             this.rows = response.data.data;
             this.isShowHeaderButton = this.rows.length === 0;
           })
-          .catch(() => {
+          .catch((err) => {
             $q.notify({ type: "negative", message: err.response.data.message });
           });
       },

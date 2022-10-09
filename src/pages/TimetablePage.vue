@@ -36,7 +36,9 @@
                 size="md"
                 :icon="activeIcon(props.row)"
                 @click="onActivate(props.row)"
-              />
+              >
+                <q-tooltip>Activate/Deactivate job</q-tooltip>
+              </q-btn>
             </q-td>
           </template>
           <template v-slot:body-cell-job="props">
@@ -44,7 +46,7 @@
               <q-card square flat>
                 <q-card-section align="left">
                   <div class="text-subtitle1 text-bold text-left text-primary">
-                    {{ props.row.name }}
+                    {{ props.row.note }}
                   </div>
                 </q-card-section>
               </q-card>
@@ -110,6 +112,7 @@
     <q-card style="min-width: 350px">
       <q-card-section>
         <q-form @submit="onSubmit(createJob)" class="q-gutter-md">
+          <q-checkbox v-model="job.verbose" label="Verbose" />
           <q-input
             outlined
             dense
@@ -143,7 +146,15 @@
           />
           <div class="row">
             <div class="wd-50" v-if="isShowValue">
-              <q-input outlined dense v-model="job.value" />
+              <q-input
+                outlined
+                dense
+                v-model="job.value"
+                lazy-rules
+                :rules="[
+                  (val) => (val && val.length > 0) || 'Please type value',
+                ]"
+              />
             </div>
             <div class="wd-100 ml-10" v-if="isShowDays">
               <q-select
@@ -179,6 +190,21 @@
             step="2"
             :disable="disabled"
             hint="Start time"
+            lazy-rules
+            :rules="[
+              (val, rules) =>
+                (!(job.period.id === 'day') && rules.fulltime(val)) ||
+                'Please type time',
+              (val, rules) =>
+                (!(job.period.id === 'week') && rules.fulltime(val)) ||
+                'Please type time',
+              (val, rules) =>
+                (!(job.period.id === 'month') && rules.fulltime(val)) ||
+                'Please type time',
+              (val, rules) =>
+                (!(job.period.id === 'year') && rules.fulltime(val)) ||
+                'Please type time',
+            ]"
           >
             <template v-slot:append>
               <q-icon name="access_time" class="cursor-pointer">
@@ -203,6 +229,15 @@
             type="job.date"
             :disable="disabled"
             hint="Start date"
+            lazy-rules
+            :rules="[
+              (val, rules) =>
+                (!(job.period.id === 'month') && rules.date(val)) ||
+                'Please type date',
+              (val, rules) =>
+                (!(job.period.id === 'year') && rules.date(val)) ||
+                'Please type date',
+            ]"
           >
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
@@ -299,9 +334,6 @@
     transition-hide="rotate"
   >
     <q-card style="min-width: 300px">
-      <q-badge color="secondary" multi-line>
-        Model: "{{ param.name }}"
-      </q-badge>
       <q-card-section>
         <q-form @submit="onSubmitParam(createParam)" class="q-gutter-md">
           <q-select
@@ -483,7 +515,7 @@ export default {
             this.executors = response.data.data;
             await this.GetTasks();
           })
-          .catch(() => {
+          .catch((err) => {
             $q.notify({ type: "negative", message: err.response.data.message });
           });
       },
@@ -494,7 +526,7 @@ export default {
             this.tasks = response.data.data;
             await this.GetPeriods();
           })
-          .catch(() => {
+          .catch((err) => {
             $q.notify({ type: "negative", message: err.response.data.message });
           });
       },
@@ -505,7 +537,7 @@ export default {
             this.periods = response.data.data;
             await this.GetDays();
           })
-          .catch(() => {
+          .catch((err) => {
             $q.notify({ type: "negative", message: err.response.data.message });
           });
       },
@@ -516,7 +548,7 @@ export default {
             this.days = response.data.data;
             await this.GetJobs();
           })
-          .catch(() => {
+          .catch((err) => {
             $q.notify({ type: "negative", message: err.response.data.message });
           });
       },
@@ -527,28 +559,76 @@ export default {
             this.rows = response.data.data;
             this.isShowHeaderButton = this.rows.length === 0;
           })
-          .catch(() => {
+          .catch((err) => {
             $q.notify({ type: "negative", message: err.response.data.message });
           });
       },
       onTaskParamSelect(val) {
         paramsDisabled.value = val ? false : true;
       },
+      async reloadWarning(err) {
+        if (err.response.data.message === reloadJobsFail) {
+          $q.notify({
+            type: "warning",
+            message: reloadJobsWarning,
+          });
+          await this.GetJobs();
+        } else {
+          $q.notify({
+            type: "negative",
+            message: err.response.data.message,
+          });
+        }
+      },
       onAdd() {
         actionEdit.value = false;
         disabled.value = false;
         paramsDisabled.value = true;
+        isShowValue.value = false;
+        isShowDays.value = false;
         this.job = {};
         this.params = [];
+        this.job.verbose = false;
         labelBtnParams.value = ">>";
         this.HideParams();
         this.createJob = true;
       },
-      onActivate(row) {
-        console.log(row);
+      async onActivate(row) {
+        if (row.active) {
+          let url = "/api/v1/admin/schedule/jobs/deactivate/" + row.id;
+          await axios
+            .put(url)
+            .then(async () => {
+              await this.GetJobs();
+            })
+            .catch(async (err) => {
+              await this.reloadWarning(err);
+            });
+        } else {
+          let url = "/api/v1/admin/schedule/jobs/activate/" + row.id;
+          await axios
+            .put(url)
+            .then(async () => {
+              await this.GetJobs();
+            })
+            .catch(async (err) => {
+              await this.reloadWarning(err);
+            });
+        }
       },
-      onRun(row) {
-        console.log(row);
+      async onRun(row) {
+        let url = "/api/v1/admin/schedule/jobs/run/" + row.id;
+        await axios
+          .put(url)
+          .then(async () => {
+            await this.GetJobs();
+          })
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
       },
       onEdit(row) {
         console.log("ROW: ", row);
@@ -556,6 +636,8 @@ export default {
         disabled.value = true;
         paramsDisabled.value = false;
         this.job = row;
+        isShowValue.value = this.job.period.id === "once" ? false : true;
+        isShowDays.value = this.job.period.id === "day_of_week" ? true : false;
         this.params = row.params;
         labelBtnParams.value = "<<";
         this.ShowParams();
@@ -575,18 +657,7 @@ export default {
               await this.GetJobs();
             })
             .catch(async (err) => {
-              if (err.response.data.message === reloadJobsFail) {
-                $q.notify({
-                  type: "warning",
-                  message: reloadJobsWarning,
-                });
-                await this.GetJobs();
-              } else {
-                $q.notify({
-                  type: "negative",
-                  message: err.response.data.message,
-                });
-              }
+              await this.reloadWarning(err);
             });
         });
       },
@@ -607,18 +678,7 @@ export default {
               await this.GetJobs();
             })
             .catch(async (err) => {
-              if (err.response.data.message === reloadJobsFail) {
-                $q.notify({
-                  type: "warning",
-                  message: reloadJobsWarning,
-                });
-                await this.GetJobs();
-              } else {
-                $q.notify({
-                  type: "negative",
-                  message: err.response.data.message,
-                });
-              }
+              await this.reloadWarning(err);
             });
         } else {
           await axios
@@ -627,18 +687,7 @@ export default {
               await this.GetJobs();
             })
             .catch(async (err) => {
-              if (err.response.data.message === reloadJobsFail) {
-                $q.notify({
-                  type: "warning",
-                  message: reloadJobsWarning,
-                });
-                await this.GetJobs();
-              } else {
-                $q.notify({
-                  type: "negative",
-                  message: err.response.data.message,
-                });
-              }
+              await this.reloadWarning(err);
             });
         }
       },

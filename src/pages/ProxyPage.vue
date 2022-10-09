@@ -152,7 +152,7 @@ export default defineComponent({
               this.slave = response.data.data[0];
             }
           })
-          .catch(() => {
+          .catch((err) => {
             $q.notify({ type: "negative", message: err.response.data.message });
           });
       },

@@ -95,7 +95,7 @@ export default {
           .then((response) => {
             this.rows = response.data.data;
           })
-          .catch(() => {
+          .catch((err) => {
             $q.notify({ type: "negative", message: err.response.data.message });
           });
       },

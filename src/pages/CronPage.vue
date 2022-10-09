@@ -13,7 +13,7 @@
             color="primary"
             size="md"
             label="Update"
-            @click="create = true"
+            @click="onRefresh()"
           />
         </q-item>
         <q-table
@@ -32,10 +32,12 @@
             <q-td :props="props">
               <q-card square flat>
                 <q-card-section align="left">
-                  <div class="text-subtitle1 text-bold job-name">
-                    {{ props.row.name }}
+                  <div class="text-subtitle1 text-bold text-left text-primary">
+                    {{ props.row.note }}
                   </div>
-                  <div class="text-subtitle2">{{ props.row.note }}</div>
+                  <div class="text-subtitle2 text-left">
+                    Next run at: {{ utils.formatTime(props.row.time) }}
+                  </div>
                 </q-card-section>
               </q-card>
             </q-td>
@@ -49,38 +51,44 @@
 <script>
 import { useQuasar } from "quasar";
 import { computed, ref } from "vue";
+import { useUtils } from "src/stores/utils";
+import axios from "axios";
 
 const columns = [{ name: "state" }, { name: "job" }];
-
-const rows = [
-  {
-    name: "ByFly PPP check time",
-    note: "Next run at: 2022-09-20 12:31:16",
-  },
-  {
-    name: "Check storage is mounted",
-    note: "Next run at: 2022-09-20 12:21:30",
-  },
-];
+const rows = [];
 
 export default {
   setup() {
     const $q = useQuasar();
-
-    const name = ref(null);
+    const utils = useUtils();
 
     return {
-      create: ref(false),
+      utils,
       columns,
-      rows,
-      name,
+      rows: ref(rows),
       cols: computed(
         () =>
           `col-${$q.screen.name == "sm" ? 8 : $q.screen.name == "xs" ? 11 : 4}`
       ),
+      async GetJobs() {
+        await axios
+          .get("/api/v1/admin/schedule/cron/get")
+          .then((response) => {
+            console.log("Jobs: ", response.data.data);
+            this.rows = response.data.data === null ? [] : response.data.data;
+          })
+          .catch((err) => {
+            $q.notify({ type: "negative", message: err.response.data.message });
+          });
+      },
+      async onRefresh() {
+        await this.GetJobs();
+      },
     };
   },
-  methods: {},
+  async mounted() {
+    await this.GetJobs();
+  },
 };
 </script>
 
@@ -92,6 +100,4 @@ export default {
     margin: 5px
     background: rgba(86, 61, 124, .15)
     border: 1px solid rgba(86, 61, 124, .2)
-.job-name
-  color: #1976D2
 </style>

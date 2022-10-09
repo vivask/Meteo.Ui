@@ -233,7 +233,7 @@ export default {
             this.ssh_keys = response.data.data;
             await this.GetUsers();
           })
-          .catch(() => {
+          .catch((err) => {
             $q.notify({ type: "negative", message: err.response.data.message });
           });
       },
@@ -244,7 +244,7 @@ export default {
             this.rows = response.data.data;
             this.isShowHeaderButton = this.rows.length === 0;
           })
-          .catch(() => {
+          .catch((err) => {
             $q.notify({ type: "negative", message: err.response.data.message });
           });
       },
