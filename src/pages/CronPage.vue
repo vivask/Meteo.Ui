@@ -74,7 +74,6 @@ export default {
         await axios
           .get("/api/v1/admin/schedule/cron/get")
           .then((response) => {
-            console.log("Jobs: ", response.data.data);
             this.rows = response.data.data === null ? [] : response.data.data;
           })
           .catch((err) => {

@@ -36,5 +36,32 @@ export const useUtils = defineStore("utils", {
     validateHost(host) {
       return this.validateIP(host) || this.validateDN(host);
     },
+    moreThanOrEqualToday(val) {
+      try {
+        const today = date.formatDate(new Date(), "YYYY-DD-MM");
+        const ret = date.formatDate(val, "X") >= date.formatDate(today, "X");
+        return ret;
+      } catch (err) {
+        console.log(err);
+        return false;
+      }
+    },
+    moreThanNow(ts, ds) {
+      try {
+        if (!ts || ts.length === 0 || !ds || ds.length === 0) {
+          return true;
+        }
+        const time = date.formatDate(ds + " " + ts, "YYYY-MM-DD HH:mm:ss");
+        const ret =
+          date.formatDate(time, "X") > date.formatDate(new Date(), "X");
+        return ret;
+      } catch (err) {
+        console.log(err);
+        return false;
+      }
+    },
+    isNumber(val) {
+      return /^\d+$/.test(val);
+    },
   },
 });

@@ -205,6 +205,7 @@
               (val) => (val && val.length > 0) || 'Please type something',
             ]"
           />
+          <q-input v-model="param.note" dense outlined hint="Parameter note" />
           <q-card-actions align="left" class="text-primary">
             <q-btn label="Submit" type="submit" color="primary " />
             <q-btn
@@ -251,8 +252,13 @@ const scheme = [
     name: "name",
     align: "left",
     field: "name",
-    sortable: true,
-    style: "max-width: 50px; width: 50px;",
+    style: "max-width: 40px; width: 40px;",
+  },
+  {
+    name: "note",
+    align: "left",
+    field: "note",
+    style: "font-style: italic; max-width: 70px; width: 70px;",
   },
   { name: "actions" },
 ];
@@ -262,6 +268,7 @@ const params = [];
 const param = {
   id: null,
   name: null,
+  note: null,
   task_id: null,
 };
 
@@ -418,7 +425,9 @@ export default {
       onSubmitParam() {
         this.param.id = null;
         this.param.task_id = null;
-        this.params.push(this.param);
+        if (!actionEditParams.value) {
+          this.params.push(this.param);
+        }
         this.createParam = false;
         this.ShowParams();
       },

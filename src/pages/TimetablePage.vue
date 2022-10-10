@@ -48,6 +48,32 @@
                   <div class="text-subtitle1 text-bold text-left text-primary">
                     {{ props.row.note }}
                   </div>
+                  <div
+                    class="text-subtitle2 text-left"
+                    v-if="isOncePeriod(props.row.period.id)"
+                  >
+                    Execute one time
+                  </div>
+                  <div
+                    class="text-subtitle2 text-left"
+                    v-if="isRegularPeriod(props.row.period.id)"
+                  >
+                    Repeate every{{ this.oneToEmpty(props.row.value)
+                    }}{{ props.row.period.name.toLowerCase() }}
+                  </div>
+                  <div
+                    class="text-subtitle2 text-left"
+                    v-if="isDayOfWeekPeriod(props.row.period.id)"
+                  >
+                    Repeate every{{ this.oneToEmpty(props.row.value)
+                    }}{{ props.row.day.name.toLowerCase() }}
+                  </div>
+                  <div
+                    class="text-subtitle2 text-left text-italic"
+                    v-if="isTimeOrDate(props.row.time, props.row.date)"
+                  >
+                    Starting at {{ props.row.time }} {{ props.row.date }}
+                  </div>
                 </q-card-section>
               </q-card>
             </q-td>
@@ -151,9 +177,7 @@
                 dense
                 v-model="job.value"
                 lazy-rules
-                :rules="[
-                  (val) => (val && val.length > 0) || 'Please type value',
-                ]"
+                :rules="[(val) => (val && utils.isNumber(val)) || ' ']"
               />
             </div>
             <div class="wd-100 ml-10" v-if="isShowDays">
@@ -176,6 +200,7 @@
                 :options="periods"
                 option-label="name"
                 hint="Period *"
+                reactive-rules
                 lazy-rules
                 :rules="[() => job.period || 'Please select something']"
                 @update:model-value="(val) => onPeriodChange(val)"
@@ -190,20 +215,30 @@
             step="2"
             :disable="disabled"
             hint="Start time"
+            reactive-rules
             lazy-rules
             :rules="[
               (val, rules) =>
-                (!(job.period.id === 'day') && rules.fulltime(val)) ||
+                !(job.period.id === 'day') ||
+                rules.fulltime(val) ||
                 'Please type time',
               (val, rules) =>
-                (!(job.period.id === 'week') && rules.fulltime(val)) ||
+                !(job.period.id === 'week') ||
+                rules.fulltime(val) ||
                 'Please type time',
               (val, rules) =>
-                (!(job.period.id === 'month') && rules.fulltime(val)) ||
+                !(job.period.id === 'month') ||
+                rules.fulltime(val) ||
                 'Please type time',
               (val, rules) =>
-                (!(job.period.id === 'year') && rules.fulltime(val)) ||
+                !(job.period.id === 'year') ||
+                rules.fulltime(val) ||
                 'Please type time',
+              (val, rules) =>
+                !(job.period.id === 'day_of_week') ||
+                rules.fulltime(val) ||
+                'Please type time',
+              (val) => utils.moreThanNow(val, job.date) || 'Time has expired',
             ]"
           >
             <template v-slot:append>
@@ -213,7 +248,12 @@
                   transition-show="scale"
                   transition-hide="scale"
                 >
-                  <q-time v-model="time" mask="HH:mm:ss" format24h with-seconds>
+                  <q-time
+                    v-model="job.time"
+                    mask="HH:mm:ss"
+                    format24h
+                    with-seconds
+                  >
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup label="Close" color="primary" flat />
                     </div>
@@ -225,18 +265,22 @@
           <q-input
             outlined
             dense
-            v-model="date"
-            type="job.date"
+            v-model="job.date"
+            type="date"
             :disable="disabled"
             hint="Start date"
+            reactive-rules
             lazy-rules
             :rules="[
               (val, rules) =>
-                (!(job.period.id === 'month') && rules.date(val)) ||
-                'Please type date',
+                !(job.period.id === 'month') ||
+                (utils.moreThanOrEqualToday(val) && rules.date(val)) ||
+                'Incorrect date',
               (val, rules) =>
-                (!(job.period.id === 'year') && rules.date(val)) ||
-                'Please type date',
+                !(job.period.id === 'year') ||
+                (utils.moreThanOrEqualToday(val) && rules.date(val)) ||
+                'Incorrect date',
+              (val) => utils.moreThanNow(job.time, val) || 'Time has expired',
             ]"
           >
             <template v-slot:append>
@@ -246,7 +290,7 @@
                   transition-show="scale"
                   transition-hide="scale"
                 >
-                  <q-date v-model="date" mask="YYYY-MM-DD">
+                  <q-date v-model="job.date" mask="YYYY-MM-DD">
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup label="Close" color="primary" flat />
                     </div>
@@ -380,6 +424,7 @@
 <script>
 import { useQuasar } from "quasar";
 import { computed, ref } from "vue";
+import { useUtils } from "src/stores/utils";
 import axios from "axios";
 
 const columns = [{ name: "state" }, { name: "job" }, { name: "actions" }];
@@ -463,18 +508,20 @@ const days = {
 export default {
   setup() {
     const $q = useQuasar();
+    const utils = useUtils();
 
     const actionEdit = ref(false);
     const actionEditParams = ref(false);
     const isShowValue = ref(false);
     const isShowDays = ref(false);
     const labelBtnParams = ref(">>");
-    const disabled = ref(false);
+    const disabled = ref(true);
     const paramsDisabled = ref(false);
     const reloadJobsFail = "reload jobs error";
     const reloadJobsWarning = "Jobs reload fail";
 
     return {
+      utils,
       createJob: ref(false),
       actionEdit,
       actionEditParams,
@@ -582,7 +629,7 @@ export default {
       },
       onAdd() {
         actionEdit.value = false;
-        disabled.value = false;
+        disabled.value = true;
         paramsDisabled.value = true;
         isShowValue.value = false;
         isShowDays.value = false;
@@ -592,6 +639,38 @@ export default {
         labelBtnParams.value = ">>";
         this.HideParams();
         this.createJob = true;
+      },
+      onEdit(row) {
+        console.log("ROW: ", row);
+        actionEdit.value = true;
+        disabled.value = false;
+        paramsDisabled.value = false;
+        this.job = row;
+        isShowValue.value = this.job.period.id === "once" ? false : true;
+        isShowDays.value = this.job.period.id === "day_of_week" ? true : false;
+        disabled.value = !isShowValue.value;
+        this.params = row.params;
+        labelBtnParams.value = "<<";
+        this.ShowParams();
+        this.createJob = true;
+      },
+      onDelete(row) {
+        $q.dialog({
+          title: "Confirm",
+          message: "Are you sure to delete this item?",
+          cancel: true,
+          persistent: true,
+        }).onOk(() => {
+          const url = "/api/v1/admin/schedule/jobs/" + row.id;
+          axios
+            .delete(url)
+            .then(async () => {
+              await this.GetJobs();
+            })
+            .catch(async (err) => {
+              await this.reloadWarning(err);
+            });
+        });
       },
       async onActivate(row) {
         if (row.active) {
@@ -630,37 +709,6 @@ export default {
             });
           });
       },
-      onEdit(row) {
-        console.log("ROW: ", row);
-        actionEdit.value = true;
-        disabled.value = true;
-        paramsDisabled.value = false;
-        this.job = row;
-        isShowValue.value = this.job.period.id === "once" ? false : true;
-        isShowDays.value = this.job.period.id === "day_of_week" ? true : false;
-        this.params = row.params;
-        labelBtnParams.value = "<<";
-        this.ShowParams();
-        this.createJob = true;
-      },
-      onDelete(row) {
-        $q.dialog({
-          title: "Confirm",
-          message: "Are you sure to delete this item?",
-          cancel: true,
-          persistent: true,
-        }).onOk(() => {
-          const url = "/api/v1/admin/schedule/jobs/" + row.id;
-          axios
-            .delete(url)
-            .then(async () => {
-              await this.GetJobs();
-            })
-            .catch(async (err) => {
-              await this.reloadWarning(err);
-            });
-        });
-      },
       activeIcon(row) {
         return row.active ? "alarm" : "alarm_off";
       },
@@ -668,8 +716,11 @@ export default {
         return row.active ? "positive" : "grey";
       },
       async onSubmit() {
-        this.createJob = false;
         this.job.params = this.params;
+        if (!this.validJobParams(this.job)) {
+          return;
+        }
+        this.createJob = false;
         this.job.value = parseInt(this.job.value, 10);
         if (actionEdit.value) {
           await axios
@@ -754,9 +805,14 @@ export default {
         });
       },
       onSubmitParam() {
+        if (!actionEditParams.value && !this.validParam(this.param)) {
+          return;
+        }
         this.param.id = null;
         this.param.job_id = null;
-        this.params.push(this.param);
+        if (!actionEditParams.value) {
+          this.params.push(this.param);
+        }
         this.createParam = false;
         this.ShowParams();
       },
@@ -767,6 +823,43 @@ export default {
       HideParams() {
         this.showBtnAddParam = false;
         this.showParams = false;
+      },
+      validJobParams(item) {
+        if (item.task.params.length !== item.params.length) {
+          $q.notify({
+            type: "negative",
+            message: "The number of task and job parameters do not match!",
+          });
+          return false;
+        }
+        return true;
+      },
+      validParam(item) {
+        for (let param of this.params) {
+          if (item.name === param.name) {
+            $q.notify({
+              type: "negative",
+              message: "Parameter already set!",
+            });
+            return false;
+          }
+        }
+        return true;
+      },
+      oneToEmpty(val) {
+        return val <= 1 ? " " : " " + val + " ";
+      },
+      isRegularPeriod(period) {
+        return period !== "once" && period !== "day_of_week";
+      },
+      isOncePeriod(period) {
+        return period === "once";
+      },
+      isDayOfWeekPeriod(period) {
+        return period === "day_of_week";
+      },
+      isTimeOrDate(time, date) {
+        return (time && time.length > 0) || (data && date.length > 0);
       },
     };
   },
