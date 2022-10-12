@@ -9,6 +9,12 @@ export const useUtils = defineStore("utils", {
   getters: {},
 
   actions: {
+    getDate(time) {
+      return date.formatDate(time, "YYYY-MM-DD");
+    },
+    getTime(time) {
+      return date.formatDate(time, "HH:mm:ss");
+    },
     formatTime(time) {
       return date.formatDate(time, "MMM DD, YYYY HH:mm:ss");
     },

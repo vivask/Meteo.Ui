@@ -28,6 +28,29 @@
           row-key="date"
           :rows-per-page-options="[10, 50, 100, 0]"
         >
+          <template v-slot:body-cell-date="props">
+            <q-td
+              :props="props"
+              class="wd-80"
+              :class="logColor(props.row.type)"
+            >
+              {{ utils.getDate(props.row.date_time) }}
+            </q-td>
+          </template>
+          <template v-slot:body-cell-time="props">
+            <q-td
+              :props="props"
+              class="wd-50"
+              :class="logColor(props.row.type)"
+            >
+              {{ utils.getTime(props.row.date_time) }}
+            </q-td>
+          </template>
+          <template v-slot:body-cell-message="props">
+            <q-td :props="props" :class="logColor(props.row.type)">
+              {{ props.row.message }}
+            </q-td>
+          </template>
         </q-table>
       </div>
     </div>
@@ -37,69 +60,82 @@
 <script>
 import { useQuasar } from "quasar";
 import { computed, ref } from "vue";
+import { useUtils } from "src/stores/utils";
+import axios from "axios";
 
 const columns = [
   {
     name: "date",
     align: "left",
     label: "Date",
-    field: "date",
-    sortable: true,
-    style: "width: 40px",
   },
   {
     name: "time",
     align: "left",
     label: "Time",
-    field: "time",
-    sortable: true,
-    style: "width: 30px",
   },
   {
     name: "message",
     align: "left",
     label: "Message",
-    field: "message",
-    sortable: true,
   },
 ];
 
-const rows = [
-  {
-    date: "2022-09-21",
-    time: "11:31:29",
-    message: "DS18B20 : BB3C01E07623E728 initialisation success",
-  },
-];
+const rows = [];
 
 export default {
   setup() {
     const $q = useQuasar();
-
-    const date = ref(null);
-    const time = ref(null);
-    const message = ref(null);
+    const utils = useUtils();
 
     return {
+      utils,
       columns,
-      rows,
-      date,
-      time,
-      message,
-      isShowHeaderButton: computed(() => rows.length === 0),
+      rows: ref(rows),
       cols: computed(
         () =>
           `col-${$q.screen.name == "sm" ? 8 : $q.screen.name == "xs" ? 11 : 5}`
       ),
-      onRefresh(row) {
-        console.log(row);
+      async GetEsp32Log() {
+        await axios
+          .get("/api/v1/admin/esp32/loging/get")
+          .then(async (response) => {
+            this.rows = response.data.data;
+          })
+          .catch((err) => {
+            $q.notify({ type: "negative", message: err.response.data.message });
+          });
       },
-      onClear(row) {
-        console.log(row);
+      async onRefresh(row) {
+        await this.GetEsp32Log();
+      },
+      async onClear(row) {
+        await axios
+          .put("/api/v1/admin/esp32/loging/clear")
+          .then(async () => {
+            await this.GetEsp32Log();
+          })
+          .catch((err) => {
+            $q.notify({ type: "negative", message: err.response.data.message });
+          });
+      },
+      logColor(msgType) {
+        switch (msgType) {
+          case "I":
+            return "text-subtitle1 text-positive";
+          case "W":
+            return "text-subtitle1 text-warning";
+          case "E":
+            return "text-subtitle1 text-warning";
+          default:
+            return "text-subtitle1 text-grey";
+        }
       },
     };
   },
-  methods: {},
+  async mounted() {
+    await this.GetEsp32Log();
+  },
 };
 </script>
 
