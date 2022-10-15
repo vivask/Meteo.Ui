@@ -3,7 +3,9 @@
     <div class="row justify-center items-start crisper">
       <div class="square rounded-borders" :class="cols">
         <q-item class="bot-line">
-          <q-item-label class="text-bold text-h6">Local hosts</q-item-label>
+          <q-item-label class="text-bold text-h6"
+            >Authentication Radius</q-item-label
+          >
           <q-space />
           <q-btn
             v-if="isShowHeaderButton"
@@ -24,11 +26,7 @@
         >
           <template v-slot:body-cell-state="props">
             <q-td :props="props" class="wd-20">
-              <q-icon
-                :name="activeIcon(props.row)"
-                size="1.2rem"
-                :color="activeColor(props.row)"
-              />
+              <q-icon name="mdi-account-eye-outline" size="1.2rem" />
             </q-td>
           </template>
           <template v-slot:body-cell-actions="props">
@@ -71,29 +69,38 @@
       <q-card-section>
         <q-form @submit="onSubmit(create)" class="q-gutter-md">
           <q-input
-            v-model="zone.name"
+            v-model="radcheck.username"
             outlined
             dense
-            hint="Host Name *"
+            hint="User Name *"
             lazy-rules
             :rules="[
               (val) => (val && val.length > 0) || 'Please type something',
             ]"
           />
           <q-input
-            v-model="zone.address"
+            v-model="password"
             outlined
             dense
-            hint="IP Address *"
+            type="password"
+            hint="Password *"
+            @update:model-value="passwordChanged = true"
             lazy-rules
             :rules="[
-              (val) =>
-                (val && val.length > 0 && utils.validateIP(val)) ||
-                'Invalid inputs',
+              (val) => (val && val.length > 0) || 'Please type something',
             ]"
           />
-          <q-input v-model="zone.mac" dense outlined hint="MAC Address" />
-          <q-input v-model="zone.note" dense outlined hint="Note" />
+          <q-input
+            v-model="confirm"
+            outlined
+            dense
+            hint="Confirm password *"
+            type="password"
+            lazy-rules
+            :rules="[
+              (val) => (val && val.length > 0) || 'Please type something',
+            ]"
+          />
           <q-card-actions align="left" class="text-primary">
             <q-btn label="Submit" type="submit" color="primary " />
             <q-btn
@@ -118,21 +125,20 @@ import axios from "axios";
 
 const columns = [
   { name: "state" },
-  { name: "address", align: "left", field: "address", sortable: true },
-  { name: "name", align: "left", field: "name", sortable: true },
-  { name: "mac", align: "left", field: "mac", sortable: true },
-  { name: "note", align: "left", field: "note", sortable: true },
+  { name: "username", align: "left", field: "username", sortable: true },
+  { name: "attribute", align: "left", field: "attribute" },
+  { name: "op", align: "left", field: "op" },
   { name: "actions" },
 ];
 
 const rows = [];
 
-const zone = {
+const radcheck = {
   id: null,
-  name: null,
-  address: null,
-  mac: null,
-  note: null,
+  username: null,
+  attribute: null,
+  op: null,
+  value: null,
 };
 
 export default {
@@ -146,16 +152,19 @@ export default {
       create: ref(false),
       columns,
       rows: ref(rows),
-      zone: ref(zone),
+      radcheck: ref(radcheck),
+      password: ref(null),
+      confirm: ref(null),
       actionEdit,
+      passwordChanged: ref(false),
       isShowHeaderButton: ref(false),
       cols: computed(
         () =>
           `col-${$q.screen.name == "sm" ? 8 : $q.screen.name == "xs" ? 11 : 5}`
       ),
-      async GetZones() {
+      async GetUsers() {
         await axios
-          .get("/api/v1/admin/proxy/zones/get")
+          .get("/api/v1/admin/radius/users/get")
           .then((response) => {
             this.rows = response.data.data;
             this.isShowHeaderButton = this.rows.length === 0;
@@ -165,13 +174,21 @@ export default {
           });
       },
       onAdd() {
+        this.passwordChanged = false;
         actionEdit.value = false;
-        this.zone = {};
+        this.radcheck = {};
+        this.password = null;
+        this.confirm = null;
+        this.radcheck.attribute = "Cleartext-Password";
+        this.radcheck.op = ":=";
         this.create = true;
       },
       onEdit(row) {
+        this.passwordChanged = false;
         actionEdit.value = true;
-        this.zone = row;
+        this.radcheck = row;
+        this.password = row.value;
+        this.confirm = row.value;
         this.create = true;
       },
       async onDelete(row) {
@@ -181,11 +198,11 @@ export default {
           cancel: true,
           persistent: true,
         }).onOk(() => {
-          const url = "/api/v1/admin/proxy/zones/" + row.id;
+          const url = "/api/v1/admin/radius/user/" + row.id;
           axios
             .delete(url)
             .then(() => {
-              this.GetZones();
+              this.GetUsers();
             })
             .catch((err) => {
               $q.notify({
@@ -195,19 +212,24 @@ export default {
             });
         });
       },
-      activeIcon(row) {
-        return row.active ? "task_alt" : "highlight_off";
-      },
-      activeColor(row) {
-        return row.active ? "positive" : "grey";
-      },
       async onSubmit() {
+        if (!(this.password === this.confirm)) {
+          $q.notify({
+            type: "negative",
+            message: "Passwords do not match.",
+          });
+          return;
+        }
         this.create = false;
+        if (this.passwordChanged) {
+          //this.radcheck.value = Base64.stringify(SHA512(this.password));
+          this.radcheck.value = this.password;
+        }
         if (actionEdit.value) {
           await axios
-            .post("/api/v1/admin/proxy/zones/edit", this.zone)
+            .post("/api/v1/admin/radius/user/edit", this.radcheck)
             .then(() => {
-              this.GetZones();
+              this.GetUsers();
             })
             .catch((err) => {
               $q.notify({
@@ -217,9 +239,9 @@ export default {
             });
         } else {
           await axios
-            .post("/api/v1/admin/proxy/zones/add", this.zone)
+            .post("/api/v1/admin/radius/user/add", this.radcheck)
             .then(() => {
-              this.GetZones();
+              this.GetUsers();
             })
             .catch((err) => {
               $q.notify({
@@ -232,7 +254,7 @@ export default {
     };
   },
   async mounted() {
-    await this.GetZones();
+    await this.GetUsers();
   },
 };
 </script>

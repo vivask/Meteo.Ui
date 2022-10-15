@@ -659,6 +659,63 @@
             </q-item>
           </q-list>
         </q-expansion-item>
+        <q-expansion-item
+          label="Radius"
+          v-model="radius"
+          switch-toggle-side
+          dense-toggle
+        >
+          <q-list>
+            <q-item
+              active-class="menu-item"
+              class="sub-menu-item"
+              clickable
+              v-close-popup
+              :active="radiusAuth"
+              :href="getRef('radius', 'auth')"
+              @click="setMenu('radius', 'auth')"
+            >
+              <q-item-section>
+                <q-item-label>Authorisation</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-icon name="mdi-account-circle-outline" />
+              </q-item-section>
+            </q-item>
+            <q-item
+              active-class="menu-item"
+              class="sub-menu-item"
+              clickable
+              v-close-popup
+              :active="radiusAccount"
+              :href="getRef('radius', 'account')"
+              @click="setMenu('radius', 'account')"
+            >
+              <q-item-section>
+                <q-item-label>Accounting</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-icon name="mdi-table-account" />
+              </q-item-section>
+            </q-item>
+            <q-item
+              active-class="menu-item"
+              class="sub-menu-item"
+              clickable
+              v-close-popup
+              :active="radiusVerified"
+              :href="getRef('radius', 'verified')"
+              @click="setMenu('radius', 'verified')"
+            >
+              <q-item-section>
+                <q-item-label>Verified</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-icon name="verified_user" />
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-expansion-item>
       </q-expansion-item>
     </q-drawer>
     <q-ajax-bar position="bottom" color="accent" size="10px" />
@@ -727,6 +784,7 @@ export default defineComponent({
     const secure = ref(false);
     const database = ref(false);
     const servers = ref(false);
+    const radius = ref(false);
 
     onMounted(() => {
       const path = store.current_path.split("/");
@@ -758,6 +816,7 @@ export default defineComponent({
           case "secure":
           case "database":
           case "servers":
+          case "radius":
             parent = "services";
             break;
         }
@@ -818,6 +877,9 @@ export default defineComponent({
       databaseSync: computed(() => store.is_active_database_sync),
       serverXU4: computed(() => store.is_active_server_xu4),
       serverN2: computed(() => store.is_active_server_n2),
+      radiusAuth: computed(() => store.is_active_radius_auth),
+      radiusAccount: computed(() => store.is_active_radius_account),
+      radiusVerified: computed(() => store.is_active_radius_verified),
       peripheral,
       bme280,
       mics6814,
@@ -831,6 +893,7 @@ export default defineComponent({
       secure,
       database,
       servers,
+      radius,
       getSensorRef(base, sensor) {
         var href = "#/" + base + "?filter=" + store.get_filter;
         if (sensor != null) {

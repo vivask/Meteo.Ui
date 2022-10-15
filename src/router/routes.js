@@ -156,6 +156,20 @@ const routes = [
           requireAuth: true,
         },
       },
+      {
+        path: "/radius/auth",
+        component: () => import("pages/AuthRadius.vue"),
+        meta: {
+          requireAuth: true,
+        },
+      },
+      {
+        path: "/radius/account",
+        component: () => import("pages/AcctRadius.vue"),
+        meta: {
+          requireAuth: true,
+        },
+      },
     ],
   },
 

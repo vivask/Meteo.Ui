@@ -98,6 +98,18 @@ export default {
                 type: "negative",
                 message: err.response.data.detail,
               });
+            } else {
+              if (err.response.status === 401) {
+                $q.notify({
+                  type: "negative",
+                  message: "Unknown user name or password",
+                });
+              } else {
+                $q.notify({
+                  type: "negative",
+                  message: "Authentication error",
+                });
+              }
             }
           }
         }
