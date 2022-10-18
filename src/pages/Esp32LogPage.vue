@@ -23,6 +23,7 @@
           />
         </q-item>
         <q-table
+          dense
           :rows="rows"
           :columns="columns"
           row-key="date"
@@ -40,7 +41,7 @@
           <template v-slot:body-cell-time="props">
             <q-td
               :props="props"
-              class="wd-50"
+              class="wd-70"
               :class="logColor(props.row.type)"
             >
               {{ utils.getTime(props.row.date_time) }}
@@ -126,7 +127,7 @@ export default {
           case "W":
             return "text-subtitle1 text-warning";
           case "E":
-            return "text-subtitle1 text-warning";
+            return "text-subtitle1 text-negative";
           default:
             return "text-subtitle1 text-grey";
         }

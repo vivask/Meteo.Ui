@@ -21,6 +21,9 @@ export const useUtils = defineStore("utils", {
     emptyTime(time) {
       return date.formatDate(time, "X") == -62135596800;
     },
+    getDurationNow(time) {
+      return date.formatDate(new Date(), "X") - date.formatDate(time, "X");
+    },
     validateIP(ip) {
       if (
         /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(

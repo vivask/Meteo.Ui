@@ -128,15 +128,31 @@ export default {
             $q.notify({ type: "negative", message: err.response.data.message });
           });
       },
+      async onVerify(row) {
+        const url = "/api/v1/admin/radius/account/verified/" + row.id;
+        await axios
+          .put(url)
+          .then(async () => {
+            await this.GetAccounting();
+          })
+          .catch((err) => {
+            $q.notify({ type: "negative", message: err.response.data.message });
+          });
+      },
       stateColor(row) {
-        return row.verified && row.valid
+        console.log(row);
+        return row.verified.length > 0 &&
+          row.valid.length > 0 &&
+          row.valid === row.username
           ? "positive"
-          : !row.verified && row.valid
-          ? "warning"
-          : "negative";
+          : row.verified.length > 0 &&
+            row.valid.length > 0 &&
+            !(row.valid === row.username)
+          ? "negative"
+          : "warning";
       },
       stateIcon(row) {
-        return row.verified ? "verified_user" : "mdi-shield-account";
+        return row.verified.length > 0 ? "verified_user" : "mdi-shield-account";
       },
     };
   },

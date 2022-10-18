@@ -718,7 +718,12 @@
         </q-expansion-item>
       </q-expansion-item>
     </q-drawer>
-    <q-ajax-bar position="bottom" color="accent" size="10px" />
+    <q-ajax-bar
+      position="bottom"
+      color="accent"
+      size="10px"
+      :skip-hijack="ajaxSkip"
+    />
     <q-footer elevated>
       <q-toolbar>
         <q-spinner-bars color="primary" size="2em" v-if="isActivePeripheral" />
@@ -740,13 +745,7 @@
 </template>
 
 <script>
-import {
-  defineComponent,
-  ref,
-  computed,
-  onMounted,
-  onBeforeUnmount,
-} from "vue";
+import { defineComponent, ref, computed, onMounted } from "vue";
 import { useLayoutStore } from "src/stores/layout";
 import { useAuthStore } from "src/stores/auth";
 import LoadInner from "components/LoadInner.vue";
@@ -762,8 +761,6 @@ export default defineComponent({
   },
 
   setup() {
-    let timer;
-
     const store = useLayoutStore();
     const auth = useAuthStore();
     const $router = useRouter();
@@ -825,15 +822,6 @@ export default defineComponent({
           eval(parent).value = true;
         }
       }
-
-      timer = setInterval(() => {
-        //index.value = (index.value + 1) % colors.length
-        //color.value = colors[ index.value ]
-      }, 3000);
-    });
-
-    onBeforeUnmount(() => {
-      clearTimeout(timer);
     });
 
     return {
@@ -844,6 +832,7 @@ export default defineComponent({
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
+      ajaxSkip: computed(() => store.get_ajax_state),
       loadInner: computed(() => store.load_spinner),
       gearInner: computed(() => store.gear_spinner),
       activeHome: computed(() => store.is_active_home),
