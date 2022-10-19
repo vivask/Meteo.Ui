@@ -57,7 +57,7 @@
 import { useQuasar } from "quasar";
 import { onMounted, onBeforeUnmount, ref } from "vue";
 import { useAuthStore } from "src/stores/auth";
-import { useRouter, useRoute } from "vue-router";
+import { useRouter } from "vue-router";
 
 const login = {
   username: null,

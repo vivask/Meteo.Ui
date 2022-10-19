@@ -1,9 +1,10 @@
 const routes = [
   {
     path: "/",
+    name: "layout",
     component: () => import("layouts/MainLayout.vue"),
     meta: {
-      requireAuth: false,
+      requiresAuth: false,
     },
     children: [
       {
@@ -11,7 +12,7 @@ const routes = [
         name: "home",
         component: () => import("pages/HomePage.vue"),
         meta: {
-          requireAuth: false,
+          requiresAuth: false,
         },
       },
       {
@@ -19,7 +20,7 @@ const routes = [
         name: "login",
         component: () => import("pages/LoginPage.vue"),
         meta: {
-          requireAuth: false,
+          requiresAuth: false,
         },
       },
       {
@@ -27,147 +28,154 @@ const routes = [
         name: "sign",
         component: () => import("pages/SignPage.vue"),
         meta: {
-          requireAuth: false,
+          requiresAuth: false,
+        },
+      },
+      {
+        path: "/peripheral/bme280/temperature",
+        component: () => import("pages/Bme280TemperaturePage.vue"),
+        meta: {
+          requiresAuth: false,
         },
       },
       {
         path: "/esp32/settings",
         component: () => import("pages/Esp32SetPage.vue"),
         meta: {
-          requireAuth: true,
+          requiresAuth: true,
         },
       },
       {
         path: "/esp32/alarm",
         component: () => import("pages/Esp32AlarmPage.vue"),
         meta: {
-          requireAuth: true,
+          requiresAuth: true,
         },
       },
       {
         path: "/esp32/journal",
         component: () => import("pages/Esp32LogPage.vue"),
         meta: {
-          requireAuth: true,
+          requiresAuth: true,
         },
       },
       {
         path: "/proxy/servers",
         component: () => import("pages/ProxyPage.vue"),
         meta: {
-          requireAuth: true,
+          requiresAuth: true,
         },
       },
       {
         path: "/proxy/zones",
         component: () => import("pages/ZonesPage.vue"),
         meta: {
-          requireAuth: true,
+          requiresAuth: true,
         },
       },
       {
         path: "/proxy/autovpn",
         component: () => import("pages/AutoVpnPage.vue"),
         meta: {
-          requireAuth: true,
+          requiresAuth: true,
         },
       },
       {
         path: "/proxy/manualvpn",
         component: () => import("pages/ManualVpnPage.vue"),
         meta: {
-          requireAuth: true,
+          requiresAuth: true,
         },
       },
       {
         path: "/proxy/ignorevpn",
         component: () => import("pages/IgnoreVpnPage.vue"),
         meta: {
-          requireAuth: true,
+          requiresAuth: true,
         },
       },
       {
         path: "/schedule/timetable",
         component: () => import("pages/TimetablePage.vue"),
         meta: {
-          requireAuth: true,
+          requiresAuth: true,
         },
       },
       {
         path: "/schedule/tasks",
         component: () => import("pages/TasksPage.vue"),
         meta: {
-          requireAuth: true,
+          requiresAuth: true,
         },
       },
       {
         path: "/schedule/cron",
         component: () => import("pages/CronPage.vue"),
         meta: {
-          requireAuth: true,
+          requiresAuth: true,
         },
       },
       {
         path: "/secure/sshkeys",
         component: () => import("pages/SshKeysPage.vue"),
         meta: {
-          requireAuth: true,
+          requiresAuth: true,
         },
       },
       {
         path: "/secure/sshhosts",
         component: () => import("pages/SshHostsPage.vue"),
         meta: {
-          requireAuth: true,
+          requiresAuth: true,
         },
       },
       {
         path: "/secure/gitusers",
         component: () => import("pages/GitUsersPage.vue"),
         meta: {
-          requireAuth: true,
+          requiresAuth: true,
         },
       },
       {
         path: "/database/tables",
         component: () => import("pages/TablesPage.vue"),
         meta: {
-          requireAuth: true,
+          requiresAuth: true,
         },
       },
       {
         path: "/database/sync",
         component: () => import("pages/SyncPage.vue"),
         meta: {
-          requireAuth: true,
+          requiresAuth: true,
         },
       },
       {
         path: "/servers/xu4",
         component: () => import("pages/Xu4Page.vue"),
         meta: {
-          requireAuth: true,
+          requiresAuth: true,
         },
       },
       {
         path: "/servers/n2",
         component: () => import("pages/N2Page.vue"),
         meta: {
-          requireAuth: true,
+          requiresAuth: true,
         },
       },
       {
         path: "/radius/auth",
         component: () => import("pages/AuthRadius.vue"),
         meta: {
-          requireAuth: true,
+          requiresAuth: true,
         },
       },
       {
         path: "/radius/account",
         component: () => import("pages/AcctRadius.vue"),
         meta: {
-          requireAuth: true,
+          requiresAuth: true,
         },
       },
     ],

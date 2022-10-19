@@ -9,6 +9,8 @@ import routes from "./routes";
 import { useLayoutStore } from "src/stores/layout";
 import { useAuthStore } from "src/stores/auth";
 
+//import JWT from "jwt-client";
+
 /*
  * If not building with SSR mode, you can
  * directly export the Router instantiation;
@@ -38,10 +40,11 @@ export default route(function (/* { store, ssrContext } */) {
     history: createHistory(
       process.env.MODE === "ssr" ? void 0 : process.env.VUE_ROUTER_BASE
     ),
+    scrollBehavior: () => ({ y: 0 }),
   });
 
   Router.beforeEach((to, from, next) => {
-    let requiresAuth = to.matched.some((record) => record.meta.requireAuth);
+    const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
     if (!requiresAuth) {
       useLayoutStore().set_current_path(to.path);
       next();
@@ -51,7 +54,7 @@ export default route(function (/* { store, ssrContext } */) {
         .then((currentUser) => {
           if (requiresAuth && !currentUser) {
             next({ name: "login", query: { next: to.fullPath } });
-            useLayoutStore().set_current_path(to.fullPath);
+            useLayoutStore().set_current_path(to.path);
           } else {
             useLayoutStore().set_current_path(to.path);
             next();
@@ -59,9 +62,14 @@ export default route(function (/* { store, ssrContext } */) {
         })
         .catch(() => {
           next({ name: "login", query: { next: to.fullPath } });
-          useLayoutStore().set_current_path(to.fullPath);
+          useLayoutStore().set_current_path(to.path);
         });
     }
+    /*if (routes[0].name === "layout") {
+      console.log("Routes: ", routes[0]);
+      const layout = routes[0].component();
+      layout.SetMenuState();
+    }*/
   });
 
   return Router;

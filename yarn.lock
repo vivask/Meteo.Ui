@@ -3854,6 +3854,11 @@
   optionalDependencies:
     "graceful-fs" "^4.1.6"
 
+"jwt-client@^0.2.1":
+  "integrity" "sha512-TGNCdhPtr+GQWX1IweESBN8P/5kobiOC9Q07UntpZ90JwSeLaqtT0vgblTkxZfMa8U5vLxmpNyjRq9I6ZHzxOw=="
+  "resolved" "https://registry.npmjs.org/jwt-client/-/jwt-client-0.2.1.tgz"
+  "version" "0.2.1"
+
 "kind-of@^6.0.2":
   "integrity" "sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw=="
   "resolved" "https://registry.npmjs.org/kind-of/-/kind-of-6.0.3.tgz"

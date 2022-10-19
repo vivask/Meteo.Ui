@@ -9,9 +9,8 @@ export const useAuthStore = defineStore("auth", {
   }),
 
   getters: {
-    getToken() {
-      return token;
-    },
+    is_authenticated: (state) => state.isAuthenticated,
+    get_token: (state) => state.token,
   },
 
   actions: {
@@ -79,10 +78,13 @@ export const useAuthStore = defineStore("auth", {
     async GetUser() {
       return await axios
         .get("/api/v1/admin/user/")
-        .then(
-          (response) => response.data.data.username == this.me.data.username
-        )
-        .catch(() => false);
+        .then((response) => {
+          return response.data.data.username == this.me.data.username;
+        })
+        .catch(() => {
+          this.removeToken();
+          return false;
+        });
     },
   },
 });

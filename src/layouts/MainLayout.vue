@@ -97,7 +97,7 @@
           v-close-popup
           href="#/"
           :active="activeHome"
-          @click="setMenu('Home', '')"
+          @click="setMenu('', '', '')"
         >
           <q-item-section side>
             <q-icon name="mdi-home" color="blue" />
@@ -128,7 +128,7 @@
             v-close-popup
             :active="sensorBme280Temperature"
             :href="getRef('bme280', 'temperature')"
-            @click="setMenu('bme280', 'temperature')"
+            @click="setMenu('peripheral', 'bme280', 'temperature')"
           >
             <q-item-section>
               <q-item-label>Temperature</q-item-label>
@@ -144,7 +144,7 @@
             v-close-popup
             :active="sensorBme280Pressure"
             :href="getRef('bme280', 'pressure')"
-            @click="setMenu('bme280', 'pressure')"
+            @click="setMenu('peripheral', 'bme280', 'pressure')"
           >
             <q-item-section>
               <q-item-label>Pressure</q-item-label>
@@ -160,7 +160,7 @@
             v-close-popup
             :active="sensorBme280Humidity"
             :href="getRef('bme280', 'humidity')"
-            @click="setMenu('bme280', 'humidity')"
+            @click="setMenu('peripheral', 'bme280', 'humidity')"
           >
             <q-item-section>
               <q-item-label>Humidity</q-item-label>
@@ -184,7 +184,7 @@
               v-close-popup
               :active="sensorMics6814NO2"
               :href="getRef('mics6814', 'no2')"
-              @click="setMenu('mics6814', 'no2')"
+              @click="setMenu('peripheral', 'mics6814', 'no2')"
             >
               <q-item-section>
                 <q-item-label>NO2</q-item-label>
@@ -200,7 +200,7 @@
               v-close-popup
               :active="sensorMics6814NH3"
               :href="getRef('mics6814', 'nh3')"
-              @click="setMenu('mics6814', 'nh3')"
+              @click="setMenu('peripheral', 'mics6814', 'nh3')"
             >
               <q-item-section>
                 <q-item-label>NH3</q-item-label>
@@ -225,7 +225,7 @@
               v-close-popup
               :active="sensorRadSensStatic"
               :href="getRef('radsens', 'static')"
-              @click="setMenu('radsens', 'static')"
+              @click="setMenu('peripheral', 'radsens', 'static')"
             >
               <q-item-section>
                 <q-item-label>Static</q-item-label>
@@ -241,7 +241,7 @@
               v-close-popup
               :active="sensorRadSensDynamic"
               :href="getRef('radsens', 'dynamic')"
-              @click="setMenu('radsens', 'dynamic')"
+              @click="setMenu('peripheral', 'radsens', 'dynamic')"
             >
               <q-item-section>
                 <q-item-label>Dynamic</q-item-label>
@@ -266,7 +266,7 @@
               v-close-popup
               :active="sensorZe08ch2o"
               :href="getRef('ze08ch2o', 'ch2o')"
-              @click="setMenu('radsens', 'ch2o')"
+              @click="setMenu('peripheral', 'radsens', 'ch2o')"
             >
               <q-item-section>
                 <q-item-label>CH2O</q-item-label>
@@ -291,7 +291,7 @@
               v-close-popup
               :active="sensorZe08ch2o"
               :href="getRef('ds18b20', 'temperature')"
-              @click="setMenu('ds18b20', 'temperature')"
+              @click="setMenu('peripheral', 'ds18b20', 'temperature')"
             >
               <q-item-section>
                 <q-item-label>Temperature</q-item-label>
@@ -319,7 +319,7 @@
             v-close-popup
             :active="esp32Settings"
             :href="getRef('esp32', 'settings')"
-            @click="setMenu('esp32', 'settings')"
+            @click="setMenu('esp32', 'settings', '')"
           >
             <q-item-section>
               <q-item-label>Settings</q-item-label>
@@ -335,7 +335,7 @@
             v-close-popup
             :active="esp32Alarm"
             :href="getRef('esp32', 'alarm')"
-            @click="setMenu('esp32', 'alarm')"
+            @click="setMenu('esp32', 'alarm', '')"
           >
             <q-item-section>
               <q-item-label>Alarm</q-item-label>
@@ -351,7 +351,7 @@
             v-close-popup
             :active="esp32Journal"
             :href="getRef('esp32', 'journal')"
-            @click="setMenu('esp32', 'journal')"
+            @click="setMenu('esp32', 'journal', '')"
           >
             <q-item-section>
               <q-item-label>Journal</q-item-label>
@@ -388,7 +388,7 @@
               v-close-popup
               :active="proxyServers"
               :href="getRef('proxy', 'servers')"
-              @click="setMenu('proxy', 'servers')"
+              @click="setMenu('services', 'proxy', 'servers')"
             >
               <q-item-section>
                 <q-item-label>Servers</q-item-label>
@@ -404,7 +404,7 @@
               v-close-popup
               :active="proxyZones"
               :href="getRef('proxy', 'zones')"
-              @click="setMenu('proxy', 'zones')"
+              @click="setMenu('services', 'proxy', 'zones')"
             >
               <q-item-section>
                 <q-item-label>Locale zones</q-item-label>
@@ -420,7 +420,7 @@
               v-close-popup
               :active="proxyManualVPN"
               :href="getRef('proxy', 'manualvpn')"
-              @click="setMenu('proxy', 'manualvpn')"
+              @click="setMenu('services', 'proxy', 'manualvpn')"
             >
               <q-item-section>
                 <q-item-label>Manual VPN</q-item-label>
@@ -436,7 +436,7 @@
               v-close-popup
               :active="proxyAutoVPN"
               :href="getRef('proxy', 'autovpn')"
-              @click="setMenu('proxy', 'autovpn')"
+              @click="setMenu('services', 'proxy', 'autovpn')"
             >
               <q-item-section>
                 <q-item-label>Auto VPN</q-item-label>
@@ -452,7 +452,7 @@
               v-close-popup
               :active="proxyIgnoreVPN"
               :href="getRef('proxy', 'ignorevpn')"
-              @click="setMenu('proxy', 'ignorevpn')"
+              @click="setMenu('services', 'proxy', 'ignorevpn')"
             >
               <q-item-section>
                 <q-item-label>Ignore VPN</q-item-label>
@@ -477,7 +477,7 @@
               v-close-popup
               :active="scheduleTimetable"
               :href="getRef('schedule', 'timetable')"
-              @click="setMenu('schedule', 'timetable')"
+              @click="setMenu('services', 'schedule', 'timetable')"
             >
               <q-item-section>
                 <q-item-label>Timetable</q-item-label>
@@ -493,7 +493,7 @@
               v-close-popup
               :active="scheduleTasks"
               :href="getRef('schedule', 'tasks')"
-              @click="setMenu('schedule', 'tasks')"
+              @click="setMenu('services', 'schedule', 'tasks')"
             >
               <q-item-section>
                 <q-item-label>Tasks</q-item-label>
@@ -509,7 +509,7 @@
               v-close-popup
               :active="scheduleCron"
               :href="getRef('schedule', 'cron')"
-              @click="setMenu('schedule', 'cron')"
+              @click="setMenu('services', 'schedule', 'cron')"
             >
               <q-item-section>
                 <q-item-label>Cron</q-item-label>
@@ -534,7 +534,7 @@
               v-close-popup
               :active="secureSshKeys"
               :href="getRef('secure', 'sshkeys')"
-              @click="setMenu('secure', 'sshkeys')"
+              @click="setMenu('services', 'secure', 'sshkeys')"
             >
               <q-item-section>
                 <q-item-label>SSH Keys</q-item-label>
@@ -550,7 +550,7 @@
               v-close-popup
               :active="secureSshHosts"
               :href="getRef('secure', 'sshhosts')"
-              @click="setMenu('secure', 'sshhosts')"
+              @click="setMenu('services', 'secure', 'sshhosts')"
             >
               <q-item-section>
                 <q-item-label>SSH Hosts</q-item-label>
@@ -566,7 +566,7 @@
               v-close-popup
               :active="secureGitHosts"
               :href="getRef('secure', 'gitusers')"
-              @click="setMenu('secure', 'gitusers')"
+              @click="setMenu('services', 'secure', 'gitusers')"
             >
               <q-item-section>
                 <q-item-label>Git Users</q-item-label>
@@ -591,7 +591,7 @@
               v-close-popup
               :active="databaseTables"
               :href="getRef('database', 'tables')"
-              @click="setMenu('database', 'tables')"
+              @click="setMenu('services', 'database', 'tables')"
             >
               <q-item-section>
                 <q-item-label>Tables</q-item-label>
@@ -607,7 +607,7 @@
               v-close-popup
               :active="databaseSync"
               :href="getRef('database', 'sync')"
-              @click="setMenu('database', 'sync')"
+              @click="setMenu('services', 'database', 'sync')"
             >
               <q-item-section>
                 <q-item-label>Sync</q-item-label>
@@ -632,7 +632,7 @@
               v-close-popup
               :active="serverXU4"
               :href="getRef('servers', 'xu4')"
-              @click="setMenu('servers', 'xu4')"
+              @click="setMenu('services', 'servers', 'xu4')"
             >
               <q-item-section>
                 <q-item-label>Master (XU4)</q-item-label>
@@ -648,7 +648,7 @@
               v-close-popup
               :active="serverN2"
               :href="getRef('servers', 'n2')"
-              @click="setMenu('servers', 'n2')"
+              @click="setMenu('services', 'servers', 'n2')"
             >
               <q-item-section>
                 <q-item-label>Slave (N2)</q-item-label>
@@ -673,7 +673,7 @@
               v-close-popup
               :active="radiusAuth"
               :href="getRef('radius', 'auth')"
-              @click="setMenu('radius', 'auth')"
+              @click="setMenu('services', 'radius', 'auth')"
             >
               <q-item-section>
                 <q-item-label>Authorisation</q-item-label>
@@ -689,7 +689,7 @@
               v-close-popup
               :active="radiusAccount"
               :href="getRef('radius', 'account')"
-              @click="setMenu('radius', 'account')"
+              @click="setMenu('services', 'radius', 'account')"
             >
               <q-item-section>
                 <q-item-label>Accounting</q-item-label>
@@ -705,7 +705,7 @@
               v-close-popup
               :active="radiusVerified"
               :href="getRef('radius', 'verified')"
-              @click="setMenu('radius', 'verified')"
+              @click="setMenu('services', 'radius', 'verified')"
             >
               <q-item-section>
                 <q-item-label>Verified</q-item-label>
@@ -722,7 +722,7 @@
       position="bottom"
       color="accent"
       size="10px"
-      :skip-hijack="ajaxSkip"
+      :hijack-filter="ajaxFilterFn"
     />
     <q-footer elevated>
       <q-toolbar>
@@ -745,7 +745,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed, onMounted } from "vue";
+import { defineComponent, ref, computed } from "vue";
 import { useLayoutStore } from "src/stores/layout";
 import { useAuthStore } from "src/stores/auth";
 import LoadInner from "components/LoadInner.vue";
@@ -768,121 +768,71 @@ export default defineComponent({
     const leftDrawerOpen = ref(false);
     const mainFilter = ref("avg");
     const isActivePeripheral = ref(false);
-    const peripheral = ref(false);
-    const bme280 = ref(false);
-    const mics6814 = ref(false);
-    const radsens = ref(false);
-    const ze08ch2o = ref(false);
-    const ds18b20 = ref(false);
-    const esp32 = ref(false);
-    const services = ref(false);
-    const proxy = ref(false);
-    const schedule = ref(false);
-    const secure = ref(false);
-    const database = ref(false);
-    const servers = ref(false);
-    const radius = ref(false);
-
-    onMounted(() => {
-      const path = store.current_path.split("/");
-      let menu, submenu;
-      if (path.length > 2) {
-        menu = path[1];
-        submenu = path[2];
-      } else {
-        menu = "/";
-        submenu = "";
-      }
-      store.set_selected_menu(menu);
-      store.set_selected_submenu(submenu);
-
-      if (submenu.length > 0) {
-        console.log(menu);
-        eval(menu).value = true;
-        let parent = "";
-        switch (menu) {
-          case "bme280":
-          case "mics6814":
-          case "radsens":
-          case "ze08ch2o":
-          case "ds18b20":
-            parent = "peripheral";
-            break;
-          case "proxy":
-          case "schedule":
-          case "secure":
-          case "database":
-          case "servers":
-          case "radius":
-            parent = "services";
-            break;
-        }
-        if (parent.length > 0) {
-          console.log(parent);
-          eval(parent).value = true;
-        }
-      }
-    });
 
     return {
-      isAuthenticated: computed(() => auth.isAuthenticated),
+      isAuthenticated: computed(() => auth.is_authenticated),
       leftDrawerOpen,
       mainFilter,
       isActivePeripheral,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
-      ajaxSkip: computed(() => store.get_ajax_state),
       loadInner: computed(() => store.load_spinner),
       gearInner: computed(() => store.gear_spinner),
-      activeHome: computed(() => store.is_active_home),
+      activeHome: computed(() => store.get_menu_level_0 === ""),
       sensorBme280Temperature: computed(
-        () => store.is_active_bme280_temperature
+        () => store.get_menu_level_2 === "temperature"
       ),
-      sensorBme280Pressure: computed(() => store.is_active_bme280_pressure),
-      sensorBme280Humidity: computed(() => store.is_active_bme280_humidity),
-      sensorMics6814NO2: computed(() => store.is_active_mics6814_no2),
-      sensorMics6814NH3: computed(() => store.is_active_mics6814_nh3),
-      sensorRadSensStatic: computed(() => store.is_active_radsens_static),
-      sensorRadSensDynamic: computed(() => store.is_active_radsens_dynamic),
-      sensorZe08ch2o: computed(() => store.is_active_ze08ch2o),
-      sensorDs18b20: computed(() => store.is_active_ds18b20),
-      esp32Settings: computed(() => store.is_active_esp32_settings),
-      esp32Alarm: computed(() => store.is_active_esp32_alarm),
-      esp32Journal: computed(() => store.is_active_esp32_journal),
-      proxyServers: computed(() => store.is_active_proxy_servers),
-      proxyZones: computed(() => store.is_active_proxy_zones),
-      proxyAutoVPN: computed(() => store.is_active_proxy_autovpn),
-      proxyManualVPN: computed(() => store.is_active_proxy_manualvpn),
-      proxyIgnoreVPN: computed(() => store.is_active_proxy_ignorevpn),
-      scheduleTimetable: computed(() => store.is_active_schedule_timetable),
-      scheduleTasks: computed(() => store.is_active_schedule_tasks),
-      scheduleCron: computed(() => store.is_active_schedule_cron),
-      secureSshKeys: computed(() => store.is_active_secure_sshkeys),
-      secureSshHosts: computed(() => store.is_active_secure_sshhosts),
-      secureGitKeys: computed(() => store.is_active_secure_gitkeys),
-      secureGitHosts: computed(() => store.is_active_secure_githosts),
-      databaseTables: computed(() => store.is_active_database_tables),
-      databaseSync: computed(() => store.is_active_database_sync),
-      serverXU4: computed(() => store.is_active_server_xu4),
-      serverN2: computed(() => store.is_active_server_n2),
-      radiusAuth: computed(() => store.is_active_radius_auth),
-      radiusAccount: computed(() => store.is_active_radius_account),
-      radiusVerified: computed(() => store.is_active_radius_verified),
-      peripheral,
-      bme280,
-      mics6814,
-      radsens,
-      ze08ch2o,
-      ds18b20,
-      esp32,
-      services,
-      proxy,
-      schedule,
-      secure,
-      database,
-      servers,
-      radius,
+      sensorBme280Pressure: computed(
+        () => store.get_menu_level_2 === "pressure"
+      ),
+      sensorBme280Humidity: computed(
+        () => store.get_menu_level_2 === "humidity"
+      ),
+      sensorMics6814NO2: computed(() => store.get_menu_level_2 === "no2"),
+      sensorMics6814NH3: computed(() => store.get_menu_level_2 === "nh2"),
+      sensorRadSensStatic: computed(() => store.get_menu_level_2 === "static"),
+      sensorRadSensDynamic: computed(
+        () => store.get_menu_level_2 === "dynamic"
+      ),
+      sensorZe08ch2o: computed(() => store.get_menu_level_2 === "ch2o"),
+      sensorDs18b20: computed(() => store.get_menu_level_2 === "temperature"),
+      esp32Settings: computed(() => store.get_menu_level_1 === "settings"),
+      esp32Alarm: computed(() => store.get_menu_level_1 === "alarm"),
+      esp32Journal: computed(() => store.get_menu_level_1 === "journal"),
+      proxyServers: computed(() => store.get_menu_level_2 === "servers"),
+      proxyZones: computed(() => store.get_menu_level_2 === "zones"),
+      proxyAutoVPN: computed(() => store.get_menu_level_2 === "autovpn"),
+      proxyManualVPN: computed(() => store.get_menu_level_2 === "manualvpn"),
+      proxyIgnoreVPN: computed(() => store.get_menu_level_2 === "ignorevpn"),
+      scheduleTimetable: computed(() => store.get_menu_level_2 === "timetable"),
+      scheduleTasks: computed(() => store.get_submenu === "tasks"),
+      scheduleCron: computed(() => store.get_selected_menu === "cron"),
+      secureSshKeys: computed(() => store.get_menu_level_2 === "sshkeys"),
+      secureSshHosts: computed(() => store.get_menu_level_2 === "sshhosts"),
+      secureGitKeys: computed(() => store.get_menu_level_2 === "gitkeys"),
+      secureGitHosts: computed(() => store.get_menu_level_2 === "githosts"),
+      databaseTables: computed(() => store.get_menu_level_2 === "tables"),
+      databaseSync: computed(() => store.get_menu_level_2 === "sync"),
+      serverXU4: computed(() => store.get_menu_level_2 === "xu4"),
+      serverN2: computed(() => store.get_menu_level_2 === "n2"),
+      radiusAuth: computed(() => store.get_menu_level_2 === "auth"),
+      radiusAccount: computed(() => store.get_menu_level_2 === "account"),
+      radiusVerified: computed(() => store.get_menu_level_2 === "verified"),
+      peripheral: ref(store.get_menu_level_0 === "peripheral"),
+      bme280: ref(false),
+      mics6814: ref(false),
+      radsens: ref(false),
+      ze08ch2o: ref(false),
+      ds18b20: ref(false),
+      esp32: ref(store.get_menu_level_0 === "esp32"),
+      services: ref(store.get_menu_level_0 === "services"),
+      proxy: ref(store.get_menu_level_1 === "proxy"),
+      schedule: ref(false),
+      secure: ref(false),
+      database: ref(false),
+      servers: ref(false),
+      radius: ref(false),
       getSensorRef(base, sensor) {
         var href = "#/" + base + "?filter=" + store.get_filter;
         if (sensor != null) {
@@ -899,21 +849,42 @@ export default defineComponent({
         //console.log(href)
         return href;
       },
-      setMenu(menu, submenu) {
-        store.set_selected_menu(menu);
-        store.set_selected_submenu(submenu);
-        if (menu != "home") {
+      setMenu(L_0, L_1, L_2) {
+        store.set_menu(L_0, L_1, L_2);
+        if (L_0 != "") {
           store.set_filter(mainFilter);
         }
+      },
+      selectMenu() {
+        this.peripheral = store.get_menu_level_0 === "peripheral";
+        this.esp32 = store.get_menu_level_0 === "esp32";
+        this.services = store.get_menu_level_0 === "services";
+        this.bme280 = store.get_menu_level_1 === "bme280";
+        this.mics6814 = store.get_menu_level_1 === "mics6814";
+        this.radsens = store.get_menu_level_1 === "radsens";
+        this.ze08ch2o = store.get_menu_level_1 === "ze08ch2o";
+        this.ds18b20 = store.get_menu_level_1 === "ds18b20";
+        this.proxy = store.get_menu_level_1 === "proxy";
+        this.schedule = store.get_menu_level_1 === "schedule";
+        this.secure = store.get_menu_level_1 === "secure";
+        this.database = store.get_menu_level_1 === "database";
+        this.servers = store.get_menu_level_1 === "servers";
+        this.radius = store.get_menu_level_1 === "radius";
       },
       logout() {
         auth.signOut();
         $router.push("/");
       },
+      ajaxFilterFn(url) {
+        return !(url === "/api/v1/admin/esp32/status/get");
+      },
     };
   },
-  mounted() {},
-  methods: {},
+  methods: {
+    SetMenuState() {
+      console.log("SetMenuState");
+    },
+  },
 });
 </script>
 

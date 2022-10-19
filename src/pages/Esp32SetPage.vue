@@ -19,16 +19,14 @@
           <tbody>
             <tr>
               <td class="wd-max">
-                <q-input
+                <q-file
                   v-model="file"
                   :disable="disable"
-                  type="file"
-                  hint="Firmware file"
-                  @update:model-value="
-                    (val) => {
-                      file = val[0];
-                    }
-                  "
+                  accept=".bin"
+                  label="Firmware file"
+                  outlined
+                  use-chips
+                  multiple="false"
                 />
               </td>
             </tr>
@@ -132,7 +130,8 @@ export default {
           `col-${$q.screen.name == "sm" ? 8 : $q.screen.name == "xs" ? 11 : 4}`
       ),
       onFirmware() {
-        if (!(this.file && this.file.length > 0)) {
+        console.log(this.file);
+        if (!(this.file && this.file.name.length > 0)) {
           $q.notify({
             type: "negative",
             message: "Please select firmware file",
@@ -156,10 +155,34 @@ export default {
         });
       },
       onSetupMode() {
-        console.log("onSetupMode not implemented!");
+        $q.dialog({
+          title: "Confirm",
+          message: "Are you sure to set the settings mode?",
+          cancel: true,
+          persistent: true,
+        }).onOk(() => {
+          axios.put("/api/v1/admin/esp32/ap").catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
+        });
       },
       onRebotEsp32() {
-        console.log("onRebotEsp32 not implemented!");
+        $q.dialog({
+          title: "Confirm",
+          message: "Are you sure you want to reload esp32?",
+          cancel: true,
+          persistent: true,
+        }).onOk(() => {
+          axios.put("/api/v1/admin/esp32/reboot").catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
+        });
       },
       onRebotAvr() {
         console.log("onRebotAvr not implemented!");
