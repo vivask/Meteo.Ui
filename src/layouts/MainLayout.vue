@@ -876,7 +876,10 @@ export default defineComponent({
         $router.push("/");
       },
       ajaxFilterFn(url) {
-        return !(url === "/api/v1/admin/esp32/status/get");
+        return !(
+          url === "/api/v1/admin/esp32/status/get" ||
+          url === "/api/v1/esp32/peripheral/get"
+        );
       },
     };
   },

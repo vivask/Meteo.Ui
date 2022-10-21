@@ -218,26 +218,7 @@
             reactive-rules
             lazy-rules
             :rules="[
-              (val, rules) =>
-                !(job.period.id === 'day') ||
-                rules.fulltime(val) ||
-                'Please type time',
-              (val, rules) =>
-                !(job.period.id === 'week') ||
-                rules.fulltime(val) ||
-                'Please type time',
-              (val, rules) =>
-                !(job.period.id === 'month') ||
-                rules.fulltime(val) ||
-                'Please type time',
-              (val, rules) =>
-                !(job.period.id === 'year') ||
-                rules.fulltime(val) ||
-                'Please type time',
-              (val, rules) =>
-                !(job.period.id === 'day_of_week') ||
-                rules.fulltime(val) ||
-                'Please type time',
+              (val) => checkTime(job.period.id, val) || 'Please type time',
               (val) => utils.moreThanNow(val, job.date) || 'Time has expired',
             ]"
           >
@@ -272,14 +253,7 @@
             reactive-rules
             lazy-rules
             :rules="[
-              (val, rules) =>
-                !(job.period.id === 'month') ||
-                (utils.moreThanOrEqualToday(val) && rules.date(val)) ||
-                'Incorrect date',
-              (val, rules) =>
-                !(job.period.id === 'year') ||
-                (utils.moreThanOrEqualToday(val) && rules.date(val)) ||
-                'Incorrect date',
+              (val) => checkDate(job.period.id, val) || 'Incorrect date',
               (val) => utils.moreThanNow(job.time, val) || 'Time has expired',
             ]"
           >
@@ -555,6 +529,27 @@ export default {
       showParams: ref(false),
       showBtnAddParam: ref(false),
       createParam: ref(false),
+      checkTime(period, v) {
+        switch (period) {
+          case "day":
+          case "week":
+          case "month":
+          case "year":
+          case "day_of_week":
+            return utils.fulltime(v);
+          default:
+            return true;
+        }
+      },
+      checkDate(period, v) {
+        switch (period) {
+          case "month":
+          case "year":
+            return utils.moreThanOrEqualToday(v) && utils.date(v);
+          default:
+            return true;
+        }
+      },
       async GetExecutors() {
         await axios
           .get("/api/v1/admin/schedule/executors/get")
@@ -661,7 +656,7 @@ export default {
           cancel: true,
           persistent: true,
         }).onOk(() => {
-          const url = "/api/v1/admin/schedule/jobs/" + row.id;
+          const url = "/api/v1/admin/schedule/job/" + row.id;
           axios
             .delete(url)
             .then(async () => {
@@ -674,7 +669,7 @@ export default {
       },
       async onActivate(row) {
         if (row.active) {
-          let url = "/api/v1/admin/schedule/jobs/deactivate/" + row.id;
+          let url = "/api/v1/admin/schedule/job/deactivate/" + row.id;
           await axios
             .put(url)
             .then(async () => {
@@ -684,7 +679,7 @@ export default {
               await this.reloadWarning(err);
             });
         } else {
-          let url = "/api/v1/admin/schedule/jobs/activate/" + row.id;
+          let url = "/api/v1/admin/schedule/job/activate/" + row.id;
           await axios
             .put(url)
             .then(async () => {
@@ -696,7 +691,7 @@ export default {
         }
       },
       async onRun(row) {
-        let url = "/api/v1/admin/schedule/jobs/run/" + row.id;
+        let url = "/api/v1/admin/schedule/job/run/" + row.id;
         await axios
           .put(url)
           .then(async () => {
@@ -724,7 +719,7 @@ export default {
         this.job.value = parseInt(this.job.value, 10);
         if (actionEdit.value) {
           await axios
-            .post("/api/v1/admin/schedule/jobs/edit", this.job)
+            .post("/api/v1/admin/schedule/job/edit", this.job)
             .then(async () => {
               await this.GetJobs();
             })
@@ -733,7 +728,7 @@ export default {
             });
         } else {
           await axios
-            .post("/api/v1/admin/schedule/jobs/add", this.job)
+            .post("/api/v1/admin/schedule/job/add", this.job)
             .then(async () => {
               await this.GetJobs();
             })

@@ -65,11 +65,6 @@ export default route(function (/* { store, ssrContext } */) {
           useLayoutStore().set_current_path(to.path);
         });
     }
-    /*if (routes[0].name === "layout") {
-      console.log("Routes: ", routes[0]);
-      const layout = routes[0].component();
-      layout.SetMenuState();
-    }*/
   });
 
   return Router;

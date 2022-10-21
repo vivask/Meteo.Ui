@@ -97,7 +97,6 @@
 import { useQuasar } from "quasar";
 import { computed, ref, onMounted, onBeforeUnmount } from "vue";
 import { useEsp32Store } from "src/stores/esp32";
-
 import axios from "axios";
 
 export default {
@@ -146,12 +145,17 @@ export default {
         }).onOk(() => {
           let data = new FormData();
           data.append("firmware", this.file);
-          axios.post("/api/v1/admin/esp32/upgrade/", data).catch((err) => {
-            $q.notify({
-              type: "negative",
-              message: err.response.data.message,
+          axios
+            .post("/api/v1/admin/esp32/upgrade/", data)
+            .then(() => {
+              this.file = null;
+            })
+            .catch((err) => {
+              $q.notify({
+                type: "negative",
+                message: err.response.data.message,
+              });
             });
-          });
         });
       },
       onSetupMode() {

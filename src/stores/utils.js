@@ -25,22 +25,14 @@ export const useUtils = defineStore("utils", {
       return date.formatDate(new Date(), "X") - date.formatDate(time, "X");
     },
     validateIP(ip) {
-      if (
-        /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
-          ip
-        )
-      ) {
-        return true;
-      }
-      return false;
+      return /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
+        ip
+      );
     },
     validateDN(dn) {
-      if (
-        /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/.test(dn)
-      ) {
-        return true;
-      }
-      return false;
+      return /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/.test(
+        dn
+      );
     },
     validateHost(host) {
       return this.validateIP(host) || this.validateDN(host);
@@ -71,6 +63,12 @@ export const useUtils = defineStore("utils", {
     },
     isNumber(val) {
       return /^\d+$/.test(val);
+    },
+    fulltime(v) {
+      return /^([0-1]?\d|2[0-3]):[0-5]\d:[0-5]\d$/.test(v);
+    },
+    date(date) {
+      return /^-?[\d]+\/[0-1]\d\/[0-3]\d$/.test(v);
     },
   },
 });
