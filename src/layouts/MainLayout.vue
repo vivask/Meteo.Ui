@@ -720,7 +720,7 @@
     </q-drawer>
     <q-ajax-bar
       position="bottom"
-      color="accent"
+      color="yellow"
       size="10px"
       :hijack-filter="ajaxFilterFn"
     />

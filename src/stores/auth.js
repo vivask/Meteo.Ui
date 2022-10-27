@@ -6,6 +6,7 @@ export const useAuthStore = defineStore("auth", {
     me: {},
     token: "",
     isAuthenticated: false,
+    refresh: false,
   }),
 
   getters: {
@@ -24,6 +25,7 @@ export const useAuthStore = defineStore("auth", {
         this.setToken(token);
         axios.defaults.headers.common.Authorization = "Bearer " + token.token;
         this.getMe();
+        this.refresh = false;
       });
     },
     async getMe() {
@@ -78,10 +80,14 @@ export const useAuthStore = defineStore("auth", {
     async GetUser() {
       return await axios
         .get("/api/v1/admin/user/")
-        .then((response) => {
+        .then(async (response) => {
           return response.data.data.username == this.me.data.username;
         })
-        .catch(() => {
+        .catch(async () => {
+          if (!refresh) {
+            this.refresh = true;
+            return await refreshToken().then(async () => this.GetUser);
+          }
           this.removeToken();
           return false;
         });

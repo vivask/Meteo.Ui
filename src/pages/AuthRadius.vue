@@ -67,7 +67,12 @@
   <q-dialog v-model="create" transition-show="rotate" transition-hide="rotate">
     <q-card style="min-width: 350px">
       <q-card-section>
-        <q-form @submit="onSubmit(create)" class="q-gutter-md">
+        <q-form
+          @submit="onSubmit(create)"
+          class="q-gutter-md"
+          autocomplete="off"
+          autocorrect="off"
+        >
           <q-input
             v-model="radcheck.username"
             outlined

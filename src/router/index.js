@@ -9,8 +9,6 @@ import routes from "./routes";
 import { useLayoutStore } from "src/stores/layout";
 import { useAuthStore } from "src/stores/auth";
 
-//import JWT from "jwt-client";
-
 /*
  * If not building with SSR mode, you can
  * directly export the Router instantiation;

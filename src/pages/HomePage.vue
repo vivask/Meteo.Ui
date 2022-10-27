@@ -1,10 +1,7 @@
 <template>
   <div class="q-pa-md">
     <div class="row justify-center">
-      <div
-        class="q-ml-sm bg-blue-grey-9 rounded-borders shadow-8"
-        :class="cols"
-      >
+      <div class="q-ml-sm square rounded-borders shadow-8" :class="cols">
         <div
           v-ripple
           class="relative-position container cursor-pointer q-hoverable"
@@ -53,7 +50,7 @@
                 color="pink"
                 size="xs"
                 icon="mdi-check"
-                @click.stop="bme280TemperatureClick"
+                @click.stop="bme280Tchk"
               />
             </q-item-section>
           </q-item>
@@ -94,10 +91,7 @@
         </div>
       </div>
       <div class="flex-break" v-if="$q.screen.name == 'xs'"></div>
-      <div
-        class="q-ml-sm square bg-blue-grey-9 rounded-borders shadow-8"
-        :class="cols"
-      >
+      <div class="q-ml-sm square rounded-borders shadow-8" :class="cols">
         <div
           v-ripple
           class="relative-position container cursor-pointer q-hoverable"
@@ -140,7 +134,7 @@
                 color="pink"
                 size="xs"
                 icon="mdi-check"
-                @click.stop="mics6814NH3Click"
+                @click.stop="mics6814NH3chk"
               />
             </q-item-section>
           </q-item>
@@ -153,7 +147,7 @@
                 v-model="peripheral.mics6814_no2"
                 :color="mics6814ValueColor"
                 >{{
-                  parseFloat(peripheral.mics6814_no2).toFixed(1)
+                  parseFloat(peripheral.mics6814_no2).toFixed(2)
                 }}</q-item-label
               >
             </q-item-section>
@@ -167,7 +161,7 @@
                 color="pink"
                 size="xs"
                 icon="mdi-check"
-                @click.stop="mics6814NO2Click"
+                @click.stop="mics6814NO2chk"
               />
             </q-item-section>
           </q-item>
@@ -194,7 +188,7 @@
                 color="pink"
                 size="xs"
                 icon="mdi-check"
-                @click.stop="mics6814COClick"
+                @click.stop="mics6814COchk"
               />
             </q-item-section>
           </q-item>
@@ -204,10 +198,7 @@
         class="flex-break"
         v-if="$q.screen.name == 'xs' || $q.screen.name == 'sm'"
       ></div>
-      <div
-        class="q-ml-sm square bg-blue-grey-9 rounded-borders shadow-8"
-        :class="cols"
-      >
+      <div class="q-ml-sm square rounded-borders shadow-8" :class="cols">
         <div
           v-ripple
           class="relative-position container cursor-pointer q-hoverable"
@@ -250,7 +241,7 @@
                 color="pink"
                 size="xs"
                 icon="mdi-check"
-                @click.stop="radsensStaticClick"
+                @click.stop="radsensSchk"
               />
             </q-item-section>
           </q-item>
@@ -277,7 +268,7 @@
                 color="pink"
                 size="xs"
                 icon="mdi-check"
-                @click.stop="radsensDynamicClick"
+                @click.stop="radsensDchk"
               />
             </q-item-section>
           </q-item>
@@ -301,10 +292,7 @@
         class="flex-break"
         v-if="$q.screen.name == 'xs' || $q.screen.name == 'xl'"
       ></div>
-      <div
-        class="q-ml-sm square bg-blue-grey-9 rounded-borders shadow-8"
-        :class="cols"
-      >
+      <div class="q-ml-sm square rounded-borders shadow-8" :class="cols">
         <div
           v-ripple
           class="relative-position container cursor-pointer q-hoverable"
@@ -352,7 +340,7 @@
                 color="pink"
                 size="xs"
                 icon="mdi-check"
-                @click.stop="ds18b20TemperatureClick"
+                @click.stop="ds18b20Tchk"
               />
             </q-item-section>
           </q-item>
@@ -362,10 +350,7 @@
         class="flex-break"
         v-if="$q.screen.name == 'xs' || $q.screen.name == 'sm'"
       ></div>
-      <div
-        class="q-ml-sm square bg-blue-grey-9 rounded-borders shadow-8"
-        :class="cols"
-      >
+      <div class="q-ml-sm square rounded-borders shadow-8" :class="cols">
         <div
           v-ripple
           class="relative-position container cursor-pointer q-hoverable"
@@ -406,7 +391,7 @@
                 color="pink"
                 size="xs"
                 icon="mdi-check"
-                @click.stop="ze08ch2oValueClick"
+                @click.stop="ze08ch2oCH2Ochk"
               />
             </q-item-section>
           </q-item>
@@ -422,6 +407,7 @@
 import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import { useQuasar } from "quasar";
 import { useEsp32Store } from "src/stores/esp32";
+import axios from "axios";
 
 const peripheral = {
   bmx280_press: null,
@@ -583,39 +569,94 @@ export default {
         () =>
           `col-${$q.screen.name == "sm" ? 4 : $q.screen.name == "xs" ? 11 : 3}`
       ),
+      async mics6814COchk() {
+        await axios.put("/api/v1/admin/esp32/mics6814/co/chk").catch((err) => {
+          $q.notify({
+            type: "negative",
+            message: err.response.data.message,
+          });
+        });
+      },
+      async mics6814NO2chk() {
+        await axios.put("/api/v1/admin/esp32/mics6814/no2/chk").catch((err) => {
+          $q.notify({
+            type: "negative",
+            message: err.response.data.message,
+          });
+        });
+      },
+      async mics6814NH3chk() {
+        await axios.put("/api/v1/admin/esp32/mics6814/nh3/chk").catch((err) => {
+          $q.notify({
+            type: "negative",
+            message: err.response.data.message,
+          });
+        });
+      },
+      async bme280Tchk() {
+        await axios
+          .put("/api/v1/admin/esp32/bme280/temperature/chk")
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
+      },
+      async radsensSchk() {
+        await axios
+          .put("/api/v1/admin/esp32/radsens/static/chk")
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
+      },
+      async radsensDchk() {
+        await axios
+          .put("/api/v1/admin/esp32/radsens/dynamic/chk")
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
+      },
+      async radsensHVClick() {
+        await axios.put("/api/v1/admin/esp32/radsens/hv").catch((err) => {
+          $q.notify({
+            type: "negative",
+            message: err.response.data.message,
+          });
+        });
+      },
+      async ds18b20Tchk() {
+        await axios
+          .put("/api/v1/admin/esp32/ds18b20/temperature/chk")
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
+      },
+      async ze08ch2oCH2Ochk() {
+        await axios
+          .put("/api/v1/admin/esp32/ze08ch2o/ch2o/chk")
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
+      },
     };
   },
 
   methods: {
     prevent: function () {
       console.log("prevent");
-    },
-    mics6814COClick: function () {
-      console.log("mics6814COClick");
-    },
-    mics6814NO2Click: function () {
-      console.log("mics6814COClick");
-    },
-    mics6814NH3Click: function () {
-      console.log("mics6814NH3Click");
-    },
-    bme280TemperatureClick: function () {
-      console.log("bme280TemperatureClick");
-    },
-    radsensStaticClick: function () {
-      console.log("radsensStaticClick");
-    },
-    radsensDynamicClick: function () {
-      console.log("radsensStaticClick");
-    },
-    radsensHVClick: function () {
-      console.log("radsensHVClick");
-    },
-    ds18b20TemperatureClick: function () {
-      console.log("ds18b20TemperatureClick");
-    },
-    ze08ch2oValueClick: function () {
-      console.log("ze08ch2oValueClick");
     },
   },
 };

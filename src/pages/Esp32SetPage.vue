@@ -129,7 +129,6 @@ export default {
           `col-${$q.screen.name == "sm" ? 8 : $q.screen.name == "xs" ? 11 : 4}`
       ),
       onFirmware() {
-        console.log(this.file);
         if (!(this.file && this.file.name.length > 0)) {
           $q.notify({
             type: "negative",
