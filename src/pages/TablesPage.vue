@@ -1,5 +1,12 @@
 <template>
   <div class="q-pa-md">
+    <q-input
+      ref="fileInput"
+      style="display: none"
+      v-model="file"
+      type="file"
+      label="Standard"
+    ></q-input>
     <div class="row justify-center items-start crisper">
       <div class="square rounded-borders" :class="cols">
         <q-item class="bot-line">
@@ -22,6 +29,8 @@
           :rows="rows"
           :columns="columns"
           row-key="name"
+          selection="multiple"
+          v-model:selected="selected"
           :rows-per-page-options="[10, 50, 100, 0]"
         >
           <template v-slot:body-cell-state="props">
@@ -37,8 +46,10 @@
                 color="primary"
                 size="md"
                 icon="add"
-                @click="create = true"
-              />
+                @click="onAdd()"
+              >
+                <q-tooltip>Add table name</q-tooltip>
+              </q-btn>
               <q-btn
                 class="q-ml-xs"
                 dense
@@ -47,7 +58,9 @@
                 size="md"
                 icon="mode_edit"
                 @click="onEdit(props.row)"
-              />
+              >
+                <q-tooltip>Edit table name</q-tooltip>
+              </q-btn>
               <q-btn
                 class="q-ml-xs"
                 dense
@@ -56,7 +69,32 @@
                 size="md"
                 icon="delete"
                 @click="onDelete(props.row)"
-              />
+              >
+                <q-tooltip>Delete table name</q-tooltip>
+              </q-btn>
+              <q-btn
+                class="q-ml-xs"
+                dense
+                :disable="!props.row.import"
+                round
+                color="warning"
+                size="md"
+                icon="mdi-table-arrow-left"
+                @click="onImport(props.row)"
+              >
+                <q-tooltip>Import table content from csv</q-tooltip>
+              </q-btn>
+              <q-btn
+                class="q-ml-xs"
+                dense
+                round
+                color="secondary"
+                size="md"
+                icon="mdi-content-save"
+                @click="onSave(props.row)"
+              >
+                <q-tooltip>Save table content to csv</q-tooltip>
+              </q-btn>
             </q-td>
           </template>
         </q-table>
@@ -95,6 +133,13 @@
               :columns="scheme"
               row-key="name"
             >
+              <template v-slot:body-cell-value="props">
+                <q-td :props="props" class="wd-50">
+                  <div class="text-subtitle2 text-left text-primary">
+                    {{ props.row.stype.note }}
+                  </div>
+                </q-td>
+              </template>
               <template v-slot:body-cell-actions="props">
                 <q-td :props="props">
                   <q-btn
@@ -164,7 +209,7 @@
             dense
             v-model="param.stype"
             :options="stypes"
-            option-label="name"
+            option-label="note"
             hint="Sync method *"
             lazy-rules
             :rules="[() => param.stype || 'Please select something']"
@@ -206,10 +251,7 @@ const table = {
   params: [],
 };
 
-const scheme = [
-  { name: "value", align: "left", field: "value", sortable: true },
-  { name: "actions" },
-];
+const scheme = [{ name: "value", align: "left" }, { name: "actions" }];
 
 const params = [];
 
@@ -234,13 +276,16 @@ export default {
     const labelBtnParams = ref(">>");
     const actionEdit = ref(false);
     const actionEditParams = ref(false);
+    const selected = ref([]);
 
     return {
+      file: ref(null),
       create: ref(false),
       actionEdit,
       actionEditParams,
       columns,
       rows: ref(rows),
+      table: ref(table),
       scheme,
       params,
       param: ref(param),
@@ -250,6 +295,7 @@ export default {
       createParam: ref(false),
       isShowHeaderButton: ref(false),
       labelBtnParams,
+      selected,
       cols: computed(
         () =>
           `col-${$q.screen.name == "sm" ? 8 : $q.screen.name == "xs" ? 11 : 4}`
@@ -299,23 +345,37 @@ export default {
           cancel: true,
           persistent: true,
         }).onOk(async () => {
-          const url = "/api/v1/admin/database/tables/" + row.id;
-          await axios
-            .delete(url)
-            .then(() => {
-              this.GetTables();
-            })
-            .catch((err) => {
-              $q.notify({
-                type: "negative",
-                message: err.response.data.message,
+          if (selected.value.length === 0) {
+            const url = "/api/v1/admin/database/table/" + row.name;
+            await axios
+              .delete(url)
+              .then(() => {
+                this.GetTables();
+              })
+              .catch((err) => {
+                $q.notify({
+                  type: "negative",
+                  message: err.response.data.message,
+                });
               });
-            });
+          } else {
+            await axios
+              .post("/api/v1/admin/database/delete/tables", selected.value)
+              .then(() => {
+                this.GetTables();
+              })
+              .catch((err) => {
+                $q.notify({
+                  type: "negative",
+                  message: err.response.data.message,
+                });
+              });
+          }
         });
       },
       async onSubmit() {
         this.create = false;
-        this.task.params = this.params;
+        this.table.params = this.params;
         if (actionEdit.value) {
           await axios
             .post("/api/v1/admin/database/table/edit", this.table)
@@ -390,6 +450,69 @@ export default {
         }
         this.createParam = false;
         this.ShowParams();
+      },
+      onImport(row) {
+        //this.$refs.fileInput.$el.click();
+        $q.dialog({
+          title: "Confirm",
+          message: "Are you sure to import this table from csv?",
+          cancel: true,
+          persistent: true,
+        }).onOk(async () => {
+          if (selected.value.length === 0) {
+            const url = "/api/v1/admin/database/table/import/" + row.name;
+            await axios.put(url).catch((err) => {
+              $q.notify({
+                type: "negative",
+                message: err.response.data.message,
+              });
+            });
+          } else {
+            await axios
+              .post("/api/v1/admin/database/import/tables", selected.value)
+              .catch((err) => {
+                $q.notify({
+                  type: "negative",
+                  message: err.response.data.message,
+                });
+              });
+          }
+        });
+      },
+      onSave(row) {
+        $q.dialog({
+          title: "Confirm",
+          message: "Are you sure to save this table to csv?",
+          cancel: true,
+          persistent: true,
+        }).onOk(async () => {
+          if (selected.value.length === 0) {
+            const url = "/api/v1/admin/database/table/save/" + row.name;
+            await axios
+              .put(url)
+              .then(() => {
+                this.GetTables();
+              })
+              .catch((err) => {
+                $q.notify({
+                  type: "negative",
+                  message: err.response.data.message,
+                });
+              });
+          } else {
+            await axios
+              .post("/api/v1/admin/database/save/tables", selected.value)
+              .then(() => {
+                this.GetTables();
+              })
+              .catch((err) => {
+                $q.notify({
+                  type: "negative",
+                  message: err.response.data.message,
+                });
+              });
+          }
+        });
       },
     };
   },
