@@ -854,7 +854,7 @@ export default {
         return period === "day_of_week";
       },
       isTimeOrDate(time, date) {
-        return (time && time.length > 0) || (data && date.length > 0);
+        return !utils.isEmpty(time) || !utils.isEmpty(date);
       },
     };
   },

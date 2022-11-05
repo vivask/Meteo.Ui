@@ -630,12 +630,12 @@
               class="sub-menu-item"
               clickable
               v-close-popup
-              :active="serverMaster"
-              :href="getRef('servers', 'master')"
-              @click="setMenu('services', 'servers', 'master')"
+              :active="serverMain"
+              :href="getRef('servers', 'main')"
+              @click="setMenu('services', 'servers', 'main')"
             >
               <q-item-section>
-                <q-item-label>Chatreey</q-item-label>
+                <q-item-label>Main (Chatreey)</q-item-label>
               </q-item-section>
               <q-item-section side>
                 <q-icon name="mdi-server-network" />
@@ -814,7 +814,7 @@ export default defineComponent({
       secureGitHosts: computed(() => store.get_menu_level_2 === "githosts"),
       databaseTables: computed(() => store.get_menu_level_2 === "tables"),
       databaseSync: computed(() => store.get_menu_level_2 === "sync"),
-      serverMaster: computed(() => store.get_menu_level_2 === "master"),
+      serverMain: computed(() => store.get_menu_level_2 === "main"),
       serverBackup: computed(() => store.get_menu_level_2 === "backup"),
       radiusAuth: computed(() => store.get_menu_level_2 === "auth"),
       radiusAccount: computed(() => store.get_menu_level_2 === "account"),

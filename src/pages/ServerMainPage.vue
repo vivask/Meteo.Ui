@@ -4,7 +4,7 @@
       <div class="square rounded-borders" :class="cols">
         <q-item class="bot-line">
           <q-item-label class="text-bold text-h6"
-            >Master Server Management</q-item-label
+            >Main Server Management</q-item-label
           >
         </q-item>
         <q-markup-table>
@@ -139,6 +139,32 @@
             </tr>
             <tr>
               <td class="wd-40"><q-icon name="mdi-pulse" size="md" /></td>
+              <td class="text-left wd-100">Container</td>
+              <td class="wd-max text-right">
+                <q-btn
+                  class="q-ml-xs"
+                  dense
+                  color="warning"
+                  size="md"
+                  icon="mdi-power-cycle"
+                  @click="onRebootDocker()"
+                >
+                  <q-tooltip>Reboot container</q-tooltip>
+                </q-btn>
+                <q-btn
+                  class="q-ml-xs"
+                  dense
+                  color="negative"
+                  size="md"
+                  icon="mdi-power"
+                  @click="onShutdownDocker()"
+                >
+                  <q-tooltip>Shutdown container</q-tooltip>
+                </q-btn>
+              </td>
+            </tr>
+            <tr>
+              <td class="wd-40"><q-icon name="mdi-pulse" size="md" /></td>
               <td class="text-left wd-100">Chatreey</td>
               <td class="wd-max text-right">
                 <q-btn
@@ -173,6 +199,7 @@
 <script>
 import { useQuasar } from "quasar";
 import { computed, ref } from "vue";
+import axios from "axios";
 
 export default {
   setup() {
@@ -185,7 +212,7 @@ export default {
       ),
       async onRunJobsTransmission() {
         await axios
-          .put("/api/v1/admin/chatreey/transmission/jobs/start")
+          .put("/api/v1/admin/main/transmission/jobs/start")
           .catch((err) => {
             $q.notify({
               type: "negative",
@@ -195,7 +222,7 @@ export default {
       },
       async onStopJobsTransmission() {
         await axios
-          .put("/api/v1/admin/chatreey/transmission/jobs/stop")
+          .put("/api/v1/admin/main/transmission/jobs/stop")
           .catch((err) => {
             $q.notify({
               type: "negative",
@@ -205,7 +232,7 @@ export default {
       },
       async onRestartTransmission() {
         await axios
-          .put("/api/v1/admin/chatreey/transmission/restart")
+          .put("/api/v1/admin/main/transmission/restart")
           .catch((err) => {
             $q.notify({
               type: "negative",
@@ -214,18 +241,16 @@ export default {
           });
       },
       async onStopTransmission() {
-        await axios
-          .put("/api/v1/admin/chatreey/transmission/stop")
-          .catch((err) => {
-            $q.notify({
-              type: "negative",
-              message: err.response.data.message,
-            });
+        await axios.put("/api/v1/admin/main/transmission/stop").catch((err) => {
+          $q.notify({
+            type: "negative",
+            message: err.response.data.message,
           });
+        });
       },
       async onStartTransmission() {
         await axios
-          .put("/api/v1/admin/chatreey/transmission/start")
+          .put("/api/v1/admin/main/transmission/start")
           .catch((err) => {
             $q.notify({
               type: "negative",
@@ -234,7 +259,7 @@ export default {
           });
       },
       async onRestartSamba() {
-        await axios.put("/api/v1/admin/chatreey/samba/restart").catch((err) => {
+        await axios.put("/api/v1/admin/main/samba/restart").catch((err) => {
           $q.notify({
             type: "negative",
             message: err.response.data.message,
@@ -242,7 +267,7 @@ export default {
         });
       },
       async onStopSamba() {
-        await axios.put("/api/v1/admin/chatreey/samba/stop").catch((err) => {
+        await axios.put("/api/v1/admin/main/samba/stop").catch((err) => {
           $q.notify({
             type: "negative",
             message: err.response.data.message,
@@ -250,7 +275,7 @@ export default {
         });
       },
       async onStartSamba() {
-        await axios.put("/api/v1/admin/chatreey/samba/start").catch((err) => {
+        await axios.put("/api/v1/admin/main/samba/start").catch((err) => {
           $q.notify({
             type: "negative",
             message: err.response.data.message,
@@ -258,27 +283,23 @@ export default {
         });
       },
       async onRemountStorage() {
-        await axios
-          .put("/api/v1/admin/chatreey/storage/remount")
-          .catch((err) => {
-            $q.notify({
-              type: "negative",
-              message: err.response.data.message,
-            });
+        await axios.put("/api/v1/admin/main/storage/remount").catch((err) => {
+          $q.notify({
+            type: "negative",
+            message: err.response.data.message,
           });
+        });
       },
       async onUmountStorage() {
-        await axios
-          .put("/api/v1/admin/chatreey/storage/umount")
-          .catch((err) => {
-            $q.notify({
-              type: "negative",
-              message: err.response.data.message,
-            });
+        await axios.put("/api/v1/admin/main/storage/umount").catch((err) => {
+          $q.notify({
+            type: "negative",
+            message: err.response.data.message,
           });
+        });
       },
       async onMountStorage() {
-        await axios.put("/api/v1/admin/chatreey/storage/mount").catch((err) => {
+        await axios.put("/api/v1/admin/main/storage/mount").catch((err) => {
           $q.notify({
             type: "negative",
             message: err.response.data.message,
@@ -286,24 +307,20 @@ export default {
         });
       },
       async onReboot() {
-        await axios
-          .put("/api/v1/admin/sshclient/chatreey/reboot")
-          .catch((err) => {
-            $q.notify({
-              type: "negative",
-              message: err.response.data.message,
-            });
+        await axios.put("/api/v1/admin/main/reboot").catch((err) => {
+          $q.notify({
+            type: "negative",
+            message: err.response.data.message,
           });
+        });
       },
       async onShutdown() {
-        await axios
-          .put("/api/v1/admin/sshclient/chatreey/shutdown")
-          .catch((err) => {
-            $q.notify({
-              type: "negative",
-              message: err.response.data.message,
-            });
+        await axios.put("/api/v1/admin/main/shutdown").catch((err) => {
+          $q.notify({
+            type: "negative",
+            message: err.response.data.message,
           });
+        });
       },
     };
   },

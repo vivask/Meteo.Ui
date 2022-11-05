@@ -70,5 +70,6 @@ export const useUtils = defineStore("utils", {
     date(date) {
       return /^-?[\d]+\/[0-1]\d\/[0-3]\d$/.test(v);
     },
+    isEmpty: (str) => !str?.length,
   },
 });

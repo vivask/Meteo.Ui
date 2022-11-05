@@ -123,6 +123,7 @@
 <script>
 import { useQuasar } from "quasar";
 import { computed, ref } from "vue";
+import axios from "axios";
 
 export default {
   setup() {
@@ -134,67 +135,55 @@ export default {
           `col-${$q.screen.name == "sm" ? 8 : $q.screen.name == "xs" ? 11 : 4}`
       ),
       async onRestartKodi() {
-        await axios
-          .put("/api/v1/admin/sshclient/n2/kodi/restart")
-          .catch((err) => {
-            $q.notify({
-              type: "negative",
-              message: err.response.data.message,
-            });
+        await axios.put("/api/v1/admin/backup/kodi/restart").catch((err) => {
+          $q.notify({
+            type: "negative",
+            message: err.response.data.message,
           });
+        });
       },
       async onRestartStorage() {
-        await axios
-          .put("/api/v1/admin/sshclient/n2/storage/restart")
-          .catch((err) => {
-            $q.notify({
-              type: "negative",
-              message: err.response.data.message,
-            });
+        await axios.put("/api/v1/admin/backup/storage/restart").catch((err) => {
+          $q.notify({
+            type: "negative",
+            message: err.response.data.message,
           });
+        });
       },
       async onStopStorage() {
-        await axios
-          .put("/api/v1/admin/sshclient/n2/storage/stop")
-          .catch((err) => {
-            $q.notify({
-              type: "negative",
-              message: err.response.data.message,
-            });
+        await axios.put("/api/v1/admin/backup/storage/stop").catch((err) => {
+          $q.notify({
+            type: "negative",
+            message: err.response.data.message,
           });
+        });
       },
       async onStartStorage() {
-        await axios
-          .put("/api/v1/admin/sshclient/n2/storage/start")
-          .catch((err) => {
-            $q.notify({
-              type: "negative",
-              message: err.response.data.message,
-            });
+        await axios.put("/api/v1/admin/backup/storage/start").catch((err) => {
+          $q.notify({
+            type: "negative",
+            message: err.response.data.message,
           });
+        });
       },
       async onRebootDocker() {
-        await axios
-          .put("/api/v1/admin/sshclient/n2/server/reboot")
-          .catch((err) => {
-            $q.notify({
-              type: "negative",
-              message: err.response.data.message,
-            });
+        await axios.put("/api/v1/admin/backup/server/reboot").catch((err) => {
+          $q.notify({
+            type: "negative",
+            message: err.response.data.message,
           });
+        });
       },
       async onShutdownDocker() {
-        await axios
-          .put("/api/v1/admin/sshclient/n2/server/shutdown")
-          .catch((err) => {
-            $q.notify({
-              type: "negative",
-              message: err.response.data.message,
-            });
+        await axios.put("/api/v1/admin/backup/server/shutdown").catch((err) => {
+          $q.notify({
+            type: "negative",
+            message: err.response.data.message,
           });
+        });
       },
       async onReboot() {
-        await axios.put("/api/v1/admin/sshclient/n2/reboot").catch((err) => {
+        await axios.put("/api/v1/admin/backup/reboot").catch((err) => {
           $q.notify({
             type: "negative",
             message: err.response.data.message,
@@ -202,7 +191,7 @@ export default {
         });
       },
       async onShutdown() {
-        await axios.put("/api/v1/admin/sshclient/n2/shutdown").catch((err) => {
+        await axios.put("/api/v1/admin/backup/shutdown").catch((err) => {
           $q.notify({
             type: "negative",
             message: err.response.data.message,

@@ -151,8 +151,8 @@ const routes = [
         },
       },
       {
-        path: "/servers/master",
-        component: () => import("pages/ServerMasterPage.vue"),
+        path: "/servers/main",
+        component: () => import("pages/ServerMainPage.vue"),
         meta: {
           requiresAuth: true,
         },
