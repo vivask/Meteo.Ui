@@ -70,8 +70,10 @@
         <q-form
           @submit="onSubmit(create)"
           class="q-gutter-md"
-          autocomplete="off"
           autocorrect="off"
+          autocapitalize="off"
+          autocomplete="off"
+          spellcheck="false"
         >
           <q-input
             v-model="radcheck.username"

@@ -630,12 +630,12 @@
               class="sub-menu-item"
               clickable
               v-close-popup
-              :active="serverXU4"
-              :href="getRef('servers', 'xu4')"
-              @click="setMenu('services', 'servers', 'xu4')"
+              :active="serverMaster"
+              :href="getRef('servers', 'master')"
+              @click="setMenu('services', 'servers', 'master')"
             >
               <q-item-section>
-                <q-item-label>Master (XU4)</q-item-label>
+                <q-item-label>Chatreey</q-item-label>
               </q-item-section>
               <q-item-section side>
                 <q-icon name="mdi-server-network" />
@@ -646,12 +646,12 @@
               class="sub-menu-item"
               clickable
               v-close-popup
-              :active="serverN2"
-              :href="getRef('servers', 'n2')"
-              @click="setMenu('services', 'servers', 'n2')"
+              :active="serverBackup"
+              :href="getRef('servers', 'backup')"
+              @click="setMenu('services', 'servers', 'backup')"
             >
               <q-item-section>
-                <q-item-label>Slave (N2)</q-item-label>
+                <q-item-label>Backup (N2)</q-item-label>
               </q-item-section>
               <q-item-section side>
                 <q-icon name="mdi-server-network" />
@@ -814,8 +814,8 @@ export default defineComponent({
       secureGitHosts: computed(() => store.get_menu_level_2 === "githosts"),
       databaseTables: computed(() => store.get_menu_level_2 === "tables"),
       databaseSync: computed(() => store.get_menu_level_2 === "sync"),
-      serverXU4: computed(() => store.get_menu_level_2 === "xu4"),
-      serverN2: computed(() => store.get_menu_level_2 === "n2"),
+      serverMaster: computed(() => store.get_menu_level_2 === "master"),
+      serverBackup: computed(() => store.get_menu_level_2 === "backup"),
       radiusAuth: computed(() => store.get_menu_level_2 === "auth"),
       radiusAccount: computed(() => store.get_menu_level_2 === "account"),
       radiusVerified: computed(() => store.get_menu_level_2 === "verified"),

@@ -151,15 +151,15 @@ const routes = [
         },
       },
       {
-        path: "/servers/xu4",
-        component: () => import("pages/Xu4Page.vue"),
+        path: "/servers/master",
+        component: () => import("pages/ServerMasterPage.vue"),
         meta: {
           requiresAuth: true,
         },
       },
       {
-        path: "/servers/n2",
-        component: () => import("pages/N2Page.vue"),
+        path: "/servers/backup",
+        component: () => import("pages/ServerBackupPage.vue"),
         meta: {
           requiresAuth: true,
         },
