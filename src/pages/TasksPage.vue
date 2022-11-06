@@ -19,6 +19,7 @@
         </q-item>
         <q-table
           hide-header
+          dense
           :rows="rows"
           :columns="columns"
           row-key="name"
