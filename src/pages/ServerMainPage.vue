@@ -15,6 +15,7 @@
               <td class="wd-max text-right">
                 <q-btn
                   class="q-ml-xs"
+                  :disable="!state.ServerService"
                   dense
                   color="primary"
                   size="md"
@@ -25,6 +26,7 @@
                 </q-btn>
                 <q-btn
                   class="q-ml-xs"
+                  :disable="!state.ServerService"
                   dense
                   color="primary"
                   size="md"
@@ -35,6 +37,7 @@
                 </q-btn>
                 <q-btn
                   class="q-ml-xs"
+                  :disable="!state.ServerService"
                   dense
                   color="primary"
                   size="md"
@@ -45,6 +48,7 @@
                 </q-btn>
                 <q-btn
                   class="q-ml-xs"
+                  :disable="!state.ServerService"
                   dense
                   color="warning"
                   size="md"
@@ -55,6 +59,7 @@
                 </q-btn>
                 <q-btn
                   class="q-ml-xs"
+                  :disable="!state.ServerService"
                   dense
                   color="primary"
                   size="md"
@@ -71,6 +76,7 @@
               <td class="wd-max text-right">
                 <q-btn
                   class="q-ml-xs"
+                  :disable="!state.ServerService"
                   dense
                   color="primary"
                   size="md"
@@ -81,6 +87,7 @@
                 </q-btn>
                 <q-btn
                   class="q-ml-xs"
+                  :disable="!state.ServerService"
                   dense
                   color="warning"
                   size="md"
@@ -91,6 +98,7 @@
                 </q-btn>
                 <q-btn
                   class="q-ml-xs"
+                  :disable="!state.ServerService"
                   dense
                   color="primary"
                   size="md"
@@ -107,6 +115,7 @@
               <td class="wd-max text-right">
                 <q-btn
                   class="q-ml-xs"
+                  :disable="!state.ServerService"
                   dense
                   color="primary"
                   size="md"
@@ -117,6 +126,7 @@
                 </q-btn>
                 <q-btn
                   class="q-ml-xs"
+                  :disable="!state.ServerService"
                   dense
                   color="warning"
                   size="md"
@@ -127,6 +137,7 @@
                 </q-btn>
                 <q-btn
                   class="q-ml-xs"
+                  :disable="!state.ServerService"
                   dense
                   color="primary"
                   size="md"
@@ -139,27 +150,39 @@
             </tr>
             <tr>
               <td class="wd-40"><q-icon name="mdi-pulse" size="md" /></td>
-              <td class="text-left wd-100">Container</td>
+              <td class="text-left wd-100">Server Container</td>
               <td class="wd-max text-right">
                 <q-btn
                   class="q-ml-xs"
                   dense
                   color="warning"
                   size="md"
-                  icon="mdi-power-cycle"
-                  @click="onRebootDocker()"
+                  icon="mdi-restart"
+                  @click="onRestartServerCont()"
                 >
-                  <q-tooltip>Reboot container</q-tooltip>
+                  <q-tooltip>Restart container</q-tooltip>
                 </q-btn>
                 <q-btn
                   class="q-ml-xs"
+                  :disable="!state.ServerService"
                   dense
-                  color="negative"
+                  color="warning"
                   size="md"
-                  icon="mdi-power"
-                  @click="onShutdownDocker()"
+                  icon="mdi-stop"
+                  @click="onStopServerCont()"
                 >
-                  <q-tooltip>Shutdown container</q-tooltip>
+                  <q-tooltip>Stop container</q-tooltip>
+                </q-btn>
+                <q-btn
+                  class="q-ml-xs"
+                  :disable="state.ServerService"
+                  dense
+                  color="primary"
+                  size="md"
+                  icon="start"
+                  @click="onStartServerCont()"
+                >
+                  <q-tooltip>Strat container</q-tooltip>
                 </q-btn>
               </td>
             </tr>
@@ -201,15 +224,37 @@ import { useQuasar } from "quasar";
 import { computed, ref } from "vue";
 import axios from "axios";
 
+const state = {
+  ClusterService: null,
+  MessangerService: null,
+  ServerService: null,
+  Esp32Service: null,
+  ProxyService: null,
+  SshclientService: null,
+  ScheduleService: null,
+  WebService: null,
+};
+
 export default {
   setup() {
     const $q = useQuasar();
 
     return {
+      state: ref(state),
       cols: computed(
         () =>
           `col-${$q.screen.name == "sm" ? 8 : $q.screen.name == "xs" ? 11 : 4}`
       ),
+      async GetServerState() {
+        await axios
+          .get("/api/v1/admin/main/state/get")
+          .then(async (response) => {
+            this.state = response.data.data;
+          })
+          .catch((err) => {
+            $q.notify({ type: "negative", message: err.response.data.message });
+          });
+      },
       async onRunJobsTransmission() {
         await axios
           .put("/api/v1/admin/main/transmission/jobs/start")
@@ -306,25 +351,76 @@ export default {
           });
         });
       },
-      async onReboot() {
-        await axios.put("/api/v1/admin/main/reboot").catch((err) => {
-          $q.notify({
-            type: "negative",
-            message: err.response.data.message,
+      async onRestartServerCont() {
+        await axios
+          .put("/api/v1/admin/main/server/restart")
+          .then(async () => {
+            await this.GetServerState();
+          })
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
           });
-        });
+      },
+      async onStopServerCont() {
+        await axios
+          .put("/api/v1/admin/main/server/stop")
+          .then(async () => {
+            await this.GetServerState();
+          })
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
+      },
+      async onStartServerCont() {
+        await axios
+          .put("/api/v1/admin/main/server/start")
+          .then(async () => {
+            await this.GetServerState();
+          })
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
+      },
+      async onReboot() {
+        await axios
+          .put("/api/v1/admin/main/reboot")
+          .then(async () => {
+            await this.GetServerState();
+          })
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
       },
       async onShutdown() {
-        await axios.put("/api/v1/admin/main/shutdown").catch((err) => {
-          $q.notify({
-            type: "negative",
-            message: err.response.data.message,
+        await axios
+          .put("/api/v1/admin/main/shutdown")
+          .then(async () => {
+            await this.GetServerState();
+          })
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
           });
-        });
       },
     };
   },
-  methods: {},
+  async mounted() {
+    await this.GetServerState();
+  },
 };
 </script>
 
