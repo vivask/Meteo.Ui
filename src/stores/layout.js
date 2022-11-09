@@ -117,19 +117,20 @@ export const useLayoutStore = defineStore("layout", {
         case "not_verified":
           url = "/api/v1/admin/radius/account/notverified/get";
           break;
+        case "alarm":
+          url = "/api/v1/admin/radius/account/alarm/get";
+          break;
         default:
           url = "/api/v1/admin/radius/account/get";
           break;
       }
-      console.log(url);
       await axios
         .get(url)
         .then((response) => {
           this.accounting_rows = response.data.data;
         })
         .catch((err) => {
-          console.log("ERROR: ", err.response.data.message);
-          return err;
+          console.log(err.response.data.message);
         });
     },
   },

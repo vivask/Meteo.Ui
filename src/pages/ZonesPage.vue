@@ -184,8 +184,8 @@ export default {
           const url = "/api/v1/admin/proxy/zones/" + row.id;
           axios
             .delete(url)
-            .then(() => {
-              this.GetZones();
+            .then(async () => {
+              await this.GetZones();
             })
             .catch((err) => {
               $q.notify({

@@ -178,6 +178,13 @@ const routes = [
           requiresAuth: true,
         },
       },
+      {
+        path: "/radius/verified",
+        component: () => import("pages/VerifiedRadius.vue"),
+        meta: {
+          requiresAuth: true,
+        },
+      },
     ],
   },
 

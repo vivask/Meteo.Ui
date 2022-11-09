@@ -814,7 +814,6 @@
 </template>
 
 <script>
-import { useQuasar } from "quasar";
 import { defineComponent, ref, computed } from "vue";
 import { useLayoutStore } from "src/stores/layout";
 import { useAuthStore } from "src/stores/auth";
@@ -831,7 +830,6 @@ export default defineComponent({
   },
 
   setup() {
-    const $q = useQuasar();
     const store = useLayoutStore();
     const auth = useAuthStore();
     const $router = useRouter();
@@ -960,11 +958,7 @@ export default defineComponent({
         store.set_ranre_filter(rangeFilter.value);
       },
       async triggerAccountigFilter() {
-        await store
-          .set_accounting_filter(accountingFilter.value)
-          .catch((err) => {
-            $q.notify({ type: "negative", message: err.response.data.message });
-          });
+        await store.set_accounting_filter(accountingFilter.value);
       },
     };
   },

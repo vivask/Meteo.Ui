@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { useQuasar } from "quasar";
+import { useQuasar, date } from "quasar";
 import { computed, ref, onMounted } from "vue";
 import { useUtils } from "src/stores/utils";
 import { useLayoutStore } from "src/stores/layout";
@@ -60,17 +60,18 @@ const columns = [
     sortable: true,
   },
   {
-    name: "nasportid",
-    label: "AP",
-    align: "left",
-    field: "nasportid",
-    sortable: true,
-  },
-  {
     name: "acctstarttime",
     label: "Start time",
     align: "left",
     field: "acctstarttime",
+    sortable: true,
+    format: (val, row) => date.formatDate(val, "MMM DD, YYYY HH:mm"),
+  },
+  {
+    name: "nasportid",
+    label: "AP",
+    align: "left",
+    field: "nasportid",
     sortable: true,
   },
   {
@@ -79,6 +80,7 @@ const columns = [
     align: "left",
     field: "acctupdatetime",
     sortable: true,
+    format: (val, row) => date.formatDate(val, "MMM DD, YYYY HH:mm"),
   },
   {
     name: "acctstoptime",
@@ -86,6 +88,7 @@ const columns = [
     align: "left",
     field: "acctstoptime",
     sortable: true,
+    format: (val, row) => date.formatDate(val, "MMM DD, YYYY HH:mm"),
   },
   {
     name: "calledstationid",
@@ -105,48 +108,55 @@ export default {
     const store = useLayoutStore();
 
     onMounted(() => {
-      //store.set_accounting_filter(store.get_accounting_filter);
-      //rows = store.get_accounting_rows;
+      store.set_accounting_filter(store.get_accounting_filter);
     });
 
     return {
       utils,
-      create: ref(false),
       columns,
       rows: computed(() => store.get_accounting_rows),
       cols: computed(
         () =>
           `col-${$q.screen.name == "sm" ? 8 : $q.screen.name == "xs" ? 11 : 5}`
       ),
-      GetAccounting() {
-        this.rows = store.get_accounting_rows;
-      },
       async onVerify(row) {
-        const url = "/api/v1/admin/radius/account/verified/" + row.id;
-        await axios
-          .put(url)
-          .then(async () => {
-            await this.GetAccounting();
-          })
-          .catch((err) => {
-            $q.notify({ type: "negative", message: err.response.data.message });
-          });
+        if (!this.isVerified(row)) {
+          const url = "/api/v1/admin/radius/account/verified/" + row.id;
+          await axios
+            .put(url)
+            .then(() => {
+              store.set_accounting_filter(store.get_accounting_filter);
+            })
+            .catch((err) => {
+              $q.notify({
+                type: "negative",
+                message: err.response.data.message,
+              });
+            });
+        }
+      },
+      isVerified(row) {
+        return (
+          row.verified &&
+          row.verified.length > 0 &&
+          row.valid &&
+          row.valid.length > 0
+        );
+      },
+      isValid(row) {
+        return this.isVerified(row) && row.valid === row.username;
       },
       stateColor(row) {
-        //return "primary";
-        return row.verified.length > 0 &&
-          row.valid.length > 0 &&
-          row.valid === row.username
-          ? "positive"
-          : row.verified.length > 0 &&
-            row.valid.length > 0 &&
-            !(row.valid === row.username)
-          ? "negative"
-          : "warning";
+        if (this.isValid(row)) {
+          return "positive";
+        }
+        if (!this.isVerified(row)) {
+          return "warning";
+        }
+        return "negative";
       },
       stateIcon(row) {
-        return "mdi-shield-account";
-        //return row.verified.length > 0 ? "verified_user" : "mdi-shield-account";
+        return row.verified.length > 0 ? "verified_user" : "mdi-shield-account";
       },
     };
   },
