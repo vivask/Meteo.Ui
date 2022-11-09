@@ -105,8 +105,8 @@ export default {
     const store = useLayoutStore();
 
     onMounted(() => {
-      store.set_accounting_filter(store.get_accounting_filter);
-      rows = store.get_accounting_rows;
+      //store.set_accounting_filter(store.get_accounting_filter);
+      //rows = store.get_accounting_rows;
     });
 
     return {
@@ -133,11 +133,7 @@ export default {
           });
       },
       stateColor(row) {
-        if (!row || !row.verified || !row.valid) {
-          console.log("Empty: ", row);
-          return "primary";
-        }
-        console.log(row);
+        //return "primary";
         return row.verified.length > 0 &&
           row.valid.length > 0 &&
           row.valid === row.username
@@ -149,7 +145,8 @@ export default {
           : "warning";
       },
       stateIcon(row) {
-        return row.verified.length > 0 ? "verified_user" : "mdi-shield-account";
+        return "mdi-shield-account";
+        //return row.verified.length > 0 ? "verified_user" : "mdi-shield-account";
       },
     };
   },

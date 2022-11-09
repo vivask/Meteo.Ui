@@ -17,7 +17,7 @@ export const useLayoutStore = defineStore("layout", {
     range_filter_set: ["/peripheral/bme280/temperature"],
     accounting_filter: ref("all"),
     accounting_filter_set: ["/radius/account"],
-    accounting_rows: ref([{}]),
+    accounting_rows: ref([]),
   }),
 
   getters: {
@@ -128,6 +128,7 @@ export const useLayoutStore = defineStore("layout", {
           this.accounting_rows = response.data.data;
         })
         .catch((err) => {
+          console.log("ERROR: ", err.response.data.message);
           return err;
         });
     },
