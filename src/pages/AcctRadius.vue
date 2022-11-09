@@ -36,8 +36,9 @@
 
 <script>
 import { useQuasar } from "quasar";
-import { computed, ref } from "vue";
+import { computed, ref, onMounted } from "vue";
 import { useUtils } from "src/stores/utils";
+import { useLayoutStore } from "src/stores/layout";
 import axios from "axios";
 
 const columns = [
@@ -52,10 +53,10 @@ const columns = [
     sortable: true,
   },
   {
-    name: "nasipaddress",
-    label: "User IP",
+    name: "callingstationid",
+    label: "User Id",
     align: "left",
-    field: "nasipaddress",
+    field: "callingstationid",
     sortable: true,
   },
   {
@@ -93,13 +94,6 @@ const columns = [
     field: "calledstationid",
     sortable: true,
   },
-  {
-    name: "callingstationid",
-    label: "User Id",
-    align: "left",
-    field: "callingstationid",
-    sortable: true,
-  },
 ];
 
 const rows = [];
@@ -108,25 +102,24 @@ export default {
   setup() {
     const $q = useQuasar();
     const utils = useUtils();
+    const store = useLayoutStore();
+
+    onMounted(() => {
+      store.set_accounting_filter(store.get_accounting_filter);
+      rows = store.get_accounting_rows;
+    });
 
     return {
       utils,
       create: ref(false),
       columns,
-      rows: ref(rows),
+      rows: computed(() => store.get_accounting_rows),
       cols: computed(
         () =>
           `col-${$q.screen.name == "sm" ? 8 : $q.screen.name == "xs" ? 11 : 5}`
       ),
-      async GetAccounting() {
-        await axios
-          .get("/api/v1/admin/radius/account/get")
-          .then((response) => {
-            this.rows = response.data.data;
-          })
-          .catch((err) => {
-            $q.notify({ type: "negative", message: err.response.data.message });
-          });
+      GetAccounting() {
+        this.rows = store.get_accounting_rows;
       },
       async onVerify(row) {
         const url = "/api/v1/admin/radius/account/verified/" + row.id;
@@ -140,6 +133,10 @@ export default {
           });
       },
       stateColor(row) {
+        if (!row || !row.verified || !row.valid) {
+          console.log("Empty: ", row);
+          return "primary";
+        }
         console.log(row);
         return row.verified.length > 0 &&
           row.valid.length > 0 &&
@@ -155,9 +152,6 @@ export default {
         return row.verified.length > 0 ? "verified_user" : "mdi-shield-account";
       },
     };
-  },
-  async mounted() {
-    await this.GetAccounting();
   },
 };
 </script>

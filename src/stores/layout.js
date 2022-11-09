@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import axios from "axios";
 
 export const useLayoutStore = defineStore("layout", {
   state: () => ({
@@ -12,6 +13,11 @@ export const useLayoutStore = defineStore("layout", {
     gear_spinner: false,
     bme280_is_available: true,
     mics6814_is_available: true,
+    range_filter: ref("avg"),
+    range_filter_set: ["/peripheral/bme280/temperature"],
+    accounting_filter: ref("all"),
+    accounting_filter_set: ["/radius/account"],
+    accounting_rows: ref([{}]),
   }),
 
   getters: {
@@ -21,6 +27,13 @@ export const useLayoutStore = defineStore("layout", {
     get_menu_level_0: (state) => state.selected_menu_level_0,
     get_menu_level_1: (state) => state.selected_menu_level_1,
     get_menu_level_2: (state) => state.selected_menu_level_2,
+    show_range_filter: (state) =>
+      state.range_filter_set.includes(state.current_path),
+    show_accounting_filter: (state) =>
+      state.accounting_filter_set.includes(state.current_path),
+    get_range_filter: (state) => state.range_filter,
+    get_accounting_filter: (state) => state.accounting_filter,
+    get_accounting_rows: (state) => state.accounting_rows,
   },
 
   actions: {
@@ -90,6 +103,33 @@ export const useLayoutStore = defineStore("layout", {
     set_current_path(new_value) {
       this.current_path = new_value;
       this.set_selected(new_value);
+    },
+    set_ranre_filter(new_value) {
+      this.range_filter = new_value;
+    },
+    async set_accounting_filter(new_value) {
+      this.accounting_filter = new_value;
+      let url;
+      switch (new_value) {
+        case "verified":
+          url = "/api/v1/admin/radius/account/verified/get";
+          break;
+        case "not_verified":
+          url = "/api/v1/admin/radius/account/notverified/get";
+          break;
+        default:
+          url = "/api/v1/admin/radius/account/get";
+          break;
+      }
+      console.log(url);
+      await axios
+        .get(url)
+        .then((response) => {
+          this.accounting_rows = response.data.data;
+        })
+        .catch((err) => {
+          return err;
+        });
     },
   },
 });

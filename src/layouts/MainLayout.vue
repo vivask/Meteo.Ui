@@ -16,17 +16,17 @@
         <q-btn stretch flat to="/login" v-if="!isAuthenticated">Login</q-btn>
         <q-btn stretch flat @click="logout" v-else>Logout</q-btn>
 
-        <q-btn flat round dense icon="mdi-dots-vertical">
+        <q-btn flat round dense icon="mdi-dots-vertical" v-if="showRangeFilter">
           <q-menu>
             <q-list>
               <q-item tag="label" v-close-popup>
                 <q-item-section avatar>
                   <q-radio
-                    v-model="mainFilter"
+                    v-model="rangeFilter"
                     val="avg"
                     checked-icon="task_alt"
                     unchecked-icon="panorama_fish_eye"
-                    @click="triggerMainOptions"
+                    @click="triggerRangeFilter"
                   />
                 </q-item-section>
                 <q-item-section>
@@ -36,11 +36,11 @@
               <q-item tag="label" v-close-popup>
                 <q-item-section avatar>
                   <q-radio
-                    v-model="mainFilter"
+                    v-model="rangeFilter"
                     val="min"
                     checked-icon="task_alt"
                     unchecked-icon="panorama_fish_eye"
-                    @click="triggerMainOptions"
+                    @click="triggerRangeFilter"
                   />
                 </q-item-section>
                 <q-item-section>
@@ -50,11 +50,11 @@
               <q-item tag="label" v-close-popup>
                 <q-item-section avatar>
                   <q-radio
-                    v-model="mainFilter"
+                    v-model="rangeFilter"
                     val="max"
                     checked-icon="task_alt"
                     unchecked-icon="panorama_fish_eye"
-                    @click="triggerMainOptions"
+                    @click="triggerRangeFilter"
                   />
                 </q-item-section>
                 <q-item-section>
@@ -64,15 +64,84 @@
               <q-item tag="label" v-close-popup>
                 <q-item-section avatar>
                   <q-radio
-                    v-model="mainFilter"
+                    v-model="rangeFilter"
                     val="all"
                     checked-icon="task_alt"
                     unchecked-icon="panorama_fish_eye"
-                    @click="triggerMainOptions"
+                    @click="triggerRangeFilter"
                   />
                 </q-item-section>
                 <q-item-section>
                   <q-item-label>All</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-btn>
+
+        <q-btn
+          flat
+          round
+          dense
+          icon="mdi-dots-vertical"
+          v-if="showAccountingFilter"
+        >
+          <q-menu>
+            <q-list>
+              <q-item tag="label" v-close-popup>
+                <q-item-section avatar>
+                  <q-radio
+                    v-model="accountingFilter"
+                    val="all"
+                    checked-icon="task_alt"
+                    unchecked-icon="panorama_fish_eye"
+                    @click="triggerAccountigFilter()"
+                  />
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label>All</q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-item tag="label" v-close-popup>
+                <q-item-section avatar>
+                  <q-radio
+                    v-model="accountingFilter"
+                    val="verified"
+                    checked-icon="task_alt"
+                    unchecked-icon="panorama_fish_eye"
+                    @click="triggerAccountigFilter()"
+                  />
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label>Verified</q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-item tag="label" v-close-popup>
+                <q-item-section avatar>
+                  <q-radio
+                    v-model="accountingFilter"
+                    val="not_verified"
+                    checked-icon="task_alt"
+                    unchecked-icon="panorama_fish_eye"
+                    @click="triggerAccountigFilter()"
+                  />
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label>Not Verified</q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-item tag="label" v-close-popup>
+                <q-item-section avatar>
+                  <q-radio
+                    v-model="accountingFilter"
+                    val="alarm"
+                    checked-icon="task_alt"
+                    unchecked-icon="panorama_fish_eye"
+                    @click="triggerAccountigFilter()"
+                  />
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label>Alarm</q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -745,6 +814,7 @@
 </template>
 
 <script>
+import { useQuasar } from "quasar";
 import { defineComponent, ref, computed } from "vue";
 import { useLayoutStore } from "src/stores/layout";
 import { useAuthStore } from "src/stores/auth";
@@ -761,18 +831,21 @@ export default defineComponent({
   },
 
   setup() {
+    const $q = useQuasar();
     const store = useLayoutStore();
     const auth = useAuthStore();
     const $router = useRouter();
 
     const leftDrawerOpen = ref(false);
-    const mainFilter = ref("avg");
+    const rangeFilter = ref("avg");
+    const accountingFilter = ref("all");
     const isActivePeripheral = ref(false);
 
     return {
       isAuthenticated: computed(() => auth.is_authenticated),
       leftDrawerOpen,
-      mainFilter,
+      rangeFilter,
+      accountingFilter,
       isActivePeripheral,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
@@ -820,6 +893,8 @@ export default defineComponent({
       radiusAccount: computed(() => store.get_menu_level_2 === "account"),
       radiusVerified: computed(() => store.get_menu_level_2 === "verified"),
       peripheral: ref(store.get_menu_level_0 === "peripheral"),
+      showRangeFilter: computed(() => store.show_range_filter),
+      showAccountingFilter: computed(() => store.show_accounting_filter),
       bme280: ref(false),
       mics6814: ref(false),
       radsens: ref(false),
@@ -852,7 +927,7 @@ export default defineComponent({
       setMenu(L_0, L_1, L_2) {
         store.set_menu(L_0, L_1, L_2);
         if (L_0 != "") {
-          store.set_filter(mainFilter);
+          store.set_filter(rangeFilter);
         }
       },
       selectMenu() {
@@ -880,6 +955,16 @@ export default defineComponent({
           url === "/api/v1/admin/esp32/status/get" ||
           url === "/api/v1/esp32/peripheral/get"
         );
+      },
+      triggerRangeFilter() {
+        store.set_ranre_filter(rangeFilter.value);
+      },
+      async triggerAccountigFilter() {
+        await store
+          .set_accounting_filter(accountingFilter.value)
+          .catch((err) => {
+            $q.notify({ type: "negative", message: err.response.data.message });
+          });
       },
     };
   },
