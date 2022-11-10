@@ -150,6 +150,196 @@
             </tr>
             <tr>
               <td class="wd-40"><q-icon name="mdi-pulse" size="md" /></td>
+              <td class="text-left wd-100">Cluster Container</td>
+              <td class="wd-max text-right">
+                <q-btn
+                  class="q-ml-xs"
+                  dense
+                  color="warning"
+                  size="md"
+                  icon="mdi-restart"
+                  @click="onRestartClusterCont()"
+                >
+                  <q-tooltip>Restart container</q-tooltip>
+                </q-btn>
+                <q-btn
+                  class="q-ml-xs"
+                  :disable="!state.ClusterService"
+                  dense
+                  color="warning"
+                  size="md"
+                  icon="mdi-stop"
+                  @click="onStopClusterCont()"
+                >
+                  <q-tooltip>Stop container</q-tooltip>
+                </q-btn>
+                <q-btn
+                  class="q-ml-xs"
+                  :disable="state.ClusterService"
+                  dense
+                  color="primary"
+                  size="md"
+                  icon="start"
+                  @click="onStartClusterCont()"
+                >
+                  <q-tooltip>Strat container</q-tooltip>
+                </q-btn>
+              </td>
+            </tr>
+            <tr>
+              <td class="wd-40"><q-icon name="mdi-pulse" size="md" /></td>
+              <td class="text-left wd-100">Messanger Container</td>
+              <td class="wd-max text-right">
+                <q-btn
+                  class="q-ml-xs"
+                  dense
+                  color="warning"
+                  size="md"
+                  icon="mdi-restart"
+                  @click="onRestartMessangerCont()"
+                >
+                  <q-tooltip>Restart container</q-tooltip>
+                </q-btn>
+                <q-btn
+                  class="q-ml-xs"
+                  :disable="!state.MessangerService"
+                  dense
+                  color="warning"
+                  size="md"
+                  icon="mdi-stop"
+                  @click="onStopMessangerCont()"
+                >
+                  <q-tooltip>Stop container</q-tooltip>
+                </q-btn>
+                <q-btn
+                  class="q-ml-xs"
+                  :disable="state.MessangerService"
+                  dense
+                  color="primary"
+                  size="md"
+                  icon="start"
+                  @click="onStartMessangerCont()"
+                >
+                  <q-tooltip>Strat container</q-tooltip>
+                </q-btn>
+              </td>
+            </tr>
+            <tr>
+              <td class="wd-40"><q-icon name="mdi-pulse" size="md" /></td>
+              <td class="text-left wd-100">Sshclient Container</td>
+              <td class="wd-max text-right">
+                <q-btn
+                  class="q-ml-xs"
+                  dense
+                  color="warning"
+                  size="md"
+                  icon="mdi-restart"
+                  @click="onRestartSshclientCont()"
+                >
+                  <q-tooltip>Restart container</q-tooltip>
+                </q-btn>
+                <q-btn
+                  class="q-ml-xs"
+                  :disable="!state.SshclientService"
+                  dense
+                  color="warning"
+                  size="md"
+                  icon="mdi-stop"
+                  @click="onStopSshclientCont()"
+                >
+                  <q-tooltip>Stop container</q-tooltip>
+                </q-btn>
+                <q-btn
+                  class="q-ml-xs"
+                  :disable="state.SshclientService"
+                  dense
+                  color="primary"
+                  size="md"
+                  icon="start"
+                  @click="onStartSshclientCont()"
+                >
+                  <q-tooltip>Strat container</q-tooltip>
+                </q-btn>
+              </td>
+            </tr>
+            <tr>
+              <td class="wd-40"><q-icon name="mdi-pulse" size="md" /></td>
+              <td class="text-left wd-100">Schedule Container</td>
+              <td class="wd-max text-right">
+                <q-btn
+                  class="q-ml-xs"
+                  dense
+                  color="warning"
+                  size="md"
+                  icon="mdi-restart"
+                  @click="onRestartScheduleCont()"
+                >
+                  <q-tooltip>Restart container</q-tooltip>
+                </q-btn>
+                <q-btn
+                  class="q-ml-xs"
+                  :disable="!state.ScheduleService"
+                  dense
+                  color="warning"
+                  size="md"
+                  icon="mdi-stop"
+                  @click="onStopScheduleCont()"
+                >
+                  <q-tooltip>Stop container</q-tooltip>
+                </q-btn>
+                <q-btn
+                  class="q-ml-xs"
+                  :disable="state.ScheduleService"
+                  dense
+                  color="primary"
+                  size="md"
+                  icon="start"
+                  @click="onStartScheduleCont()"
+                >
+                  <q-tooltip>Strat container</q-tooltip>
+                </q-btn>
+              </td>
+            </tr>
+            <tr>
+              <td class="wd-40"><q-icon name="mdi-pulse" size="md" /></td>
+              <td class="text-left wd-100">Proxy Container</td>
+              <td class="wd-max text-right">
+                <q-btn
+                  class="q-ml-xs"
+                  dense
+                  color="warning"
+                  size="md"
+                  icon="mdi-restart"
+                  @click="onRestartProxyCont()"
+                >
+                  <q-tooltip>Restart container</q-tooltip>
+                </q-btn>
+                <q-btn
+                  class="q-ml-xs"
+                  :disable="!state.ProxyService"
+                  dense
+                  color="warning"
+                  size="md"
+                  icon="mdi-stop"
+                  @click="onStopProxyCont()"
+                >
+                  <q-tooltip>Stop container</q-tooltip>
+                </q-btn>
+                <q-btn
+                  class="q-ml-xs"
+                  :disable="state.ProxyService"
+                  dense
+                  color="primary"
+                  size="md"
+                  icon="start"
+                  @click="onStartProxyCont()"
+                >
+                  <q-tooltip>Strat container</q-tooltip>
+                </q-btn>
+              </td>
+            </tr>
+            <tr>
+              <td class="wd-40"><q-icon name="mdi-pulse" size="md" /></td>
               <td class="text-left wd-100">Server Container</td>
               <td class="wd-max text-right">
                 <q-btn
@@ -181,6 +371,120 @@
                   size="md"
                   icon="start"
                   @click="onStartServerCont()"
+                >
+                  <q-tooltip>Strat container</q-tooltip>
+                </q-btn>
+              </td>
+            </tr>
+            <tr>
+              <td class="wd-40"><q-icon name="mdi-pulse" size="md" /></td>
+              <td class="text-left wd-100">Web Container</td>
+              <td class="wd-max text-right">
+                <q-btn
+                  class="q-ml-xs"
+                  dense
+                  color="warning"
+                  size="md"
+                  icon="mdi-restart"
+                  @click="onRestartWebCont()"
+                >
+                  <q-tooltip>Restart container</q-tooltip>
+                </q-btn>
+                <q-btn
+                  class="q-ml-xs"
+                  :disable="!state.WebService"
+                  dense
+                  color="warning"
+                  size="md"
+                  icon="mdi-stop"
+                  @click="onStopWebCont()"
+                >
+                  <q-tooltip>Stop container</q-tooltip>
+                </q-btn>
+                <q-btn
+                  class="q-ml-xs"
+                  :disable="state.WebService"
+                  dense
+                  color="primary"
+                  size="md"
+                  icon="start"
+                  @click="onStartWebCont()"
+                >
+                  <q-tooltip>Strat container</q-tooltip>
+                </q-btn>
+              </td>
+            </tr>
+            <tr>
+              <td class="wd-40"><q-icon name="mdi-pulse" size="md" /></td>
+              <td class="text-left wd-100">Gogs Container</td>
+              <td class="wd-max text-right">
+                <q-btn
+                  class="q-ml-xs"
+                  dense
+                  color="warning"
+                  size="md"
+                  icon="mdi-restart"
+                  @click="onRestartGogsCont()"
+                >
+                  <q-tooltip>Restart container</q-tooltip>
+                </q-btn>
+                <q-btn
+                  class="q-ml-xs"
+                  :disable="!state.GogsService"
+                  dense
+                  color="warning"
+                  size="md"
+                  icon="mdi-stop"
+                  @click="onStopGogsCont()"
+                >
+                  <q-tooltip>Stop container</q-tooltip>
+                </q-btn>
+                <q-btn
+                  class="q-ml-xs"
+                  :disable="state.GogsService"
+                  dense
+                  color="primary"
+                  size="md"
+                  icon="start"
+                  @click="onStartGogsCont()"
+                >
+                  <q-tooltip>Strat container</q-tooltip>
+                </q-btn>
+              </td>
+            </tr>
+            <tr>
+              <td class="wd-40"><q-icon name="mdi-pulse" size="md" /></td>
+              <td class="text-left wd-100">Postgres Container</td>
+              <td class="wd-max text-right">
+                <q-btn
+                  class="q-ml-xs"
+                  dense
+                  color="warning"
+                  size="md"
+                  icon="mdi-restart"
+                  @click="onRestartPostgresCont()"
+                >
+                  <q-tooltip>Restart container</q-tooltip>
+                </q-btn>
+                <q-btn
+                  class="q-ml-xs"
+                  :disable="!state.PostgresService"
+                  dense
+                  color="warning"
+                  size="md"
+                  icon="mdi-stop"
+                  @click="onStopPostgresCont()"
+                >
+                  <q-tooltip>Stop container</q-tooltip>
+                </q-btn>
+                <q-btn
+                  class="q-ml-xs"
+                  :disable="state.PostgresService"
+                  dense
+                  color="primary"
+                  size="md"
+                  icon="start"
+                  @click="onStartPostgresCont()"
                 >
                   <q-tooltip>Strat container</q-tooltip>
                 </q-btn>
@@ -233,6 +537,8 @@ const state = {
   SshclientService: null,
   ScheduleService: null,
   WebService: null,
+  GosgsService: null,
+  PostgresService: null,
 };
 
 export default {
@@ -351,9 +657,204 @@ export default {
           });
         });
       },
+      async onRestartClusterCont() {
+        await axios
+          .put("/api/v1/admin/main/restart/cluster")
+          .then(async () => {
+            await this.GetServerState();
+          })
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
+      },
+      async onStartClusterCont() {
+        await axios
+          .put("/api/v1/admin/main/start/cluster")
+          .then(async () => {
+            await this.GetServerState();
+          })
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
+      },
+      async onStopClusterCont() {
+        await axios
+          .put("/api/v1/admin/main/stop/cluster")
+          .then(async () => {
+            await this.GetServerState();
+          })
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
+      },
+      async onRestartMessangerCont() {
+        await axios
+          .put("/api/v1/admin/main/restart/messanger")
+          .then(async () => {
+            await this.GetServerState();
+          })
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
+      },
+      async onStopMessangerCont() {
+        await axios
+          .put("/api/v1/admin/main/stop/messanger")
+          .then(async () => {
+            await this.GetServerState();
+          })
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
+      },
+      async onStartMessangerCont() {
+        await axios
+          .put("/api/v1/admin/main/start/messanger")
+          .then(async () => {
+            await this.GetServerState();
+          })
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
+      },
+      async onRestartSshclientCont() {
+        await axios
+          .put("/api/v1/admin/main/restart/sshclient")
+          .then(async () => {
+            await this.GetServerState();
+          })
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
+      },
+      async onStopSshclientCont() {
+        await axios
+          .put("/api/v1/admin/main/stop/sshclient")
+          .then(async () => {
+            await this.GetServerState();
+          })
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
+      },
+      async onStartSshclientCont() {
+        await axios
+          .put("/api/v1/admin/main/start/sshclient")
+          .then(async () => {
+            await this.GetServerState();
+          })
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
+      },
+      async onRestartScheduleCont() {
+        await axios
+          .put("/api/v1/admin/main/restart/schedule")
+          .then(async () => {
+            await this.GetServerState();
+          })
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
+      },
+      async onStopScheduleCont() {
+        await axios
+          .put("/api/v1/admin/main/stop/schedule")
+          .then(async () => {
+            await this.GetServerState();
+          })
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
+      },
+      async onStartScheduleCont() {
+        await axios
+          .put("/api/v1/admin/main/start/schedule")
+          .then(async () => {
+            await this.GetServerState();
+          })
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
+      },
+      async onRestartProxyCont() {
+        await axios
+          .put("/api/v1/admin/main/restart/proxy")
+          .then(async () => {
+            await this.GetServerState();
+          })
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
+      },
+      async onStopProxyCont() {
+        await axios
+          .put("/api/v1/admin/main/stop/proxy")
+          .then(async () => {
+            await this.GetServerState();
+          })
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
+      },
+      async onStartProxyCont() {
+        await axios
+          .put("/api/v1/admin/main/start/proxy")
+          .then(async () => {
+            await this.GetServerState();
+          })
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
+      },
       async onRestartServerCont() {
         await axios
-          .put("/api/v1/admin/main/server/restart")
+          .put("/api/v1/admin/main/restart/server")
           .then(async () => {
             await this.GetServerState();
           })
@@ -366,7 +867,7 @@ export default {
       },
       async onStopServerCont() {
         await axios
-          .put("/api/v1/admin/main/server/stop")
+          .put("/api/v1/admin/main/stop/server")
           .then(async () => {
             await this.GetServerState();
           })
@@ -379,7 +880,124 @@ export default {
       },
       async onStartServerCont() {
         await axios
-          .put("/api/v1/admin/main/server/start")
+          .put("/api/v1/admin/main/start/server")
+          .then(async () => {
+            await this.GetServerState();
+          })
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
+      },
+      async onRestartWebCont() {
+        await axios
+          .put("/api/v1/admin/main/restart/web")
+          .then(async () => {
+            await this.GetServerState();
+          })
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
+      },
+      async onStopWebCont() {
+        await axios
+          .put("/api/v1/admin/main/stop/web")
+          .then(async () => {
+            await this.GetServerState();
+          })
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
+      },
+      async onStartWebCont() {
+        await axios
+          .put("/api/v1/admin/main/start/web")
+          .then(async () => {
+            await this.GetServerState();
+          })
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
+      },
+      async onRestartGogsCont() {
+        await axios
+          .put("/api/v1/admin/main/restart/gogs")
+          .then(async () => {
+            await this.GetServerState();
+          })
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
+      },
+      async onStopGogsCont() {
+        await axios
+          .put("/api/v1/admin/main/stop/gogs")
+          .then(async () => {
+            await this.GetServerState();
+          })
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
+      },
+      async onStartGogsCont() {
+        await axios
+          .put("/api/v1/admin/main/start/gogs")
+          .then(async () => {
+            await this.GetServerState();
+          })
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
+      },
+      async onRestartPostgresCont() {
+        await axios
+          .put("/api/v1/admin/main/restart/postgres")
+          .then(async () => {
+            await this.GetServerState();
+          })
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
+      },
+      async onStopPostgresCont() {
+        await axios
+          .put("/api/v1/admin/main/stop/postgres")
+          .then(async () => {
+            await this.GetServerState();
+          })
+          .catch((err) => {
+            $q.notify({
+              type: "negative",
+              message: err.response.data.message,
+            });
+          });
+      },
+      async onStartPostgresCont() {
+        await axios
+          .put("/api/v1/admin/main/start/postgres")
           .then(async () => {
             await this.GetServerState();
           })

@@ -32,8 +32,22 @@ const routes = [
         },
       },
       {
-        path: "/peripheral/bme280/temperature",
+        path: "/bme280/temperature",
         component: () => import("pages/Bme280TemperaturePage.vue"),
+        meta: {
+          requiresAuth: false,
+        },
+      },
+      {
+        path: "/bme280/pressure",
+        component: () => import("pages/Bme280PressurePage.vue"),
+        meta: {
+          requiresAuth: false,
+        },
+      },
+      {
+        path: "/bme280/humidity",
+        component: () => import("pages/Bme280HumidityPage.vue"),
         meta: {
           requiresAuth: false,
         },
