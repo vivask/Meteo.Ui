@@ -5,8 +5,10 @@ More can be seen here https://github.com/vivask/Meteo.Backend
 
 ## Install the dependencies
 
+```sh
 ~cd /tmp
 ~git clone https://github.com/vivask/Meteo.Ui.git
 ~cd Meteo.Ui
 ~npm install
 ~quasar build
+```
