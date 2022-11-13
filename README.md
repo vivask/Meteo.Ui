@@ -12,3 +12,5 @@ More can be seen here https://github.com/vivask/Meteo.Backend
 ~npm install
 ~quasar build
 ```
+
+The finished build must be copied to the backend ui project folder
