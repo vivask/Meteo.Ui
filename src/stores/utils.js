@@ -64,6 +64,9 @@ export const useUtils = defineStore("utils", {
     isNumber(val) {
       return /^\d+$/.test(val);
     },
+    isEmptyNumber(val) {
+      return !val || val.length === 0 || /^\d+$/.test(val);
+    },
     fulltime(v) {
       return /^([0-1]?\d|2[0-3]):[0-5]\d:[0-5]\d$/.test(v);
     },

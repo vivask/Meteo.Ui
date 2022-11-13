@@ -1,41 +1,12 @@
-# Meteo App (quasar)
+# Quasar frontend Meteo
 
-A Quasar Project
+This is the frontend pet of the merteo station project.
+More can be seen here https://github.com/vivask/Meteo.Backend
 
 ## Install the dependencies
-```bash
-yarn
-# or
-npm install
-```
 
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
-```bash
-quasar dev
-```
-
-
-### Lint the files
-```bash
-yarn lint
-# or
-npm run lint
-```
-
-
-### Format the files
-```bash
-yarn format
-# or
-npm run format
-```
-
-
-
-### Build the app for production
-```bash
-quasar build
-```
-
-### Customize the configuration
-See [Configuring quasar.config.js](https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js).
+~cd /tmp
+~git clone https://github.com/vivask/Meteo.Ui.git
+~cd Meteo.Ui
+~npm install
+~quasar build

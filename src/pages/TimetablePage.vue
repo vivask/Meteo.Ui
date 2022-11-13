@@ -172,13 +172,7 @@
           />
           <div class="row">
             <div class="wd-50" v-if="isShowValue">
-              <q-input
-                outlined
-                dense
-                v-model="job.value"
-                lazy-rules
-                :rules="[(val) => (val && utils.isNumber(val)) || ' ']"
-              />
+              <q-input outlined dense v-model="job.value" />
             </div>
             <div class="wd-100 ml-10" v-if="isShowDays">
               <q-select
