@@ -813,8 +813,10 @@
   </q-dialog>
 </template>
 
+const MenuL0 = { }
+
 <script>
-import { defineComponent, ref, computed } from "vue";
+import { defineComponent, ref, computed, watch, onMounted } from "vue";
 import { useLayoutStore } from "src/stores/layout";
 import { useAuthStore } from "src/stores/auth";
 import LoadInner from "components/LoadInner.vue";
@@ -838,6 +840,47 @@ export default defineComponent({
     const rangeFilter = ref("avg");
     const accountingFilter = ref("all");
     const isActivePeripheral = ref(false);
+    const peripheral = ref(false);
+    const esp32 = ref(false);
+    const services = ref(false);
+    const bme280 = ref(false);
+    const mics6814 = ref(false);
+    const radsens = ref(false);
+    const ze08ch2o = ref(false);
+    const ds18b20 = ref(false);
+    const proxy = ref(false);
+    const schedule = ref(false);
+    const secure = ref(false);
+    const database = ref(false);
+    const servers = ref(false);
+    const radius = ref(false);
+
+    watch(
+      () => store.get_menu_level_0,
+      (newValue) => {
+        if (newValue) {
+          eval(newValue).value = true;
+        }
+      }
+    );
+
+    watch(
+      () => store.get_menu_level_1,
+      (newValue) => {
+        if (newValue) {
+          eval(newValue).value = true;
+        }
+      }
+    );
+
+    onMounted(() => {
+      if (store.get_menu_level_0) {
+        eval(store.get_menu_level_0).value = true;
+      }
+      if (store.get_menu_level_1) {
+        eval(store.get_menu_level_1).value = true;
+      }
+    });
 
     return {
       isAuthenticated: computed(() => auth.is_authenticated),
@@ -877,8 +920,8 @@ export default defineComponent({
       proxyManualVPN: computed(() => store.get_menu_level_2 === "manualvpn"),
       proxyIgnoreVPN: computed(() => store.get_menu_level_2 === "ignorevpn"),
       scheduleTimetable: computed(() => store.get_menu_level_2 === "timetable"),
-      scheduleTasks: computed(() => store.get_submenu === "tasks"),
-      scheduleCron: computed(() => store.get_selected_menu === "cron"),
+      scheduleTasks: computed(() => store.get_menu_level_2 === "tasks"),
+      scheduleCron: computed(() => store.get_menu_level_2 === "cron"),
       secureSshKeys: computed(() => store.get_menu_level_2 === "sshkeys"),
       secureSshHosts: computed(() => store.get_menu_level_2 === "sshhosts"),
       secureGitKeys: computed(() => store.get_menu_level_2 === "gitkeys"),
@@ -890,22 +933,22 @@ export default defineComponent({
       radiusAuth: computed(() => store.get_menu_level_2 === "auth"),
       radiusAccount: computed(() => store.get_menu_level_2 === "account"),
       radiusVerified: computed(() => store.get_menu_level_2 === "verified"),
-      peripheral: ref(store.get_menu_level_0 === "peripheral"),
       showRangeFilter: computed(() => store.show_range_filter),
       showAccountingFilter: computed(() => store.show_accounting_filter),
-      bme280: ref(false),
-      mics6814: ref(false),
-      radsens: ref(false),
-      ze08ch2o: ref(false),
-      ds18b20: ref(false),
-      esp32: ref(store.get_menu_level_0 === "esp32"),
-      services: ref(store.get_menu_level_0 === "services"),
-      proxy: ref(store.get_menu_level_1 === "proxy"),
-      schedule: ref(false),
-      secure: ref(false),
-      database: ref(false),
-      servers: ref(false),
-      radius: ref(false),
+      peripheral,
+      esp32,
+      services,
+      bme280,
+      mics6814,
+      radsens,
+      ze08ch2o,
+      ds18b20,
+      proxy,
+      schedule,
+      secure,
+      database,
+      servers,
+      radius,
       getSensorRef(base, sensor) {
         var href = "#/" + base + "?filter=" + store.get_filter;
         if (sensor != null) {
@@ -962,6 +1005,7 @@ export default defineComponent({
       },
     };
   },
+
   methods: {
     SetMenuState() {
       console.log("SetMenuState");

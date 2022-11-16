@@ -101,8 +101,12 @@ export const useLayoutStore = defineStore("layout", {
       //this.load_data()
     },
     set_current_path(new_value) {
+      //console.log("current path:", new_value);
       this.current_path = new_value;
       this.set_selected(new_value);
+      console.log("L0", this.selected_menu_level_0);
+      console.log("L1", this.selected_menu_level_1);
+      console.log("L2", this.selected_menu_level_2);
     },
     set_ranre_filter(new_value) {
       this.range_filter = new_value;
