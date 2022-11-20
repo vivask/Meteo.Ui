@@ -70,8 +70,8 @@ export const useUtils = defineStore("utils", {
     fulltime(v) {
       return /^([0-1]?\d|2[0-3]):[0-5]\d:[0-5]\d$/.test(v);
     },
-    date(date) {
-      return /^-?[\d]+\/[0-1]\d\/[0-3]\d$/.test(v);
+    date(v) {
+      return /^-?[\d]+\-[0-1]\d\-[0-3]\d$/.test(v);
     },
     isEmpty: (str) => !str?.length,
   },

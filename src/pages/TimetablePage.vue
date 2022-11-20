@@ -62,13 +62,6 @@
                     }}{{ props.row.period.name.toLowerCase() }}
                   </div>
                   <div
-                    class="text-subtitle2 text-left"
-                    v-if="isDayOfWeekPeriod(props.row.period.id)"
-                  >
-                    Repeate every{{ this.oneToEmpty(props.row.value)
-                    }}{{ props.row.day.name.toLowerCase() }}
-                  </div>
-                  <div
                     class="text-subtitle2 text-left text-italic"
                     v-if="isTimeOrDate(props.row.time, props.row.date)"
                   >
@@ -165,7 +158,7 @@
             dense
             v-model="job.executor"
             :options="executors"
-            option-label="id"
+            option-label="name"
             hint="Executor *"
             lazy-rules
             :rules="[() => job.executor || 'Please select something']"
@@ -173,18 +166,6 @@
           <div class="row">
             <div class="wd-50" v-if="isShowValue">
               <q-input outlined dense v-model="job.value" />
-            </div>
-            <div class="wd-100 ml-10" v-if="isShowDays">
-              <q-select
-                outlined
-                dense
-                v-model="job.day"
-                :options="days"
-                option-label="name"
-                hint="Day *"
-                lazy-rules
-                :rules="[() => job.day || 'Please select something']"
-              />
             </div>
             <div :class="periodState">
               <q-select
@@ -207,13 +188,13 @@
             v-model="job.time"
             type="time"
             step="2"
-            :disable="disabled"
             hint="Start time"
             reactive-rules
             lazy-rules
             :rules="[
               (val) => checkTime(job.period.id, val) || 'Please type time',
-              (val) => utils.moreThanNow(val, job.date) || 'Time has expired',
+              (val) =>
+                moreThanNow(val, job.date, job.value) || 'Time has expired',
             ]"
           >
             <template v-slot:append>
@@ -242,13 +223,13 @@
             dense
             v-model="job.date"
             type="date"
-            :disable="disabled"
             hint="Start date"
             reactive-rules
             lazy-rules
             :rules="[
               (val) => checkDate(job.period.id, val) || 'Incorrect date',
-              (val) => utils.moreThanNow(job.time, val) || 'Time has expired',
+              (val) =>
+                moreThanNow(job.time, val, job.value) || 'Time has expired',
             ]"
           >
             <template v-slot:append>
@@ -390,7 +371,7 @@
 </template>
 
 <script>
-import { useQuasar } from "quasar";
+import { useQuasar, date } from "quasar";
 import { computed, ref } from "vue";
 import { useUtils } from "src/stores/utils";
 import axios from "axios";
@@ -407,6 +388,8 @@ const job = {
   verbose: null,
   executor: {
     id: null,
+    name: null,
+    idx: null,
   },
   task: {
     id: null,
@@ -419,10 +402,6 @@ const job = {
     id: null,
     name: null,
     idx: null,
-  },
-  day: {
-    id: null,
-    name: null,
   },
   params: [],
 };
@@ -453,6 +432,8 @@ const param = {
 
 const executors = {
   id: null,
+  name: null,
+  idx: null,
 };
 
 const tasks = {
@@ -468,11 +449,6 @@ const periods = {
   idx: null,
 };
 
-const days = {
-  id: null,
-  name: null,
-};
-
 export default {
   setup() {
     const $q = useQuasar();
@@ -481,9 +457,7 @@ export default {
     const actionEdit = ref(false);
     const actionEditParams = ref(false);
     const isShowValue = ref(false);
-    const isShowDays = ref(false);
     const labelBtnParams = ref(">>");
-    const disabled = ref(true);
     const paramsDisabled = ref(false);
     const reloadJobsFail = "reload jobs error";
     const reloadJobsWarning = "Jobs reload fail";
@@ -493,7 +467,6 @@ export default {
       createJob: ref(false),
       actionEdit,
       actionEditParams,
-      disabled,
       paramsDisabled,
       columns,
       rows: ref(rows),
@@ -504,20 +477,14 @@ export default {
       tasks: ref(tasks),
       executors: ref(executors),
       periods: ref(periods),
-      days: ref(days),
       isShowHeaderButton: ref(false),
       cols: computed(
         () =>
           `col-${$q.screen.name == "sm" ? 8 : $q.screen.name == "xs" ? 11 : 5}`
       ),
       isShowValue,
-      isShowDays,
       periodState: computed(() =>
-        isShowValue.value == false && isShowDays.value == false
-          ? "wd-max"
-          : isShowValue.value == true && isShowDays.value == false
-          ? "wd-260 ml-10"
-          : "wd-150 ml-10"
+        isShowValue.value == false ? "wd-max" : "wd-260 ml-10"
       ),
       labelBtnParams,
       showParams: ref(false),
@@ -525,23 +492,23 @@ export default {
       createParam: ref(false),
       checkTime(period, v) {
         switch (period) {
+          case "once":
           case "day":
           case "week":
           case "month":
           case "year":
-          case "day_of_week":
             return utils.fulltime(v);
           default:
-            return true;
+            return !v || !v.length ? true : utils.fulltime(v);
         }
       },
       checkDate(period, v) {
         switch (period) {
           case "month":
           case "year":
-            return utils.moreThanOrEqualToday(v) && utils.date(v);
+            return utils.date(v);
           default:
-            return true;
+            return !v || !v.length ? true : utils.date(v);
         }
       },
       async GetExecutors() {
@@ -571,17 +538,6 @@ export default {
           .get("/api/v1/admin/schedule/periods/get")
           .then(async (response) => {
             this.periods = response.data.data;
-            await this.GetDays();
-          })
-          .catch((err) => {
-            $q.notify({ type: "negative", message: err.response.data.message });
-          });
-      },
-      async GetDays() {
-        await axios
-          .get("/api/v1/admin/schedule/days/get")
-          .then(async (response) => {
-            this.days = response.data.data;
             await this.GetJobs();
           })
           .catch((err) => {
@@ -618,10 +574,8 @@ export default {
       },
       onAdd() {
         actionEdit.value = false;
-        disabled.value = true;
         paramsDisabled.value = true;
         isShowValue.value = false;
-        isShowDays.value = false;
         this.job = {};
         this.params = [];
         this.job.verbose = false;
@@ -630,14 +584,10 @@ export default {
         this.createJob = true;
       },
       onEdit(row) {
-        console.log("ROW: ", row);
         actionEdit.value = true;
-        disabled.value = false;
         paramsDisabled.value = false;
         this.job = row;
         isShowValue.value = this.job.period.id === "once" ? false : true;
-        isShowDays.value = this.job.period.id === "day_of_week" ? true : false;
-        disabled.value = !isShowValue.value;
         this.params = row.params;
         labelBtnParams.value = "<<";
         this.ShowParams();
@@ -735,8 +685,6 @@ export default {
         switch (val.id) {
           case "once":
             isShowValue.value = false;
-            isShowDays.value = false;
-            disabled.value = true;
             break;
           case "second":
           case "minute":
@@ -746,13 +694,6 @@ export default {
           case "month":
           case "year":
             isShowValue.value = true;
-            isShowDays.value = false;
-            disabled.value = false;
-            break;
-          case "day_of_week":
-            isShowValue.value = true;
-            isShowDays.value = true;
-            disabled.value = false;
             break;
           default:
             $q.notify({
@@ -839,16 +780,31 @@ export default {
         return val <= 1 ? " " : " " + val + " ";
       },
       isRegularPeriod(period) {
-        return period !== "once" && period !== "day_of_week";
+        return period !== "once";
       },
       isOncePeriod(period) {
         return period === "once";
       },
-      isDayOfWeekPeriod(period) {
-        return period === "day_of_week";
-      },
       isTimeOrDate(time, date) {
         return !utils.isEmpty(time) || !utils.isEmpty(date);
+      },
+      moreThanNow(ts, ds, repeat) {
+        try {
+          if (
+            !ts ||
+            ts.length === 0 ||
+            !ds ||
+            ds.length === 0 ||
+            (repeat && repeat !== "0")
+          ) {
+            return true;
+          }
+          const time = date.formatDate(ds + " " + ts, "YYYY-MM-DD HH:mm:ss");
+          return date.formatDate(time, "X") > date.formatDate(new Date(), "X");
+        } catch (err) {
+          console.log(err);
+          return false;
+        }
       },
     };
   },

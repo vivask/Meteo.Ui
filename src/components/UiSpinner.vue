@@ -1,33 +1,37 @@
 <template>
   <div class="shadow">
     <div class="modalwin">
-      <q-inner-loading
-      :showing="visible"
-      >
-        <q-spinner-pie size="50px" color="primary" />
+      <q-inner-loading :showing="visible">
+        <component :is="spinner" size="4em" color="primary" :thickness="10" />
       </q-inner-loading>
     </div>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue'
+import { defineComponent } from "vue";
 
-export default {
-  setup () {
-    const visible = ref(true)
+export default defineComponent({
+  name: "UiSpinner",
 
-    return {
-      visible,
-    }
-  }
-}
+  props: {
+    visible: {
+      type: Boolean,
+      default: true,
+    },
+
+    spinner: {
+      type: String,
+      default: "q-spinner",
+    },
+  },
+});
 </script>
 
 <style lang="sass" scoped>
 .modalwin
-  height: 100px
-  width: 100px
+  height: 150px
+  width: 150px
   background: #719ECE
   top: 40% /* отступ сверху */
   right: 0
@@ -46,11 +50,8 @@ export default {
   width:100%
   height:100%
   z-index:1 /* поверх всех  кроме окна*/
-  background:#000
+  background: #000
   opacity: 0.5 /*прозрачность*/
   left:0
   top:0
-.inner
-  margin-left: auto
-  margin-right: auto
 </style>

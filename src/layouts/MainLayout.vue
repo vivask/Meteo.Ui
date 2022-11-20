@@ -805,30 +805,22 @@
   </q-layout>
 
   <q-dialog v-model="loadInner" maximized>
-    <LoadInner />
-  </q-dialog>
-
-  <q-dialog v-model="gearInner" maximized>
-    <GearInner />
+    <UiSpinner />
   </q-dialog>
 </template>
-
-const MenuL0 = { }
 
 <script>
 import { defineComponent, ref, computed, watch, onMounted } from "vue";
 import { useLayoutStore } from "src/stores/layout";
 import { useAuthStore } from "src/stores/auth";
-import LoadInner from "components/LoadInner.vue";
-import GearInner from "components/GearInner.vue";
 import { useRouter } from "vue-router";
+import UiSpinner from "src/components/UiSpinner.vue";
 
 export default defineComponent({
   name: "MainLayout",
 
   components: {
-    LoadInner,
-    GearInner,
+    UiSpinner,
   },
 
   setup() {
@@ -892,7 +884,6 @@ export default defineComponent({
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
       loadInner: computed(() => store.load_spinner),
-      gearInner: computed(() => store.gear_spinner),
       activeHome: computed(() => store.get_menu_level_0 === ""),
       sensorBme280Temperature: computed(
         () => store.get_menu_level_2 === "temperature"

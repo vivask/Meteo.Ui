@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md">
+  <div class="q-pa-md" v-if="loaded && !error">
     <div class="row justify-center items-start crisper">
       <div class="square rounded-borders" :class="cols">
         <q-item class="bot-line">
@@ -23,7 +23,7 @@
           :rows-per-page-options="[10, 50, 100, 0]"
         >
           <template v-slot:body-cell-state="props">
-            <q-td :props="props" class="wd-20">
+            <q-td :props="props" class="wd-30">
               <q-icon
                 :name="activeIcon(props.row)"
                 size="1.2rem"
@@ -108,6 +108,14 @@
       </q-card-section>
     </q-card>
   </q-dialog>
+
+  <UiContainer v-if="!loaded">
+    <UiSpinner></UiSpinner>
+  </UiContainer>
+
+  <UiContainer v-if="error">
+    <UiAlert>{{ message }}</UiAlert>
+  </UiContainer>
 </template>
 
 <script>
@@ -115,6 +123,9 @@ import { useQuasar } from "quasar";
 import { computed, ref } from "vue";
 import { useUtils } from "src/stores/utils";
 import axios from "axios";
+import UiContainer from "src/components/UiContainer.vue";
+import UiAlert from "src/components/UiAlert.vue";
+import UiSpinner from "src/components/UiSpinner.vue";
 
 const columns = [
   { name: "state" },
@@ -136,6 +147,11 @@ const zone = {
 };
 
 export default {
+  components: {
+    UiContainer,
+    UiAlert,
+    UiSpinner,
+  },
   setup() {
     const $q = useQuasar();
     const utils = useUtils();
@@ -143,6 +159,9 @@ export default {
 
     return {
       utils,
+      loaded: ref(false),
+      error: ref(false),
+      message: ref(null),
       create: ref(false),
       columns,
       rows: ref(rows),
@@ -154,13 +173,21 @@ export default {
           `col-${$q.screen.name == "sm" ? 8 : $q.screen.name == "xs" ? 11 : 5}`
       ),
       async GetZones() {
+        this.loaded = false;
+        this.error = false;
+        this.message = null;
         await axios
           .get("/api/v1/admin/proxy/zones/get")
           .then((response) => {
             this.rows = response.data.data;
             this.isShowHeaderButton = this.rows.length === 0;
+            this.loaded = true;
+            this.error = false;
           })
           .catch((err) => {
+            this.message = err.response.data.message;
+            this.loaded = true;
+            this.error = true;
             $q.notify({ type: "negative", message: err.response.data.message });
           });
       },

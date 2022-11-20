@@ -1,165 +1,175 @@
 <template>
-  <div class="q-pa-md">
+  <div class="q-pa-md" v-if="loaded && !error">
     <div class="row justify-center items-start crisper">
       <div class="square rounded-borders" :class="cols">
         <q-item class="bot-line">
           <q-item-label class="text-bold text-h6">Proxy Servers</q-item-label>
         </q-item>
         <q-list>
-          <q-item>
-            <q-item-section side>
-              <q-icon name="dns" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label class="text-bold">Main Server</q-item-label>
-            </q-item-section>
-          </q-item>
           <q-item dense>
             <q-checkbox
-              v-model="master.active"
-              label="Active"
-              checked-icon="task_alt"
-              unchecked-icon="highlight_off"
-              class="ml-30"
-              @update:model-value="onMasterActive()"
+              v-model="main.active"
+              label="Main server"
+              checked-icon="dns"
+              unchecked-icon="dns"
+              @update:model-value="onMainActive()"
             />
           </q-item>
           <q-item dense>
             <q-checkbox
-              v-model="master.adblock"
+              v-model="main.adblock"
               label="Ad blocking"
               checked-icon="task_alt"
               unchecked-icon="highlight_off"
               class="ml-30"
-              @update:model-value="onMasterAdBlock()"
+              @update:model-value="onMainAdBlock()"
             />
           </q-item>
           <q-item dense>
             <q-checkbox
-              v-model="master.cache"
+              v-model="main.cache"
               label="Cache"
               checked-icon="task_alt"
               unchecked-icon="highlight_off"
               class="ml-30"
-              @update:model-value="onMasterCache()"
+              @update:model-value="onMainCache()"
             />
           </q-item>
           <q-item dense class="bot-line">
             <q-checkbox
-              v-model="master.unlock"
+              v-model="main.unlock"
               label="Website unblocking"
               checked-icon="task_alt"
               unchecked-icon="highlight_off"
               class="ml-30"
-              @update:model-value="onMasterUnlock()"
-            />
-          </q-item>
-          <q-item>
-            <q-item-section side>
-              <q-icon name="dns" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label class="text-bold">Backup server</q-item-label>
-            </q-item-section>
-          </q-item>
-          <q-item dense>
-            <q-checkbox
-              v-model="slave.active"
-              label="Active"
-              checked-icon="task_alt"
-              unchecked-icon="highlight_off"
-              class="ml-30"
-              @update:model-value="onSlaveActive()"
+              @update:model-value="onMainUnlock()"
             />
           </q-item>
           <q-item dense>
             <q-checkbox
-              v-model="slave.adblock"
+              v-model="backup.active"
+              label="Backup server"
+              checked-icon="dns"
+              unchecked-icon="dns"
+              @update:model-value="onBackupActive()"
+            />
+          </q-item>
+          <q-item dense>
+            <q-checkbox
+              v-model="backup.adblock"
               label="Ad blocking"
               checked-icon="task_alt"
               unchecked-icon="highlight_off"
               class="ml-30"
-              @update:model-value="onSlaveAdBlock()"
+              @update:model-value="onBackupAdBlock()"
             />
           </q-item>
           <q-item dense>
             <q-checkbox
-              v-model="slave.cache"
+              v-model="backup.cache"
               label="Cache"
               checked-icon="task_alt"
               unchecked-icon="highlight_off"
               class="ml-30"
-              @update:model-value="onSlaveCache()"
+              @update:model-value="onBackupCache()"
             />
           </q-item>
           <q-item dense>
             <q-checkbox
-              v-model="slave.unlock"
+              v-model="backup.unlock"
               label="Website unblocking"
               checked-icon="task_alt"
               unchecked-icon="highlight_off"
               class="ml-30"
-              @update:model-value="onSlaveUnlock()"
+              @update:model-value="onBackupUnlock()"
             />
           </q-item>
         </q-list>
       </div>
     </div>
   </div>
+
+  <UiContainer v-if="!loaded">
+    <UiSpinner></UiSpinner>
+  </UiContainer>
+
+  <UiContainer v-if="error">
+    <UiAlert>{{ message }}</UiAlert>
+  </UiContainer>
 </template>
 
 <script>
 import { defineComponent, ref, computed } from "vue";
 import { useQuasar } from "quasar";
 import axios from "axios";
+import UiContainer from "src/components/UiContainer.vue";
+import UiAlert from "src/components/UiAlert.vue";
+import UiSpinner from "src/components/UiSpinner.vue";
 
-const master = {
+const main = {
   active: false,
-  master: false,
+  main: false,
   adblock: false,
   cache: false,
   unlock: false,
 };
 
-const slave = {
+const backup = {
   active: false,
-  master: false,
+  main: false,
   adblock: false,
   cache: false,
   unlock: false,
 };
 
 export default defineComponent({
+  components: {
+    UiContainer,
+    UiAlert,
+    UiSpinner,
+  },
+
   setup() {
     const $q = useQuasar();
 
     return {
-      master: ref(master),
-      slave: ref(slave),
+      loaded: ref(false),
+      error: ref(false),
+      message: ref(null),
+      main: ref(main),
+      backup: ref(backup),
       cols: computed(
         () =>
           `col-${$q.screen.name == "sm" ? 4 : $q.screen.name == "xs" ? 11 : 3}`
       ),
       async GetStateProxy() {
+        this.loaded = false;
+        this.error = false;
+        this.message = null;
         await axios
           .get("/api/v1/admin/proxy/status/get")
           .then((response) => {
-            if (response.data.data[0].master) {
-              this.master = response.data.data[0];
-              this.slave = response.data.data[1];
+            if (response.data.data[0].main) {
+              this.main = response.data.data[0];
+              this.backup = response.data.data[1];
             } else {
-              this.master = response.data.data[1];
-              this.slave = response.data.data[0];
+              this.main = response.data.data[1];
+              this.backup = response.data.data[0];
             }
+            this.loaded = true;
+            this.error = false;
           })
           .catch((err) => {
+            this.message = err.response.data.message;
+            this.loaded = true;
+            this.error = true;
             $q.notify({ type: "negative", message: err.response.data.message });
           });
       },
-      async onMasterActive() {
-        if (this.master.active) {
+      async onMainActive() {
+        if (this.main.active) {
           await axios
-            .put("/api/v1/admin/proxy/master/server/start")
+            .put("/api/v1/admin/proxy/main/server/start")
             .then(() => {
               this.GetStateProxy();
             })
@@ -170,8 +180,8 @@ export default defineComponent({
               });
             });
         } else {
-          await axios
-            .put("/api/v1/admin/proxy/master/server/stop")
+          axios
+            .put("/api/v1/admin/proxy/main/server/stop")
             .then(() => {
               this.GetStateProxy();
             })
@@ -183,10 +193,10 @@ export default defineComponent({
             });
         }
       },
-      async onMasterAdBlock() {
-        if (this.master.adblock) {
+      async onMainAdBlock() {
+        if (this.main.adblock) {
           await axios
-            .put("/api/v1/admin/proxy/master/adblock/on")
+            .put("/api/v1/admin/proxy/main/adblock/on")
             .then(() => {
               this.GetStateProxy();
             })
@@ -198,7 +208,7 @@ export default defineComponent({
             });
         } else {
           await axios
-            .put("/api/v1/admin/proxy/master/adblock/off")
+            .put("/api/v1/admin/proxy/main/adblock/off")
             .then(() => {
               this.GetStateProxy();
             })
@@ -210,10 +220,10 @@ export default defineComponent({
             });
         }
       },
-      async onMasterCache() {
-        if (this.master.cache) {
+      async onMainCache() {
+        if (this.main.cache) {
           await axios
-            .put("/api/v1/admin/proxy/master/cache/on")
+            .put("/api/v1/admin/proxy/main/cache/on")
             .then(() => {
               this.GetStateProxy();
             })
@@ -225,7 +235,7 @@ export default defineComponent({
             });
         } else {
           await axios
-            .put("/api/v1/admin/proxy/master/cache/off")
+            .put("/api/v1/admin/proxy/main/cache/off")
             .then(() => {
               this.GetStateProxy();
             })
@@ -237,10 +247,10 @@ export default defineComponent({
             });
         }
       },
-      async onMasterUnlock() {
-        if (this.master.unlock) {
+      async onMainUnlock() {
+        if (this.main.unlock) {
           await axios
-            .put("/api/v1/admin/proxy/master/unlock/on")
+            .put("/api/v1/admin/proxy/main/unlock/on")
             .then(() => {
               this.GetStateProxy();
             })
@@ -252,7 +262,7 @@ export default defineComponent({
             });
         } else {
           await axios
-            .put("/api/v1/admin/proxy/master/unlock/off")
+            .put("/api/v1/admin/proxy/main/unlock/off")
             .then(() => {
               this.GetStateProxy();
             })
@@ -264,10 +274,10 @@ export default defineComponent({
             });
         }
       },
-      async onSlaveActive() {
-        if (this.slave.active) {
+      async onBackupActive() {
+        if (this.backup.active) {
           await axios
-            .put("/api/v1/admin/proxy/slave/server/start")
+            .put("/api/v1/admin/proxy/backup/server/start")
             .then(() => {
               this.GetStateProxy();
             })
@@ -278,8 +288,8 @@ export default defineComponent({
               });
             });
         } else {
-          await axios
-            .put("/api/v1/admin/proxy/slave/server/stop")
+          axios
+            .put("/api/v1/admin/proxy/backup/server/stop")
             .then(() => {
               this.GetStateProxy();
             })
@@ -291,10 +301,10 @@ export default defineComponent({
             });
         }
       },
-      async onSlaveAdBlock() {
-        if (this.slave.adblock) {
+      async onBackupAdBlock() {
+        if (this.backup.adblock) {
           await axios
-            .put("/api/v1/admin/proxy/slave/adblock/on")
+            .put("/api/v1/admin/proxy/backup/adblock/on")
             .then(() => {
               this.GetStateProxy();
             })
@@ -306,7 +316,7 @@ export default defineComponent({
             });
         } else {
           await axios
-            .put("/api/v1/admin/proxy/slave/adblock/off")
+            .put("/api/v1/admin/proxy/backup/adblock/off")
             .then(() => {
               this.GetStateProxy();
             })
@@ -318,10 +328,10 @@ export default defineComponent({
             });
         }
       },
-      async onSlaveCache() {
-        if (this.slave.cache) {
+      async onBackupCache() {
+        if (this.backup.cache) {
           await axios
-            .put("/api/v1/admin/proxy/slave/cache/on")
+            .put("/api/v1/admin/proxy/backup/cache/on")
             .then(() => {
               this.GetStateProxy();
             })
@@ -333,7 +343,7 @@ export default defineComponent({
             });
         } else {
           await axios
-            .put("/api/v1/admin/proxy/slave/cache/off")
+            .put("/api/v1/admin/proxy/backup/cache/off")
             .then(() => {
               this.GetStateProxy();
             })
@@ -345,10 +355,10 @@ export default defineComponent({
             });
         }
       },
-      async onSlaveUnlock() {
-        if (this.slave.unlock) {
+      async onBackupUnlock() {
+        if (this.backup.unlock) {
           await axios
-            .put("/api/v1/admin/proxy/slave/unlock/on")
+            .put("/api/v1/admin/proxy/backup/unlock/on")
             .then(() => {
               this.GetStateProxy();
             })
@@ -360,7 +370,7 @@ export default defineComponent({
             });
         } else {
           await axios
-            .put("/api/v1/admin/proxy/slave/unlock/off")
+            .put("/api/v1/admin/proxy/backup/unlock/off")
             .then(() => {
               this.GetStateProxy();
             })
