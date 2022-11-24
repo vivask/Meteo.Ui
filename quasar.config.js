@@ -80,8 +80,16 @@ module.exports = configure(function (ctx) {
         type: "http",
       },
       host: "0.0.0.0",
-      port: 8080,
+      port: 8000,
       open: true, // opens browser window automatically
+      //vueDevtools: true,
+      proxy: {
+        "/api": {
+          target: "https://chat",
+          changeOrigin: true,
+          secure: false,
+        },
+      },
     },
 
     // https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js#Property%3A-framework

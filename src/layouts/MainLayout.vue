@@ -16,6 +16,12 @@
         <q-btn stretch flat to="/login" v-if="!isAuthenticated">Login</q-btn>
         <q-btn stretch flat @click="logout" v-else>Logout</q-btn>
 
+        <UiMenuFilter
+          icon="mdi-dots-vertical"
+          v-model="filter.date"
+          :options="$options.dateFilterOptions"
+        />
+
         <q-btn flat round dense icon="mdi-dots-vertical" v-if="showRangeFilter">
           <q-menu>
             <q-list>
@@ -815,13 +821,35 @@ import { useLayoutStore } from "src/stores/layout";
 import { useAuthStore } from "src/stores/auth";
 import { useRouter } from "vue-router";
 import UiSpinner from "src/components/UiSpinner.vue";
+import UiMenuFilter from "src/components/UiMenuFilter.vue";
 
 export default defineComponent({
   name: "MainLayout",
 
   components: {
     UiSpinner,
+    UiMenuFilter,
   },
+
+  dateFilterOptions: [
+    { text: "Day", value: "day" },
+    { text: "Week", value: "week" },
+    { text: "Month", value: "month" },
+    { text: "Year", value: "year" },
+  ],
+
+  rangeFilterOptions: [
+    { text: "Average", value: "avg" },
+    { text: "Minimum", value: "min" },
+    { text: "Maximum", value: "max" },
+  ],
+
+  accountungFilterOptions: [
+    { text: "All", value: "all" },
+    { text: "Verified", value: "verified" },
+    { text: "Unverified", value: "unverified" },
+    { text: "Suspect", value: "suspect" },
+  ],
 
   setup() {
     const store = useLayoutStore();
@@ -877,8 +905,11 @@ export default defineComponent({
     return {
       isAuthenticated: computed(() => auth.is_authenticated),
       leftDrawerOpen,
-      rangeFilter,
-      accountingFilter,
+      filter: {
+        date: "day",
+        range: "avg",
+        accounting: "all",
+      },
       isActivePeripheral,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
@@ -989,10 +1020,10 @@ export default defineComponent({
         );
       },
       triggerRangeFilter() {
-        store.set_ranre_filter(rangeFilter.value);
+        store.set_ranre_filter(this.filter.range.value);
       },
       async triggerAccountigFilter() {
-        await store.set_accounting_filter(accountingFilter.value);
+        await store.set_accounting_filter(this.filter.accounting.value);
       },
     };
   },

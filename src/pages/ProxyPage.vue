@@ -99,7 +99,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed } from "vue";
+import { ref, computed } from "vue";
 import { useQuasar } from "quasar";
 import axios from "axios";
 import UiContainer from "src/components/UiContainer.vue";
@@ -122,7 +122,7 @@ const backup = {
   unlock: false,
 };
 
-export default defineComponent({
+export default {
   components: {
     UiContainer,
     UiAlert,
@@ -387,7 +387,7 @@ export default defineComponent({
   async mounted() {
     await this.GetStateProxy();
   },
-});
+};
 </script>
 
 <style lang="sass" scoped>
