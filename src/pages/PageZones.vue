@@ -1,5 +1,5 @@
 <template>
-  <UiBoxVue :columns="cols" header="Local hosts" :spinner="spinner">
+  <UiBoxVue :columns="boxCols" header="Local hosts" :spinner="spinner" :button="boxButton">
     <q-table hide-header :rows="rows" :columns="columns" row-key="name" :rows-per-page-options="[10, 50, 100, 0]">
       <template v-slot:body-cell-state="props">
         <q-td :props="props" class="wd-30">
@@ -31,12 +31,16 @@
       </template>
     </q-table>
   </UiBoxVue>
+
+  <ZoneFormVue v-if="viewForm" v-model="viewForm" :zone="zone" @submit="handleSubmit" />
+  <ui-confirm-vue v-if="confirm" v-model="confirm" message="Are you sure to delete this item?" />
 </template>
 
 <script>
-import { defineComponent, ref, computed } from 'vue';
-import { useQuasar } from 'quasar';
+import { defineComponent, ref, computed, toRefs } from 'vue';
 import UiBoxVue from '@/components/UiBox.vue';
+import ZoneFormVue from '@/components/ZoneForm.vue';
+import UiConfirmVue from '@/components/UiConfirm.vue';
 
 const columns = [
   { name: 'state' },
@@ -52,11 +56,11 @@ export default defineComponent({
 
   components: {
     UiBoxVue,
+    ZoneFormVue,
+    UiConfirmVue,
   },
 
   setup() {
-    const $q = useQuasar();
-
     const rows = ref([]);
 
     return {
@@ -66,11 +70,32 @@ export default defineComponent({
 
       rows,
 
-      zone: ref({}),
+      zone: ref({
+        name: null,
+        address: null,
+        mac: null,
+        note: null,
+      }),
 
-      isShowHeaderButton: computed(() => rows.length === 0),
+      viewForm: ref(false),
 
-      cols: computed(() => `col-${$q.screen.name == 'sm' ? 8 : $q.screen.name == 'xs' ? 11 : 5}`),
+      actionEdit: false,
+
+      confirm: ref(false),
+
+      showButton: computed(() => rows.length === 0),
+
+      boxButton: {
+        show: computed(() => rows.length === 0),
+        label: 'Add',
+        click: () => this.handleAdd(),
+      },
+
+      boxCols: {
+        large: 5,
+        medium: 7,
+        small: 5,
+      },
 
       GetZones() {
         this.axios.get('/proxy/zones/get').then((response) => {
@@ -89,9 +114,40 @@ export default defineComponent({
     };
   },
 
-  methods: {},
+  methods: {
+    handleAdd() {
+      Object.keys(this.zone).forEach((key) => {
+        this.zone[key] = null;
+      });
+      this.viewForm = true;
+      this.actionEdit = false;
+    },
+
+    handleEdit(row) {
+      this.zone = row;
+      this.viewForm = true;
+      this.actionEdit = true;
+    },
+
+    handleDelete(row) {
+      this.confirm = true;
+    },
+
+    handleSubmit(zone) {
+      if (this.actionEdit) {
+        this.axios.post('/proxy/zones/edit', zone).then(() => {
+          this.GetZones();
+        });
+      } else {
+        this.axios.post('/proxy/zones/add', zone).then(() => {
+          this.GetZones();
+        });
+      }
+    },
+  },
 
   mounted() {
+    console.log('screen: ', this.test);
     this.GetZones();
   },
 });

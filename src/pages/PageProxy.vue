@@ -1,5 +1,5 @@
 <template>
-  <UiBoxVue :columns="columns" header="Proxy Servers" :spinner="spinner">
+  <UiBoxVue :columns="boxCols" header="Proxy Servers" :spinner="spinner">
     <UiProxyVue
       :line="true"
       title="Main server"
@@ -22,7 +22,6 @@
 
 <script>
 import { defineComponent, ref, computed } from 'vue';
-import { useQuasar } from 'quasar';
 import UiProxyVue from '@/components/UiProxy.vue';
 import UiBoxVue from '@/components/UiBox.vue';
 
@@ -35,8 +34,6 @@ export default defineComponent({
   },
 
   setup() {
-    const $q = useQuasar();
-
     return {
       spinner: ref(true),
 
@@ -44,7 +41,11 @@ export default defineComponent({
 
       backup: ref({}),
 
-      columns: computed(() => `col-${$q.screen.name == 'sm' ? 4 : $q.screen.name == 'xs' ? 11 : 3}`),
+      boxCols: {
+        large: 3,
+        medium: 3,
+        small: 3,
+      },
 
       GetStateProxy() {
         this.axios.get('/proxy/status/get').then((response) => {
