@@ -1,6 +1,0 @@
-#!/bin/bash
-
-quasar build
-
-rm -rf /home/w/Projects/Meteo/Backend/ui/*
-cp -r ./dist/spa/* /home/w/Projects/Meteo/Backend/ui/
