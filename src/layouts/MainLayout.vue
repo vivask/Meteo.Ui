@@ -17,142 +17,25 @@
         <q-btn stretch flat @click="logout" v-else>Logout</q-btn>
 
         <UiMenuFilter
+          v-if="showRangeFilter"
+          v-model="filter.range"
           icon="mdi-dots-vertical"
+          :options="$options.rangeFilterOptions"
+        />
+
+        <UiMenuFilter
+          v-if="showRangeFilter"
           v-model="filter.date"
+          icon="mdi-dots-square"
           :options="$options.dateFilterOptions"
         />
 
-        <q-btn flat round dense icon="mdi-dots-vertical" v-if="showRangeFilter">
-          <q-menu>
-            <q-list>
-              <q-item tag="label" v-close-popup>
-                <q-item-section avatar>
-                  <q-radio
-                    v-model="rangeFilter"
-                    val="avg"
-                    checked-icon="task_alt"
-                    unchecked-icon="panorama_fish_eye"
-                    @click="triggerRangeFilter"
-                  />
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label>Average</q-item-label>
-                </q-item-section>
-              </q-item>
-              <q-item tag="label" v-close-popup>
-                <q-item-section avatar>
-                  <q-radio
-                    v-model="rangeFilter"
-                    val="min"
-                    checked-icon="task_alt"
-                    unchecked-icon="panorama_fish_eye"
-                    @click="triggerRangeFilter"
-                  />
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label>Minimum</q-item-label>
-                </q-item-section>
-              </q-item>
-              <q-item tag="label" v-close-popup>
-                <q-item-section avatar>
-                  <q-radio
-                    v-model="rangeFilter"
-                    val="max"
-                    checked-icon="task_alt"
-                    unchecked-icon="panorama_fish_eye"
-                    @click="triggerRangeFilter"
-                  />
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label>Maximum</q-item-label>
-                </q-item-section>
-              </q-item>
-              <q-item tag="label" v-close-popup>
-                <q-item-section avatar>
-                  <q-radio
-                    v-model="rangeFilter"
-                    val="all"
-                    checked-icon="task_alt"
-                    unchecked-icon="panorama_fish_eye"
-                    @click="triggerRangeFilter"
-                  />
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label>All</q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-menu>
-        </q-btn>
-
-        <q-btn
-          flat
-          round
-          dense
-          icon="mdi-dots-vertical"
+        <UiMenuFilter
           v-if="showAccountingFilter"
-        >
-          <q-menu>
-            <q-list>
-              <q-item tag="label" v-close-popup>
-                <q-item-section avatar>
-                  <q-radio
-                    v-model="accountingFilter"
-                    val="all"
-                    checked-icon="task_alt"
-                    unchecked-icon="panorama_fish_eye"
-                    @click="triggerAccountigFilter()"
-                  />
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label>All</q-item-label>
-                </q-item-section>
-              </q-item>
-              <q-item tag="label" v-close-popup>
-                <q-item-section avatar>
-                  <q-radio
-                    v-model="accountingFilter"
-                    val="verified"
-                    checked-icon="task_alt"
-                    unchecked-icon="panorama_fish_eye"
-                    @click="triggerAccountigFilter()"
-                  />
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label>Verified</q-item-label>
-                </q-item-section>
-              </q-item>
-              <q-item tag="label" v-close-popup>
-                <q-item-section avatar>
-                  <q-radio
-                    v-model="accountingFilter"
-                    val="not_verified"
-                    checked-icon="task_alt"
-                    unchecked-icon="panorama_fish_eye"
-                    @click="triggerAccountigFilter()"
-                  />
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label>Not Verified</q-item-label>
-                </q-item-section>
-              </q-item>
-              <q-item tag="label" v-close-popup>
-                <q-item-section avatar>
-                  <q-radio
-                    v-model="accountingFilter"
-                    val="alarm"
-                    checked-icon="task_alt"
-                    unchecked-icon="panorama_fish_eye"
-                    @click="triggerAccountigFilter()"
-                  />
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label>Alarm</q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-menu>
-        </q-btn>
+          v-model="filter.accounting"
+          icon="drag_indicator"
+          :options="$options.accountungFilterOptions"
+        />
       </q-toolbar>
     </q-header>
 
@@ -802,6 +685,7 @@
     <q-footer elevated>
       <q-toolbar>
         <q-spinner-bars color="primary" size="2em" v-if="isActivePeripheral" />
+        <q-badge color="red">{{ filter.date }}</q-badge>
       </q-toolbar>
     </q-footer>
 
@@ -857,8 +741,6 @@ export default defineComponent({
     const $router = useRouter();
 
     const leftDrawerOpen = ref(false);
-    const rangeFilter = ref("avg");
-    const accountingFilter = ref("all");
     const isActivePeripheral = ref(false);
     const peripheral = ref(false);
     const esp32 = ref(false);
@@ -874,6 +756,11 @@ export default defineComponent({
     const database = ref(false);
     const servers = ref(false);
     const radius = ref(false);
+    const filter = {
+      date: "day",
+      range: "avg",
+      accounting: "all",
+    };
 
     watch(
       () => store.get_menu_level_0,
@@ -893,6 +780,14 @@ export default defineComponent({
       }
     );
 
+    watch(
+      () => filter.accounting,
+      (newVal) => {
+        console.log(newVal);
+        //store.set_accounting_filter(newVal);
+      }
+    );
+
     onMounted(() => {
       if (store.get_menu_level_0) {
         eval(store.get_menu_level_0).value = true;
@@ -905,11 +800,7 @@ export default defineComponent({
     return {
       isAuthenticated: computed(() => auth.is_authenticated),
       leftDrawerOpen,
-      filter: {
-        date: "day",
-        range: "avg",
-        accounting: "all",
-      },
+      filter,
       isActivePeripheral,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
@@ -957,6 +848,10 @@ export default defineComponent({
       radiusVerified: computed(() => store.get_menu_level_2 === "verified"),
       showRangeFilter: computed(() => store.show_range_filter),
       showAccountingFilter: computed(() => store.show_accounting_filter),
+      watchFilter: computed(() => {
+        console.log(filter.accounting);
+        return filter.accounting;
+      }),
       peripheral,
       esp32,
       services,
@@ -989,9 +884,6 @@ export default defineComponent({
       },
       setMenu(L_0, L_1, L_2) {
         store.set_menu(L_0, L_1, L_2);
-        if (L_0 != "") {
-          store.set_filter(rangeFilter);
-        }
       },
       selectMenu() {
         this.peripheral = store.get_menu_level_0 === "peripheral";
@@ -1021,9 +913,6 @@ export default defineComponent({
       },
       triggerRangeFilter() {
         store.set_ranre_filter(this.filter.range.value);
-      },
-      async triggerAccountigFilter() {
-        await store.set_accounting_filter(this.filter.accounting.value);
       },
     };
   },

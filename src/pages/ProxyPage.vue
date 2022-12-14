@@ -147,7 +147,7 @@ export default {
         this.error = false;
         this.message = null;
         await axios
-          .get("/api/v1/admin/proxy/status/get")
+          .get("/api/v1/proxy/status/get")
           .then((response) => {
             if (response.data.data[0].main) {
               this.main = response.data.data[0];
@@ -169,7 +169,7 @@ export default {
       async onMainActive() {
         if (this.main.active) {
           await axios
-            .put("/api/v1/admin/proxy/main/server/start")
+            .put("/api/v1/proxy/main/server/start")
             .then(() => {
               this.GetStateProxy();
             })
@@ -181,7 +181,7 @@ export default {
             });
         } else {
           axios
-            .put("/api/v1/admin/proxy/main/server/stop")
+            .put("/api/v1/proxy/main/server/stop")
             .then(() => {
               this.GetStateProxy();
             })
@@ -196,7 +196,7 @@ export default {
       async onMainAdBlock() {
         if (this.main.adblock) {
           await axios
-            .put("/api/v1/admin/proxy/main/adblock/on")
+            .put("/api/v1/proxy/main/adblock/on")
             .then(() => {
               this.GetStateProxy();
             })
@@ -208,7 +208,7 @@ export default {
             });
         } else {
           await axios
-            .put("/api/v1/admin/proxy/main/adblock/off")
+            .put("/api/v1/proxy/main/adblock/off")
             .then(() => {
               this.GetStateProxy();
             })
@@ -223,7 +223,7 @@ export default {
       async onMainCache() {
         if (this.main.cache) {
           await axios
-            .put("/api/v1/admin/proxy/main/cache/on")
+            .put("/api/v1/proxy/main/cache/on")
             .then(() => {
               this.GetStateProxy();
             })
@@ -235,7 +235,7 @@ export default {
             });
         } else {
           await axios
-            .put("/api/v1/admin/proxy/main/cache/off")
+            .put("/api/v1/proxy/main/cache/off")
             .then(() => {
               this.GetStateProxy();
             })
@@ -250,7 +250,7 @@ export default {
       async onMainUnlock() {
         if (this.main.unlock) {
           await axios
-            .put("/api/v1/admin/proxy/main/unlock/on")
+            .put("/api/v1/proxy/main/unlock/on")
             .then(() => {
               this.GetStateProxy();
             })
@@ -262,7 +262,7 @@ export default {
             });
         } else {
           await axios
-            .put("/api/v1/admin/proxy/main/unlock/off")
+            .put("/api/v1/proxy/main/unlock/off")
             .then(() => {
               this.GetStateProxy();
             })
@@ -277,7 +277,7 @@ export default {
       async onBackupActive() {
         if (this.backup.active) {
           await axios
-            .put("/api/v1/admin/proxy/backup/server/start")
+            .put("/api/v1/proxy/backup/server/start")
             .then(() => {
               this.GetStateProxy();
             })
@@ -289,7 +289,7 @@ export default {
             });
         } else {
           axios
-            .put("/api/v1/admin/proxy/backup/server/stop")
+            .put("/api/v1/proxy/backup/server/stop")
             .then(() => {
               this.GetStateProxy();
             })
@@ -304,7 +304,7 @@ export default {
       async onBackupAdBlock() {
         if (this.backup.adblock) {
           await axios
-            .put("/api/v1/admin/proxy/backup/adblock/on")
+            .put("/api/v1/proxy/backup/adblock/on")
             .then(() => {
               this.GetStateProxy();
             })
@@ -316,7 +316,7 @@ export default {
             });
         } else {
           await axios
-            .put("/api/v1/admin/proxy/backup/adblock/off")
+            .put("/api/v1/proxy/backup/adblock/off")
             .then(() => {
               this.GetStateProxy();
             })
@@ -331,7 +331,7 @@ export default {
       async onBackupCache() {
         if (this.backup.cache) {
           await axios
-            .put("/api/v1/admin/proxy/backup/cache/on")
+            .put("/api/v1/proxy/backup/cache/on")
             .then(() => {
               this.GetStateProxy();
             })
@@ -343,7 +343,7 @@ export default {
             });
         } else {
           await axios
-            .put("/api/v1/admin/proxy/backup/cache/off")
+            .put("/api/v1/proxy/backup/cache/off")
             .then(() => {
               this.GetStateProxy();
             })
@@ -358,7 +358,7 @@ export default {
       async onBackupUnlock() {
         if (this.backup.unlock) {
           await axios
-            .put("/api/v1/admin/proxy/backup/unlock/on")
+            .put("/api/v1/proxy/backup/unlock/on")
             .then(() => {
               this.GetStateProxy();
             })
@@ -370,7 +370,7 @@ export default {
             });
         } else {
           await axios
-            .put("/api/v1/admin/proxy/backup/unlock/off")
+            .put("/api/v1/proxy/backup/unlock/off")
             .then(() => {
               this.GetStateProxy();
             })

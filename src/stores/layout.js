@@ -14,7 +14,11 @@ export const useLayoutStore = defineStore("layout", {
     bme280_is_available: true,
     mics6814_is_available: true,
     range_filter: ref("avg"),
-    range_filter_set: ["/peripheral/bme280/temperature"],
+    range_filter_set: [
+      "/bme280/temperature",
+      "/bme280/pressure",
+      "/bme280/humidity",
+    ],
     accounting_filter: ref("all"),
     accounting_filter_set: ["/radius/account"],
     accounting_rows: ref([]),

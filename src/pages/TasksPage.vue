@@ -306,7 +306,7 @@ export default {
       ),
       async GetTasks() {
         await axios
-          .get("/api/v1/admin/schedule/tasks/get")
+          .get("/api/v1/schedule/tasks/get")
           .then((response) => {
             this.rows = response.data.data;
             this.isShowHeaderButton = this.rows.length === 0;
@@ -340,7 +340,7 @@ export default {
           cancel: true,
           persistent: true,
         }).onOk(() => {
-          const url = "/api/v1/admin/schedule/task/" + row.id;
+          const url = "/api/v1/schedule/task/" + row.id;
           axios
             .delete(url)
             .then(() => {
@@ -359,7 +359,7 @@ export default {
         this.task.params = this.params;
         if (actionEdit.value) {
           await axios
-            .post("/api/v1/admin/schedule/task/edit", this.task)
+            .post("/api/v1/schedule/task/edit", this.task)
             .then(() => {
               this.GetTasks();
             })
@@ -371,7 +371,7 @@ export default {
             });
         } else {
           await axios
-            .post("/api/v1/admin/schedule/task/add", this.task)
+            .post("/api/v1/schedule/task/add", this.task)
             .then(() => {
               this.GetTasks();
             })

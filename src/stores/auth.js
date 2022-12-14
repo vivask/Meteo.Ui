@@ -29,7 +29,7 @@ export const useAuthStore = defineStore("auth", {
     },
     async getMe() {
       await axios
-        .get("/api/v1/admin/user/")
+        .get("/api/v1/user/")
         .then((response) => {
           this.me = response.data;
         })
@@ -48,13 +48,13 @@ export const useAuthStore = defineStore("auth", {
       window.localStorage.setItem("token", "");
     },
     async signOut() {
-      await axios.get("/api/v1/admin/logout").then(() => {
+      await axios.get("/api/v1/logout").then(() => {
         axios.defaults.headers.common.Authorization = "";
         this.removeToken();
       });
     },
     async refreshToken() {
-      await axios.get("/api/v1/admin/refresh_token/").then((response) => {
+      await axios.get("/api/v1/refresh_token/").then((response) => {
         if (response.data) {
           this.setToken(response.data);
           axios.defaults.headers.common.Authorization =
@@ -78,7 +78,7 @@ export const useAuthStore = defineStore("auth", {
     },
     async GetUser() {
       return await axios
-        .get("/api/v1/admin/user/")
+        .get("/api/v1/user/")
         .then(async (response) => {
           //await refreshToken();
           return response.data.data.username == this.me.data.username;

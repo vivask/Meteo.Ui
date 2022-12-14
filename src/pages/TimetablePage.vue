@@ -513,7 +513,7 @@ export default {
       },
       async GetExecutors() {
         await axios
-          .get("/api/v1/admin/schedule/executors/get")
+          .get("/api/v1/schedule/executors/get")
           .then(async (response) => {
             this.executors = response.data.data;
             await this.GetTasks();
@@ -524,7 +524,7 @@ export default {
       },
       async GetTasks() {
         await axios
-          .get("/api/v1/admin/schedule/tasks/get")
+          .get("/api/v1/schedule/tasks/get")
           .then(async (response) => {
             this.tasks = response.data.data;
             await this.GetPeriods();
@@ -535,7 +535,7 @@ export default {
       },
       async GetPeriods() {
         await axios
-          .get("/api/v1/admin/schedule/periods/get")
+          .get("/api/v1/schedule/periods/get")
           .then(async (response) => {
             this.periods = response.data.data;
             await this.GetJobs();
@@ -546,7 +546,7 @@ export default {
       },
       async GetJobs() {
         await axios
-          .get("/api/v1/admin/schedule/jobs/get")
+          .get("/api/v1/schedule/jobs/get")
           .then(async (response) => {
             this.rows = response.data.data;
             this.isShowHeaderButton = this.rows.length === 0;
@@ -600,7 +600,7 @@ export default {
           cancel: true,
           persistent: true,
         }).onOk(() => {
-          const url = "/api/v1/admin/schedule/job/" + row.id;
+          const url = "/api/v1/schedule/job/" + row.id;
           axios
             .delete(url)
             .then(async () => {
@@ -613,7 +613,7 @@ export default {
       },
       async onActivate(row) {
         if (row.active) {
-          let url = "/api/v1/admin/schedule/job/deactivate/" + row.id;
+          let url = "/api/v1/schedule/job/deactivate/" + row.id;
           await axios
             .put(url)
             .then(async () => {
@@ -623,7 +623,7 @@ export default {
               await this.reloadWarning(err);
             });
         } else {
-          let url = "/api/v1/admin/schedule/job/activate/" + row.id;
+          let url = "/api/v1/schedule/job/activate/" + row.id;
           await axios
             .put(url)
             .then(async () => {
@@ -635,7 +635,7 @@ export default {
         }
       },
       async onRun(row) {
-        let url = "/api/v1/admin/schedule/job/run/" + row.id;
+        let url = "/api/v1/schedule/job/run/" + row.id;
         await axios
           .put(url)
           .then(async () => {
@@ -663,7 +663,7 @@ export default {
         this.job.value = parseInt(this.job.value, 10);
         if (actionEdit.value) {
           await axios
-            .post("/api/v1/admin/schedule/job/edit", this.job)
+            .post("/api/v1/schedule/job/edit", this.job)
             .then(async () => {
               await this.GetJobs();
             })
@@ -672,7 +672,7 @@ export default {
             });
         } else {
           await axios
-            .post("/api/v1/admin/schedule/job/add", this.job)
+            .post("/api/v1/schedule/job/add", this.job)
             .then(async () => {
               await this.GetJobs();
             })

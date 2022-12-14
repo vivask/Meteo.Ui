@@ -76,7 +76,7 @@ export default {
       ),
       async GetVerified() {
         await axios
-          .get("/api/v1/admin/radius/verified/get")
+          .get("/api/v1/radius/verified/get")
           .then((response) => {
             this.rows = response.data.data;
           })
@@ -91,7 +91,7 @@ export default {
           cancel: true,
           persistent: true,
         }).onOk(() => {
-          const url = "/api/v1/admin/radius/verified/" + row.id;
+          const url = "/api/v1/radius/verified/" + row.id;
           axios
             .delete(url)
             .then(async () => {

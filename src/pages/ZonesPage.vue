@@ -177,7 +177,7 @@ export default {
         this.error = false;
         this.message = null;
         await axios
-          .get("/api/v1/admin/proxy/zones/get")
+          .get("/api/v1/proxy/zones/get")
           .then((response) => {
             this.rows = response.data.data;
             this.isShowHeaderButton = this.rows.length === 0;
@@ -208,7 +208,7 @@ export default {
           cancel: true,
           persistent: true,
         }).onOk(() => {
-          const url = "/api/v1/admin/proxy/zones/" + row.id;
+          const url = "/api/v1/proxy/zones/" + row.id;
           axios
             .delete(url)
             .then(async () => {
@@ -232,7 +232,7 @@ export default {
         this.create = false;
         if (actionEdit.value) {
           await axios
-            .post("/api/v1/admin/proxy/zones/edit", this.zone)
+            .post("/api/v1/proxy/zones/edit", this.zone)
             .then(() => {
               this.GetZones();
             })
@@ -244,7 +244,7 @@ export default {
             });
         } else {
           await axios
-            .post("/api/v1/admin/proxy/zones/add", this.zone)
+            .post("/api/v1/proxy/zones/add", this.zone)
             .then(() => {
               this.GetZones();
             })

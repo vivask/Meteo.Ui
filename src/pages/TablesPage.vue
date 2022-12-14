@@ -302,7 +302,7 @@ export default {
       ),
       async GetStypes() {
         await axios
-          .get("/api/v1/admin/database/stypes/get")
+          .get("/api/v1/database/stypes/get")
           .then(async (response) => {
             this.stypes = response.data.data;
             await this.GetTables();
@@ -313,7 +313,7 @@ export default {
       },
       async GetTables() {
         await axios
-          .get("/api/v1/admin/database/tables/get")
+          .get("/api/v1/database/tables/get")
           .then(async (response) => {
             this.rows = response.data.data;
             this.isShowHeaderButton = this.rows.length === 0;
@@ -346,7 +346,7 @@ export default {
           persistent: true,
         }).onOk(async () => {
           if (selected.value.length === 0) {
-            const url = "/api/v1/admin/database/table/" + row.name;
+            const url = "/api/v1/database/table/" + row.name;
             await axios
               .delete(url)
               .then(() => {
@@ -360,7 +360,7 @@ export default {
               });
           } else {
             await axios
-              .post("/api/v1/admin/database/delete/tables", selected.value)
+              .post("/api/v1/database/delete/tables", selected.value)
               .then(() => {
                 this.GetTables();
               })
@@ -378,7 +378,7 @@ export default {
         this.table.params = this.params;
         if (actionEdit.value) {
           await axios
-            .post("/api/v1/admin/database/table/edit", this.table)
+            .post("/api/v1/database/table/edit", this.table)
             .then(() => {
               this.GetTables();
             })
@@ -390,7 +390,7 @@ export default {
             });
         } else {
           await axios
-            .post("/api/v1/admin/database/table/add", this.table)
+            .post("/api/v1/database/table/add", this.table)
             .then(() => {
               this.GetTables();
             })
@@ -460,7 +460,7 @@ export default {
           persistent: true,
         }).onOk(async () => {
           if (selected.value.length === 0) {
-            const url = "/api/v1/admin/database/table/import/" + row.name;
+            const url = "/api/v1/database/table/import/" + row.name;
             await axios.put(url).catch((err) => {
               $q.notify({
                 type: "negative",
@@ -469,7 +469,7 @@ export default {
             });
           } else {
             await axios
-              .post("/api/v1/admin/database/import/tables", selected.value)
+              .post("/api/v1/database/import/tables", selected.value)
               .catch((err) => {
                 $q.notify({
                   type: "negative",
@@ -487,7 +487,7 @@ export default {
           persistent: true,
         }).onOk(async () => {
           if (selected.value.length === 0) {
-            const url = "/api/v1/admin/database/table/save/" + row.name;
+            const url = "/api/v1/database/table/save/" + row.name;
             await axios
               .put(url)
               .then(() => {
@@ -501,7 +501,7 @@ export default {
               });
           } else {
             await axios
-              .post("/api/v1/admin/database/save/tables", selected.value)
+              .post("/api/v1/database/save/tables", selected.value)
               .then(() => {
                 this.GetTables();
               })
