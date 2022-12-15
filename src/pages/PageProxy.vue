@@ -1,17 +1,17 @@
 <template>
   <UiBoxVue :columns="boxCols" header="Proxy Servers" :spinner="spinner">
     <UiProxyVue
+      v-model="main"
       :line="true"
       title="Main server"
-      v-model="main"
       :on-active="toggleActiveMain"
       :on-adblock="toggleAdblockMain"
       :on-cache="toggleCacheMain"
       :on-unlock="toggleUnlockMain"
     />
     <UiProxyVue
-      title="Backup server"
       v-model="backup"
+      title="Backup server"
       :on-active="toggleActiveBackup"
       :on-adblock="toggleAdblockBackup"
       :on-cache="toggleCacheBackup"
@@ -75,6 +75,11 @@ export default defineComponent({
     };
   },
 
+  mounted() {
+    this.GetStateProxy();
+    this.spinner = false;
+  },
+
   methods: {
     toggleActiveMain() {
       this.toggle(this.main.active, '/proxy/main/server/start', '/proxy/main/server/stop');
@@ -107,11 +112,6 @@ export default defineComponent({
     toggleUnlockBackup() {
       this.toggle(this.backup.unlock, '/proxy/backup/unlock/on', '/proxy/backup/unlock/off');
     },
-  },
-
-  mounted() {
-    this.GetStateProxy();
-    this.spinner = false;
   },
 });
 </script>

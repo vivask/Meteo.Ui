@@ -2,20 +2,20 @@
   <UiContainerVue v-if="error">
     <UiAlertVue>{{ message }}</UiAlertVue>
   </UiContainerVue>
-  <div class="q-pa-md" v-if="!(spinner && loading) && !error">
+  <div v-if="!(spinner && loading) && !error" class="q-pa-md">
     <div class="row justify-center items-start crisper">
       <div class="square rounded-borders" :class="cols">
         <q-item :class="{ 'bottom-line': line }">
           <q-item-label class="text-bold text-h6 mt-5">{{ header }}</q-item-label>
           <q-space />
           <q-btn
-            v-if="button.show"
+            v-if="buttonShow"
             class="wd-100"
             dense
             color="primary"
             size="md"
-            :label="button.label"
-            @click="button.click"
+            :label="buttonLabel"
+            @click="buttonClick"
           />
         </q-item>
         <slot />
@@ -38,13 +38,13 @@ import UiSpinnerVue from '@/components/UiSpinner.vue';
 export default defineComponent({
   name: 'UiBox',
 
-  mixins: [VueScreenSizeMixin],
-
   components: {
     UiContainerVue,
     UiAlertVue,
     UiSpinnerVue,
   },
+
+  mixins: [VueScreenSizeMixin],
 
   props: {
     columns: {
@@ -67,25 +67,19 @@ export default defineComponent({
       default: true,
     },
 
-    button: {
-      type: Object,
-      default: {
-        show: false,
-        label: '',
-        click: null,
-      },
-    },
-  },
-
-  computed: {
-    vssName() {
-      console.log(this.$vssWidth, 'x', this.$vssHeight);
-      return this.$vssWidth > 1900 ? 'large' : this.$vssWidth > 800 ? 'medium' : 'small';
+    buttonShow: {
+      type: Boolean,
+      default: false,
     },
 
-    cols() {
-      console.log(`col-${this.columns[this.vssName]}`);
-      return `col-${this.columns[this.vssName]}`;
+    buttonLabel: {
+      type: String,
+      default: '',
+    },
+
+    buttonClick: {
+      type: Function,
+      default: () => {},
     },
   },
 
@@ -97,6 +91,18 @@ export default defineComponent({
       error: computed(() => store.error),
       message: computed(() => store.message),
     };
+  },
+
+  computed: {
+    vssName() {
+      //console.log(this.$vssWidth, 'x', this.$vssHeight);
+      return this.$vssWidth > 1900 ? 'large' : this.$vssWidth > 800 ? 'medium' : 'small';
+    },
+
+    cols() {
+      //console.log(`col-${this.columns[this.vssName]}`);
+      return `col-${this.columns[this.vssName]}`;
+    },
   },
 });
 </script>

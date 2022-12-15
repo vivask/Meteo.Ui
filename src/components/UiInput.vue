@@ -23,7 +23,7 @@ export default defineComponent({
   props: {
     modelValue: {
       type: String,
-      required: true,
+      default: '',
     },
 
     rule: {
@@ -33,6 +33,12 @@ export default defineComponent({
   },
 
   emits: ['update:modelValue'],
+
+  setup(props) {
+    return {
+      localModel: ref(props.modelValue),
+    };
+  },
 
   computed: {
     _rule() {
@@ -45,12 +51,6 @@ export default defineComponent({
         ? (val && val.length > 0 && validateHost(val)) || 'Invalid inputs'
         : (val && val.length > 0) || 'Please type something';
     },
-  },
-
-  setup(props) {
-    return {
-      localModel: ref(props.modelValue),
-    };
   },
 });
 </script>

@@ -1,14 +1,21 @@
 <template>
-  <UiBoxVue :columns="boxCols" header="Local hosts" :spinner="spinner" :button="boxButton">
+  <UiBoxVue
+    :columns="boxCols"
+    header="Local hosts"
+    :spinner="spinner"
+    :buttonShow="buttonShow"
+    buttonLabel="Add"
+    :buttonClick="handleAdd"
+  >
     <q-table hide-header :rows="rows" :columns="columns" row-key="name" :rows-per-page-options="[10, 50, 100, 0]">
-      <template v-slot:body-cell-state="props">
+      <template #body-cell-state="props">
         <q-td :props="props" class="wd-30">
           <q-icon :name="activeIcon(props.row)" size="1.2rem" :color="activeColor(props.row)" />
         </q-td>
       </template>
-      <template v-slot:body-cell-actions="props">
+      <template #body-cell-actions="props">
         <q-td :props="props">
-          <q-btn dense round color="primary" size="md" icon="add" @click="handleAdd()" />
+          <q-btn dense round color="primary" size="md" icon="add" @click="handleAdd" />
           <q-btn
             class="q-ml-xs"
             dense
@@ -33,7 +40,7 @@
   </UiBoxVue>
 
   <ZoneFormVue v-if="viewForm" v-model="viewForm" :zone="zone" @submit="handleSubmit" />
-  <ui-confirm-vue v-if="confirm" v-model="confirm" message="Are you sure to delete this item?" />
+  <ui-confirm-vue ref="confirm" />
 </template>
 
 <script>
@@ -63,6 +70,8 @@ export default defineComponent({
   setup() {
     const rows = ref([]);
 
+    const buttonShow = computed(() => rows.value.length === 0);
+
     return {
       spinner: ref(true),
 
@@ -79,17 +88,11 @@ export default defineComponent({
 
       viewForm: ref(false),
 
+      viewConfirm: ref(false),
+
       actionEdit: false,
 
-      confirm: ref(false),
-
-      showButton: computed(() => rows.length === 0),
-
-      boxButton: {
-        show: computed(() => rows.length === 0),
-        label: 'Add',
-        click: () => this.handleAdd(),
-      },
+      buttonShow,
 
       boxCols: {
         large: 5,
@@ -114,6 +117,10 @@ export default defineComponent({
     };
   },
 
+  mounted() {
+    this.GetZones();
+  },
+
   methods: {
     handleAdd() {
       Object.keys(this.zone).forEach((key) => {
@@ -129,8 +136,18 @@ export default defineComponent({
       this.actionEdit = true;
     },
 
-    handleDelete(row) {
-      this.confirm = true;
+    async handleDelete(row) {
+      this.viewConfirm = true;
+      const ok = await this.$refs.confirm.show({
+        message: 'Are you sure to delete this item?',
+      });
+      if (ok) {
+        const url = '/proxy/zones/' + row.id;
+        this.axios.delete(url).then(() => {
+          this.GetZones();
+        });
+      }
+      this.viewConfirm = false;
     },
 
     handleSubmit(zone) {
@@ -144,11 +161,6 @@ export default defineComponent({
         });
       }
     },
-  },
-
-  mounted() {
-    console.log('screen: ', this.test);
-    this.GetZones();
   },
 });
 </script>

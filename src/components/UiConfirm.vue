@@ -1,6 +1,6 @@
 <template>
-  <q-dialog v-model="confirm" @keyup.enter="handleEnter" @escape-key="handelEscape">
-    <q-card>
+  <q-dialog ref="popup" @keyup.enter="_confirm" @escape-key="_cancel">
+    <q-card class="min-width">
       <q-card-section>
         <div class="text-h6">Confirm</div>
       </q-card-section>
@@ -9,8 +9,8 @@
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn flat label="Cancel" color="primary" @click="handelEscape" />
-        <q-btn ref="ok" flat label="Ok" color="primary" @click="handleEnter" />
+        <q-btn flat label="Cancel" color="primary" @click="_cancel" />
+        <q-btn ref="ok" flat label="Ok" color="primary" @click="_confirm" />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -22,30 +22,40 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   name: 'UiConfirm',
 
-  props: {
-    confirm: {
-      type: Boolean,
-      required: true,
-    },
+  expose: ['show'],
 
-    message: {
-      type: String,
-      required: true,
-    },
+  setup() {
+    return {
+      message: undefined,
+      resolvePromise: undefined,
+      rejectPromise: undefined,
+    };
   },
 
   methods: {
-    handelEscape() {
-      console.log('handelEscape');
+    show(opts = {}) {
+      this.message = opts.message;
+      this.$refs.popup.show();
+      return new Promise((resolve, reject) => {
+        this.resolvePromise = resolve;
+        this.rejectPromise = reject;
+      });
     },
 
-    handleEnter() {
-      console.log('handleEnter');
+    _cancel() {
+      this.$refs.popup.hide();
+      this.resolvePromise(false);
     },
-  },
 
-  mounted() {
-    this.$refs['ok'].focus();
+    _confirm() {
+      this.$refs.popup.hide();
+      this.resolvePromise(true);
+    },
   },
 });
 </script>
+
+<style lang="sass" scoped>
+.min-width
+  min-width: 350px
+</style>

@@ -1,8 +1,7 @@
 {
-  "name": "vue-ui",
+  "name": "meteo",
   "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "version": "0.1.1",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

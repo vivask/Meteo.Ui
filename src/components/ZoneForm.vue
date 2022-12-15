@@ -1,8 +1,8 @@
 <template>
-  <q-dialog v-model="modelValue" transition-show="rotate" transition-hide="rotate" persistent>
+  <q-dialog v-model="localModel" transition-show="rotate" transition-hide="rotate" persistent>
     <q-card class="min-width">
       <q-card-section>
-        <q-form @submit.prevent="handleSubmit" class="q-gutter-md">
+        <q-form class="q-gutter-md" @submit.prevent="handleSubmit">
           <ui-input-vue v-model="localZone.name" hint="Host Name *" />
           <ui-input-vue v-model="localZone.address" hint="IP Address *" rule="ip" />
           <q-input v-model="localZone.mac" dense outlined hint="MAC Address" />
@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, computed } from 'vue';
 import UiInputVue from '@/components/UiInput.vue';
 
 export default defineComponent({
@@ -48,14 +48,26 @@ export default defineComponent({
     };
   },
 
+  computed: {
+    localModel: {
+      get() {
+        return this.modelValue;
+      },
+
+      set(value) {
+        this.$emit('update:modelValue', value);
+      },
+    },
+  },
+
   methods: {
     handleSubmit() {
-      this.$emit('update:modelValue', false);
+      this.localModel = false;
       this.$emit('submit', this.localZone);
     },
 
     handleCancel() {
-      this.$emit('update:modelValue', false);
+      this.localModel = false;
       this.$emit('cancel');
     },
   },
