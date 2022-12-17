@@ -45,6 +45,13 @@ const routes = [
           requiresAuth: true,
         },
       },
+      {
+        path: '/proxy/manualvpn',
+        component: () => import('@/pages/PageManualVpn.vue'),
+        meta: {
+          requiresAuth: true,
+        },
+      },
     ],
   },
 

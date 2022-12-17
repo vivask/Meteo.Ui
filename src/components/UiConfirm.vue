@@ -1,5 +1,11 @@
 <template>
-  <q-dialog ref="popup" @keyup.enter="_confirm" @escape-key="_cancel">
+  <q-dialog
+    ref="popup"
+    transition-show="flip-down"
+    transition-hide="flip-up"
+    @keyup.enter="_confirm"
+    @escape-key="_cancel"
+  >
     <q-card class="min-width">
       <q-card-section>
         <div class="text-h6">Confirm</div>

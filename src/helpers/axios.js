@@ -19,6 +19,7 @@ axios.interceptors.request.use((request) => {
   const isNotExpired = new Date(account.expire) > Date.now();
 
   console.log('JWT: ', account);
+  //console.log('URL: ', request.url);
   if (isLoggedIn && isNotExpired) {
     request.headers.Authorization = `Bearer ${account.token}`;
     const loader = useLoaderStore();
@@ -37,7 +38,6 @@ axios.interceptors.response.use(
   },
   async (error) => {
     const loader = useLoaderStore();
-    //const $q = useQuasar();
 
     const { response } = error;
     if (!response) {
@@ -65,9 +65,11 @@ axios.interceptors.response.use(
       }
     }
 
-    const errorMessage = response.data?.message || response.statusText;
-    console.error('ERROR:', errorMessage);
-    loader.fault(errorMessage + ' ' + originalConfig.url);
+    const errorMessage =
+      '[' + originalConfig.method + ' ' + originalConfig.url + '] error: ' + response.data?.message ||
+      response.statusText;
+    loader.fault(errorMessage);
+    return Promise.reject(errorMessage);
   },
 );
 

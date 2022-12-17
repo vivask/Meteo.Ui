@@ -1,7 +1,7 @@
 <template>
-  <UiContainerVue v-if="error">
-    <UiAlertVue>{{ message }}</UiAlertVue>
-  </UiContainerVue>
+  <ui-container-vue v-if="error">
+    <ui-alert-vue>{{ message }}</ui-alert-vue>
+  </ui-container-vue>
   <div v-if="!(spinner && loading) && !error" class="q-pa-md">
     <div class="row justify-center items-start crisper">
       <div class="square rounded-borders" :class="cols">
@@ -22,9 +22,9 @@
       </div>
     </div>
   </div>
-  <UiContainerVue v-if="loading && spinner && !error">
-    <UiSpinnerVue></UiSpinnerVue>
-  </UiContainerVue>
+  <ui-container-vue v-if="loading && spinner && !error">
+    <ui-spinner-vue></ui-spinner-vue>
+  </ui-container-vue>
 </template>
 
 <script>
@@ -86,10 +86,14 @@ export default defineComponent({
   setup() {
     const store = useLoaderStore();
 
+    const loading = computed(() => store.loading);
+    const error = computed(() => store.error);
+    const message = computed(() => store.message);
+
     return {
-      loading: computed(() => store.loading),
-      error: computed(() => store.error),
-      message: computed(() => store.message),
+      loading,
+      error,
+      message,
     };
   },
 

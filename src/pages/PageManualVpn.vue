@@ -1,21 +1,15 @@
 <template>
   <ui-box-vue
     :columns="boxCols"
-    header="Local hosts"
-    :spinner="spinner"
+    header="Hosts Redirected to VPN"
     :buttonShow="buttonShow"
     buttonLabel="Add"
     :buttonClick="handleAdd"
   >
     <q-table hide-header :rows="rows" :columns="columns" row-key="name" :rows-per-page-options="[10, 50, 100, 0]">
-      <template #body-cell-state="props">
-        <q-td :props="props" class="wd-30">
-          <q-icon :name="activeIcon(props.row)" size="1.2rem" :color="activeColor(props.row)" />
-        </q-td>
-      </template>
       <template #body-cell-actions="props">
         <q-td :props="props">
-          <q-btn dense round color="primary" size="md" icon="add" @click="handleAdd" />
+          <q-btn dense round color="primary" size="md" icon="add" @click="handleAdd"></q-btn>
           <q-btn
             class="q-ml-xs"
             dense
@@ -24,7 +18,7 @@
             size="md"
             icon="mode_edit"
             @click="handleEdit(props.row)"
-          />
+          ></q-btn>
           <q-btn
             class="q-ml-xs"
             dense
@@ -33,35 +27,38 @@
             size="md"
             icon="delete"
             @click="handleDelete(props.row)"
-          />
+          ></q-btn>
         </q-td>
       </template>
     </q-table>
   </ui-box-vue>
 
-  <zone-form-vue ref="form" :zone="zone" @submit="handleSubmit" />
+  <vpn-host-form-vue ref="form" :host="host" :list="list" @submit="handleSubmit" />
 </template>
 
 <script>
 import { defineComponent, ref, computed } from 'vue';
 import UiBoxVue from '@/components/UiBox.vue';
-import ZoneFormVue from '@/components/ZoneForm.vue';
+import VpnHostFormVue from '@/components/VpnHostForm.vue';
 
 const columns = [
-  { name: 'state' },
-  { name: 'address', align: 'left', field: 'address', sortable: true },
   { name: 'name', align: 'left', field: 'name', sortable: true },
-  { name: 'mac', align: 'left', field: 'mac', sortable: true },
+  {
+    name: 'vpnlist',
+    align: 'left',
+    field: (row) => row.list.id,
+    sortable: true,
+  },
   { name: 'note', align: 'left', field: 'note', sortable: true },
   { name: 'actions' },
 ];
 
 export default defineComponent({
-  name: 'PageZones',
+  name: 'PageManualVpn',
 
   components: {
     UiBoxVue,
-    ZoneFormVue,
+    VpnHostFormVue,
   },
 
   inject: ['confirm'],
@@ -69,14 +66,16 @@ export default defineComponent({
   setup() {
     const spinner = ref(true);
     const rows = ref([]);
-    const zone = ref({});
+    const list = ref([]);
+    const host = ref({});
     const buttonShow = computed(() => rows.value.length === 0);
 
     return {
       spinner,
       columns,
       rows,
-      zone,
+      list,
+      host,
       actionEdit: false,
       buttonShow,
 
@@ -85,37 +84,35 @@ export default defineComponent({
         medium: 7,
         small: 5,
       },
-
-      activeIcon(row) {
-        return row.active ? 'task_alt' : 'highlight_off';
-      },
-
-      activeColor(row) {
-        return row.active ? 'positive' : 'grey';
-      },
     };
   },
 
   mounted() {
-    this.getZones();
+    this.getLists();
   },
 
   methods: {
-    getZones() {
-      this.axios.get('/proxy/zones').then((response) => {
+    getLists() {
+      this.axios.get('/proxy/vpnlists').then(async (response) => {
+        this.list = response.data.data;
+        this.getHosts();
+      });
+    },
+
+    getHosts() {
+      this.axios.get('/proxy/manualvpn').then((response) => {
         this.rows = response.data.data;
-        this.spinner = false;
       });
     },
 
     handleAdd() {
-      this.zone = {};
+      this.host = { list: { id: null } };
       this.actionEdit = false;
       this.$refs.form.show();
     },
 
     handleEdit(row) {
-      this.zone = row;
+      this.host = row;
       this.actionEdit = true;
       this.$refs.form.show();
     },
@@ -126,34 +123,26 @@ export default defineComponent({
       });
       if (ok) {
         this.spinner = true;
-        const url = '/proxy/zones/' + row.id;
+        const url = '/proxy/manualvpn/' + row.id;
         this.axios.delete(url).then(() => {
-          this.getZones();
+          this.getHosts();
         });
       }
     },
 
-    handleSubmit(zone) {
+    handleSubmit(host) {
       this.spinner = true;
       if (this.actionEdit) {
-        this.axios.post('/proxy/zones', zone).then(() => {
-          this.getZones();
+        this.axios.post('/proxy/manualvpn', host).then(() => {
+          this.getHosts();
         });
       } else {
-        this.axios.put('/proxy/zones', zone).then(() => {
-          this.getZones();
+        this.axios.put('/proxy/manualvpn', host).then(() => {
+          console.log('TEST');
+          this.getHosts();
         });
       }
     },
   },
 });
 </script>
-
-<style lang="sass" scoped>
-.wd-30
-  width: 30px
-  max-width: 30px
-.wd-100
-  width: 100px
-  max-width: 100px
-</style>

@@ -3,10 +3,18 @@
     <q-card class="min-width">
       <q-card-section>
         <q-form class="q-gutter-md" @submit.prevent="handleSubmit">
-          <ui-input-vue v-model="localZone.name" hint="Host Name *" />
-          <ui-input-vue v-model="localZone.address" hint="IP Address *" rule="ip" />
-          <q-input v-model="localZone.mac" dense outlined hint="MAC Address" />
-          <q-input v-model="localZone.note" dense outlined hint="Note" />
+          <ui-input-vue v-model="localHost.name" hint="Name/IP Address *" rule="host" />
+          <q-select
+            v-model="localHost.list.id"
+            outlined
+            dense
+            :options="list"
+            option-label="id"
+            hint="Acess list *"
+            lazy-rules
+            :rules="[() => localHost.list || 'Please select something']"
+          />
+          <q-input v-model="localHost.note" dense outlined hint="Note" />
           <q-card-actions align="left" class="text-primary">
             <q-btn label="Submit" type="submit" color="primary" />
             <q-btn label="Cancel" color="primary" flat class="q-ml-sm" @click="handleCancel" />
@@ -17,32 +25,38 @@
   </q-dialog>
 </template>
 
-<script>
+<script lang="js">
 import { defineComponent, computed } from 'vue';
 import UiInputVue from '@/components/UiInput.vue';
 
 export default defineComponent({
-  name: 'ZoneForm',
+  name: 'VpnHostForm',
 
   components: {
     UiInputVue,
   },
 
   props: {
-    zone: {
+    host: {
       type: Object,
-      required: true,
+      require: true,
+    },
+
+    list: {
+      type: Array,
+      require: true,
     },
   },
 
   emits: ['cancel', 'submit'],
 
   setup(props) {
-    const localZone = computed(() => {
-      return { ...props.zone };
+    const localHost = computed(() => {
+      return { ...props.host };
     });
+
     return {
-      localZone,
+      localHost,
     };
   },
 
@@ -53,7 +67,7 @@ export default defineComponent({
 
     handleSubmit() {
       this.$refs.popup.hide();
-      this.$emit('submit', this.localZone);
+      this.$emit('submit', this.localHost);
     },
 
     handleCancel() {
