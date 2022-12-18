@@ -17,14 +17,14 @@ export function validateHost(host) {
 }
 
 export function timeFormat(time) {
-  /*return new Date(time).toLocaleDateString(navigator.language, {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-    hour: '2-digit'
-    minute: '2-digit',
-    second: '2-digit',
-  });*/
-  //return date.formatDate(time, 'MMM DD, YYYY HH:mm:ss');
-  return '';
+  time = new Date(time);
+  return (
+    time.toLocaleDateString(navigator.language, {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }) +
+    ' ' +
+    time.toLocaleTimeString(navigator.language)
+  );
 }

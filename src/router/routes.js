@@ -52,6 +52,20 @@ const routes = [
           requiresAuth: true,
         },
       },
+      {
+        path: '/proxy/autovpn',
+        component: () => import('@/pages/PageAutoVpn.vue'),
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        path: '/proxy/ignorevpn',
+        component: () => import('@/pages/PageIgnoreVpn.vue'),
+        meta: {
+          requiresAuth: true,
+        },
+      },
     ],
   },
 

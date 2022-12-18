@@ -15,7 +15,7 @@
     <q-page-container>
       <router-view v-slot="{ Component }">
         <template v-if="Component">
-          <keep-alive :max="3">
+          <keep-alive :max="3" :exclude="['autovpn', 'ignorevpn']">
             <component :is="Component" />
           </keep-alive>
         </template>

@@ -1,5 +1,5 @@
 <template>
-  <ui-box-vue :columns="boxCols" header="Hosts Redirected to VPN">
+  <ui-box-vue :columns="boxCols" header="Hosts excluded from VPN">
     <q-table
       v-model:selected="selected"
       hide-header
@@ -11,8 +11,16 @@
     >
       <template #body-cell-actions="props">
         <q-td :props="props">
-          <q-btn class="q-ml-xs" dense round color="warning" size="md" icon="healing" @click="handleIgnore(props.row)">
-            <q-tooltip>Ignore host</q-tooltip>
+          <q-btn
+            class="q-ml-xs"
+            dense
+            round
+            color="primary"
+            size="md"
+            icon="mdi-ballot-recount"
+            @click="handleRestore(props.row)"
+          >
+            <q-tooltip>Restore host</q-tooltip>
           </q-btn>
           <q-btn class="q-ml-xs" dense round color="negative" size="md" icon="delete" @click="handleDelete(props.row)">
             <q-tooltip>Delete host</q-tooltip>
@@ -31,9 +39,9 @@ import { timeFormat } from '@/helpers/utils.js';
 const columns = [
   { name: 'name', align: 'left', field: 'id', sortable: true },
   {
-    name: 'created',
+    name: 'updated',
     align: 'left',
-    field: 'created',
+    field: 'updated',
     sortable: true,
     format: (val) => timeFormat(val),
   },
@@ -50,7 +58,7 @@ export default defineComponent({
   inject: ['confirm'],
 
   beforeRouteEnter(to, from) {
-    if (from.path === '/proxy/ignorevpn') {
+    if (from.path === '/proxy/autovpn') {
       return (vm) => {
         vm.getHosts();
       };
@@ -90,20 +98,20 @@ export default defineComponent({
 
   methods: {
     getHosts() {
-      this.axios.get('/proxy/autovpn').then((response) => {
+      this.axios.get('/proxy/ignorevpn').then((response) => {
         this.rows = response.data.data;
         this.selected = [];
       });
     },
 
-    async handleIgnore(row) {
+    async handleRestore(row) {
       const ok = await this.confirm.show({
-        message: 'Are you sure to ignore this items?',
+        message: 'Are you sure to restore this items?',
       });
       if (ok) {
         this.spinner = true;
         const data = this.getSelected(row);
-        this.axios.put('/proxy/autovpn', data).then(() => {
+        this.axios.put('/proxy/ignorevpn', data).then(() => {
           this.getHosts();
         });
       }
@@ -116,7 +124,7 @@ export default defineComponent({
       if (ok) {
         this.spinner = true;
         const data = this.getSelected(row);
-        this.axios.delete('/proxy/autovpn', data).then(() => {
+        this.axios.delete('/proxy/ignorevpn', data).then(() => {
           this.getHosts();
         });
       }

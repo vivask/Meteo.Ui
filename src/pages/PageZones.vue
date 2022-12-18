@@ -16,24 +16,12 @@
       <template #body-cell-actions="props">
         <q-td :props="props">
           <q-btn dense round color="primary" size="md" icon="add" @click="handleAdd" />
-          <q-btn
-            class="q-ml-xs"
-            dense
-            round
-            color="positive"
-            size="md"
-            icon="mode_edit"
-            @click="handleEdit(props.row)"
-          />
-          <q-btn
-            class="q-ml-xs"
-            dense
-            round
-            color="negative"
-            size="md"
-            icon="delete"
-            @click="handleDelete(props.row)"
-          />
+          <q-btn class="q-ml-xs" dense round color="positive" size="md" icon="mode_edit" @click="handleEdit(props.row)">
+            <q-tooltip>Create zone</q-tooltip>
+          </q-btn>
+          <q-btn class="q-ml-xs" dense round color="negative" size="md" icon="delete" @click="handleDelete(props.row)">
+            <q-tooltip>Delete zone</q-tooltip>
+          </q-btn>
         </q-td>
       </template>
     </q-table>
