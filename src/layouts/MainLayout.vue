@@ -20,7 +20,7 @@
           </keep-alive>
         </template>
         <ui-container-vue v-else>
-          <ui-spinner-vue></ui-spinner-vue>
+          <ui-spinner-vue />
         </ui-container-vue>
       </router-view>
     </q-page-container>
@@ -34,7 +34,6 @@ import UiToolBarVue from '@/layouts/UiToolBar.vue';
 import UiMenuMainVue from '@/layouts/UiMenuMain.vue';
 import UiContainerVue from '@/components/UiContainer.vue';
 import UiSpinnerVue from '@/components/UiSpinner.vue';
-import { useLayoutStore } from '@/stores/useLayoutStore.js';
 
 export default defineComponent({
   name: 'MainLayout',
@@ -44,11 +43,6 @@ export default defineComponent({
     UiMenuMainVue,
     UiContainerVue,
     UiSpinnerVue,
-  },
-
-  beforeRouteUpdate(to) {
-    console.log(to.path);
-    useLayoutStore().setItems('#' + to.path);
   },
 
   setup() {

@@ -19,8 +19,8 @@ export default defineComponent({
   },
 
   methods: {
-    show(message) {
-      this.$refs['confirm'].show(message);
+    async show(message) {
+      return await this.$refs['confirm'].show(message);
     },
   },
 });

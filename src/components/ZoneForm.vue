@@ -38,11 +38,11 @@ export default defineComponent({
   emits: ['cancel', 'submit'],
 
   setup(props) {
-    const localZone = computed(() => {
-      return { ...props.zone };
-    });
+    const localZone = computed(() => ({ ...props.zone }));
+    const isUpdate = computed(() => !!props.zone?.id);
     return {
       localZone,
+      isUpdate,
     };
   },
 
@@ -53,7 +53,7 @@ export default defineComponent({
 
     handleSubmit() {
       this.$refs.popup.hide();
-      this.$emit('submit', this.localZone);
+      this.$emit('submit', { data: this.localZone, update: this.isUpdate });
     },
 
     handleCancel() {

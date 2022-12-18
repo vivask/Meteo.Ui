@@ -83,7 +83,7 @@ export default defineComponent({
     },
   },
 
-  setup() {
+  setup(props) {
     const store = useLoaderStore();
 
     const loading = computed(() => store.loading);

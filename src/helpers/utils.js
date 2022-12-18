@@ -15,3 +15,16 @@ export function validateHost(host) {
     ) || /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/.test(host)
   );
 }
+
+export function timeFormat(time) {
+  /*return new Date(time).toLocaleDateString(navigator.language, {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+    hour: '2-digit'
+    minute: '2-digit',
+    second: '2-digit',
+  });*/
+  //return date.formatDate(time, 'MMM DD, YYYY HH:mm:ss');
+  return '';
+}

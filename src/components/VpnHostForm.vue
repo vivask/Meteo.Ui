@@ -8,8 +8,7 @@
             v-model="localHost.list.id"
             outlined
             dense
-            :options="list"
-            option-label="id"
+            :options="localList"
             hint="Acess list *"
             lazy-rules
             :rules="[() => localHost.list || 'Please select something']"
@@ -25,8 +24,8 @@
   </q-dialog>
 </template>
 
-<script lang="js">
-import { defineComponent, computed } from 'vue';
+<script>
+import { defineComponent, computed, ref } from 'vue';
 import UiInputVue from '@/components/UiInput.vue';
 
 export default defineComponent({
@@ -51,12 +50,14 @@ export default defineComponent({
   emits: ['cancel', 'submit'],
 
   setup(props) {
-    const localHost = computed(() => {
-      return { ...props.host };
-    });
+    const localHost = computed(() => ({ ...props.host }));
+    const localList = computed(() => props.list.map(({ id }) => id));
+    const isUpdate = computed(() => !!props.host?.id);
 
     return {
       localHost,
+      localList,
+      isUpdate,
     };
   },
 
@@ -67,7 +68,7 @@ export default defineComponent({
 
     handleSubmit() {
       this.$refs.popup.hide();
-      this.$emit('submit', this.localHost);
+      this.$emit('submit', { data: this.localHost, update: this.isUpdate });
     },
 
     handleCancel() {

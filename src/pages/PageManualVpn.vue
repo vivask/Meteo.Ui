@@ -76,7 +76,6 @@ export default defineComponent({
       rows,
       list,
       host,
-      actionEdit: false,
       buttonShow,
 
       boxCols: {
@@ -107,14 +106,25 @@ export default defineComponent({
 
     handleAdd() {
       this.host = { list: { id: null } };
-      this.actionEdit = false;
       this.$refs.form.show();
     },
 
     handleEdit(row) {
       this.host = row;
-      this.actionEdit = true;
       this.$refs.form.show();
+    },
+
+    handleSubmit(event) {
+      this.spinner = true;
+      if (event.update) {
+        this.axios.post('/proxy/manualvpn', event.data).then(() => {
+          this.getHosts();
+        });
+      } else {
+        this.axios.put('/proxy/manualvpn', event.data).then(() => {
+          this.getHosts();
+        });
+      }
     },
 
     async handleDelete(row) {
@@ -125,20 +135,6 @@ export default defineComponent({
         this.spinner = true;
         const url = '/proxy/manualvpn/' + row.id;
         this.axios.delete(url).then(() => {
-          this.getHosts();
-        });
-      }
-    },
-
-    handleSubmit(host) {
-      this.spinner = true;
-      if (this.actionEdit) {
-        this.axios.post('/proxy/manualvpn', host).then(() => {
-          this.getHosts();
-        });
-      } else {
-        this.axios.put('/proxy/manualvpn', host).then(() => {
-          console.log('TEST');
           this.getHosts();
         });
       }

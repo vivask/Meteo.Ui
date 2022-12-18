@@ -1,6 +1,7 @@
 import { createRouter, createMemoryHistory, createWebHistory, createWebHashHistory } from 'vue-router';
 import routes from './routes';
 import { useAuthStore } from '@/stores/useAuthStore.js';
+import { useLayoutStore } from '@/stores/useLayoutStore.js';
 
 const createHistory = import.meta.env.SERVER
   ? createMemoryHistory(import.meta.env.BASE_URL)
@@ -22,4 +23,10 @@ router.beforeEach(async (to) => {
     auth.returnUrl = to.fullPath;
     return '/login';
   }
+});
+
+router.afterEach((to) => {
+  const layout = useLayoutStore();
+  const prefix = import.meta.env.VITE_ROUTER_MODE === 'hash' ? '#' : '';
+  layout.setItems(prefix + to.path);
 });

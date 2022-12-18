@@ -18,7 +18,7 @@ axios.interceptors.request.use((request) => {
 
   const isNotExpired = new Date(account.expire) > Date.now();
 
-  console.log('JWT: ', account);
+  //console.log('JWT: ', account);
   //console.log('URL: ', request.url);
   if (isLoggedIn && isNotExpired) {
     request.headers.Authorization = `Bearer ${account.token}`;

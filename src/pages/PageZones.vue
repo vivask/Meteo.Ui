@@ -77,7 +77,6 @@ export default defineComponent({
       columns,
       rows,
       zone,
-      actionEdit: false,
       buttonShow,
 
       boxCols: {
@@ -110,14 +109,25 @@ export default defineComponent({
 
     handleAdd() {
       this.zone = {};
-      this.actionEdit = false;
       this.$refs.form.show();
     },
 
     handleEdit(row) {
       this.zone = row;
-      this.actionEdit = true;
       this.$refs.form.show();
+    },
+
+    handleSubmit(event) {
+      this.spinner = true;
+      if (event.update) {
+        this.axios.post('/proxy/zones', event.data).then(() => {
+          this.getZones();
+        });
+      } else {
+        this.axios.put('/proxy/zones', event.data).then(() => {
+          this.getZones();
+        });
+      }
     },
 
     async handleDelete(row) {
@@ -128,19 +138,6 @@ export default defineComponent({
         this.spinner = true;
         const url = '/proxy/zones/' + row.id;
         this.axios.delete(url).then(() => {
-          this.getZones();
-        });
-      }
-    },
-
-    handleSubmit(zone) {
-      this.spinner = true;
-      if (this.actionEdit) {
-        this.axios.post('/proxy/zones', zone).then(() => {
-          this.getZones();
-        });
-      } else {
-        this.axios.put('/proxy/zones', zone).then(() => {
           this.getZones();
         });
       }

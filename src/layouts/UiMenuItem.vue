@@ -6,13 +6,12 @@
     :href="path"
     :active="active"
     :class="{ 'sub-menu-item': hasParentMenu }"
-    @click="handleClick"
   >
     <q-item-section side>
       <q-icon :name="icon" :color="color" />
     </q-item-section>
     <q-item-section>
-      <q-item-label class="ml-15">{{ title }}</q-item-label>
+      <q-item-label>{{ title }}</q-item-label>
     </q-item-section>
   </q-item>
 </template>
@@ -20,6 +19,9 @@
 <script>
 import { defineComponent } from 'vue';
 import { useLayoutStore } from '@/stores/useLayoutStore.js';
+
+const prefix = import.meta.env.VITE_ROUTER_MODE === 'hash' ? '#' : '';
+const layoutStore = useLayoutStore();
 
 export default defineComponent({
   name: 'UiMenuItem',
@@ -46,15 +48,13 @@ export default defineComponent({
     },
   },
 
-  emits: ['open'],
-
   computed: {
     hasParentMenu() {
       return this.$parent.$options.name !== 'QDrawer';
     },
 
     path() {
-      let path = '#/';
+      let path = prefix + '/';
       for (let item of this.href) {
         path += path === '#/' ? item : '/' + item;
       }
@@ -62,12 +62,13 @@ export default defineComponent({
     },
 
     active() {
-      return useLayoutStore().isActive(this.path);
+      return layoutStore.isActive(this.path);
     },
   },
 
   watch: {
     active: {
+      immediate: true,
       handler(newVal) {
         if (newVal && this.hasParentMenu) {
           const parent = this.$parent.$parent.$parent.$parent;
@@ -76,12 +77,6 @@ export default defineComponent({
           }
         }
       },
-    },
-  },
-
-  methods: {
-    handleClick() {
-      useLayoutStore().setItems(this.path);
     },
   },
 });

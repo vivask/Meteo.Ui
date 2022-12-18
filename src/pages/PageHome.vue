@@ -9,7 +9,7 @@
           :alarm="peripheral.max_bmx280_tempr_alarm || peripheral.min_bmx280_tempr_alarm"
         />
       </div>
-      <div class="flex-break" v-if="$q.screen.name == 'xs'"></div>
+      <div v-if="$q.screen.name == 'xs'" class="flex-break"></div>
       <div class="q-ml-sm square rounded-borders shadow-8" :class="cols">
         <HomeMics6814Vue
           :nh3="peripheral.mics6814_nh3"
@@ -20,7 +20,7 @@
           :alarm-co="peripheral.max_6814_co_alarm"
         />
       </div>
-      <div class="flex-break" v-if="$q.screen.name == 'xs' || $q.screen.name == 'sm'" />
+      <div v-if="$q.screen.name == 'xs' || $q.screen.name == 'sm'" class="flex-break" />
       <div class="q-ml-sm square rounded-borders shadow-8" :class="cols">
         <HomeRadsensVue
           :static="peripheral.radsens_static"
@@ -29,18 +29,18 @@
           :dynamic-alarm="peripheral.max_rad_dyn_alarm"
         />
       </div>
-      <div class="flex-break" v-if="$q.screen.name == 'xs' || $q.screen.name == 'xl'" />
+      <div v-if="$q.screen.name == 'xs' || $q.screen.name == 'xl'" class="flex-break" />
       <div class="q-ml-sm square rounded-borders shadow-8" :class="cols">
         <HomeDs18b20Vue
           :temperature="peripheral.ds18b20_tempr"
           :alarm="peripheral.max_ds18b20_alarm || peripheral.min_ds18b20_alarm"
         />
       </div>
-      <div class="flex-break" v-if="$q.screen.name == 'xs' || $q.screen.name == 'sm'" />
+      <div v-if="$q.screen.name == 'xs' || $q.screen.name == 'sm'" class="flex-break" />
       <div class="q-ml-sm square rounded-borders shadow-8" :class="cols">
         <HomeZe08ch2oVue :ch2o="peripheral.ze08_ch2o" :alarm="peripheral.max_ch2o_alarm" />
       </div>
-      <div class="flex-break" v-if="$q.screen.name == 'xs'"></div>
+      <div v-if="$q.screen.name == 'xs'" class="flex-break"></div>
       <div class="q-ml-sm" :class="cols"></div>
     </div>
   </div>
@@ -48,7 +48,7 @@
 
 <script>
 import { defineComponent, computed, onMounted, onBeforeUnmount } from 'vue';
-import { useQuasar } from 'quasar';
+import { VueScreenSizeMixin } from 'vue-screen-size';
 import HomeBme280Vue from '@/components/HomeBme280.vue';
 import HomeMics6814Vue from '@/components/HomeMics6814.vue';
 import HomeRadsensVue from '@/components/HomeRadsens.vue';
@@ -57,7 +57,6 @@ import HomeZe08ch2oVue from '@/components/HomeZe08ch2o.vue';
 
 export default defineComponent({
   name: 'PageHome',
-
   components: {
     HomeBme280Vue,
     HomeMics6814Vue,
@@ -66,9 +65,15 @@ export default defineComponent({
     HomeZe08ch2oVue,
   },
 
+  mixins: [VueScreenSizeMixin],
+
   setup() {
     let timer;
-    const $q = useQuasar();
+    const columns = {
+      large: 3,
+      medium: 5,
+      small: 5,
+    };
 
     onBeforeUnmount(() => {
       clearTimeout(timer);
@@ -76,8 +81,18 @@ export default defineComponent({
 
     return {
       peripheral: {},
-      cols: computed(() => `col-${$q.screen.name == 'sm' ? 4 : $q.screen.name == 'xs' ? 11 : 3}`),
+      columns,
     };
+  },
+
+  computed: {
+    vssName() {
+      return this.$vssWidth > 1900 ? 'large' : this.$vssWidth > 900 ? 'medium' : 'small';
+    },
+
+    cols() {
+      return `col-${this.columns[this.vssName]}`;
+    },
   },
 });
 </script>

@@ -1,5 +1,5 @@
 export const useMenuHome = {
-  href: '#/',
+  href: '/',
   icon: 'mdi-home',
   title: 'Home',
 };

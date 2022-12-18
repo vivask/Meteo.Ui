@@ -20,7 +20,7 @@ import App from '@/App.vue';
 
 let app = createApp(App);
 
-//app.config.globalProperties.$state = new loaderState();
+//app.config.globalProperties.$prefix = import.meta.env.VITE_ROUTER_MODE === 'hash' ? '#' : '';
 
 app.use(Quasar, { plugins: {} });
 app.use(VueAxios, axios);
