@@ -1,25 +1,43 @@
 <template>
   <ui-box-vue :columns="boxCols" header="Hosts Redirected to VPN">
-    <q-table
-      v-model:selected="selected"
-      hide-header
-      :rows="rows"
-      :columns="columns"
-      row-key="id"
-      selection="multiple"
-      :rows-per-page-options="[10, 50, 100, 0]"
-    >
-      <template #body-cell-actions="props">
-        <q-td :props="props">
-          <q-btn class="q-ml-xs" dense round color="warning" size="md" icon="healing" @click="handleIgnore(props.row)">
-            <q-tooltip>Ignore host</q-tooltip>
-          </q-btn>
-          <q-btn class="q-ml-xs" dense round color="negative" size="md" icon="delete" @click="handleDelete(props.row)">
-            <q-tooltip>Delete host</q-tooltip>
-          </q-btn>
-        </q-td>
-      </template>
-    </q-table>
+    <ui-table-wrapper-vue ref="wrapper" api="/proxy/autovpn">
+      <q-table
+        v-model:selected="selected"
+        hide-header
+        :rows="rows"
+        :columns="columns"
+        row-key="id"
+        selection="multiple"
+        :rows-per-page-options="[10, 50, 100, 0]"
+      >
+        <template #body-cell-actions="props">
+          <q-td :props="props">
+            <q-btn
+              class="q-ml-xs"
+              dense
+              round
+              color="warning"
+              size="md"
+              icon="healing"
+              @click="handleIgnore(props.row)"
+            >
+              <q-tooltip>Ignore host</q-tooltip>
+            </q-btn>
+            <q-btn
+              class="q-ml-xs"
+              dense
+              round
+              color="negative"
+              size="md"
+              icon="delete"
+              @click="handleDelete(props.row)"
+            >
+              <q-tooltip>Delete host</q-tooltip>
+            </q-btn>
+          </q-td>
+        </template>
+      </q-table>
+    </ui-table-wrapper-vue>
   </ui-box-vue>
 </template>
 
@@ -27,6 +45,7 @@
 import { defineComponent, ref } from 'vue';
 import UiBoxVue from '@/components/UiBox.vue';
 import { timeFormat } from '@/helpers/utils.js';
+import UiTableWrapperVue from '../components/UiTableWrapper.vue';
 
 const columns = [
   { name: 'name', align: 'left', field: 'id', sortable: true },
@@ -45,6 +64,7 @@ export default defineComponent({
 
   components: {
     UiBoxVue,
+    UiTableWrapperVue,
   },
 
   inject: ['confirm'],
@@ -73,14 +93,6 @@ export default defineComponent({
         medium: 7,
         small: 5,
       },
-
-      getSelected(row) {
-        let data = selected.value;
-        if (data.length == 0) {
-          data.push(row);
-        }
-        return data;
-      },
     };
   },
 
@@ -89,11 +101,8 @@ export default defineComponent({
   },
 
   methods: {
-    getHosts() {
-      this.axios.get('/proxy/autovpn').then((response) => {
-        this.rows = response.data.data;
-        this.selected = [];
-      });
+    async getHosts() {
+      this.rows = await this.$refs.wrapper.get();
     },
 
     async handleIgnore(row) {
@@ -101,11 +110,9 @@ export default defineComponent({
         message: 'Are you sure to ignore this items?',
       });
       if (ok) {
-        this.spinner = true;
-        const data = this.getSelected(row);
-        this.axios.put('/proxy/autovpn', data).then(() => {
-          this.getHosts();
-        });
+        const data = this.$refs.wrapper.selected(row, this.selected);
+        this.selected = [];
+        this.rows = await this.$refs.wrapper.ignore(this.rows, data);
       }
     },
 
@@ -114,11 +121,9 @@ export default defineComponent({
         message: 'Are you sure to delete this item?',
       });
       if (ok) {
-        this.spinner = true;
-        const data = this.getSelected(row);
-        this.axios.delete('/proxy/autovpn', data).then(() => {
-          this.getHosts();
-        });
+        const data = this.$refs.wrapper.selected(row, this.selected);
+        this.selected = [];
+        this.rows = await this.$refs.wrapper.delete(this.rows, data);
       }
     },
   },

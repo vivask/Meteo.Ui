@@ -7,24 +7,42 @@
     buttonLabel="Add"
     :buttonClick="handleAdd"
   >
-    <q-table hide-header :rows="rows" :columns="columns" row-key="name" :rows-per-page-options="[10, 50, 100, 0]">
-      <template #body-cell-state="props">
-        <q-td :props="props" class="wd-30">
-          <q-icon :name="activeIcon(props.row)" size="1.2rem" :color="activeColor(props.row)" />
-        </q-td>
-      </template>
-      <template #body-cell-actions="props">
-        <q-td :props="props">
-          <q-btn dense round color="primary" size="md" icon="add" @click="handleAdd" />
-          <q-btn class="q-ml-xs" dense round color="positive" size="md" icon="mode_edit" @click="handleEdit(props.row)">
-            <q-tooltip>Create zone</q-tooltip>
-          </q-btn>
-          <q-btn class="q-ml-xs" dense round color="negative" size="md" icon="delete" @click="handleDelete(props.row)">
-            <q-tooltip>Delete zone</q-tooltip>
-          </q-btn>
-        </q-td>
-      </template>
-    </q-table>
+    <ui-table-wrapper-vue ref="wrapper" api="/proxy/zones">
+      <q-table hide-header :rows="rows" :columns="columns" row-key="name" :rows-per-page-options="[10, 50, 100, 0]">
+        <template #body-cell-state="props">
+          <q-td :props="props" class="wd-30">
+            <q-icon :name="activeIcon(props.row)" size="1.2rem" :color="activeColor(props.row)" />
+          </q-td>
+        </template>
+        <template #body-cell-actions="props">
+          <q-td :props="props">
+            <q-btn dense round color="primary" size="md" icon="add" @click="handleAdd" />
+            <q-btn
+              class="q-ml-xs"
+              dense
+              round
+              color="positive"
+              size="md"
+              icon="mode_edit"
+              @click="handleEdit(props.row)"
+            >
+              <q-tooltip>Create zone</q-tooltip>
+            </q-btn>
+            <q-btn
+              class="q-ml-xs"
+              dense
+              round
+              color="negative"
+              size="md"
+              icon="delete"
+              @click="handleDelete(props.row)"
+            >
+              <q-tooltip>Delete zone</q-tooltip>
+            </q-btn>
+          </q-td>
+        </template>
+      </q-table>
+    </ui-table-wrapper-vue>
   </ui-box-vue>
 
   <zone-form-vue ref="form" :zone="zone" @submit="handleSubmit" />
@@ -34,13 +52,14 @@
 import { defineComponent, ref, computed } from 'vue';
 import UiBoxVue from '@/components/UiBox.vue';
 import ZoneFormVue from '@/components/ZoneForm.vue';
+import UiTableWrapperVue from '../components/UiTableWrapper.vue';
 
 const columns = [
   { name: 'state' },
   { name: 'address', align: 'left', field: 'address', sortable: true },
-  { name: 'name', align: 'left', field: 'name', sortable: true },
-  { name: 'mac', align: 'left', field: 'mac', sortable: true },
-  { name: 'note', align: 'left', field: 'note', sortable: true },
+  { name: 'name', align: 'left', field: 'name' },
+  { name: 'mac', align: 'left', field: 'mac' },
+  { name: 'note', align: 'left', field: 'note' },
   { name: 'actions' },
 ];
 
@@ -50,6 +69,7 @@ export default defineComponent({
   components: {
     UiBoxVue,
     ZoneFormVue,
+    UiTableWrapperVue,
   },
 
   inject: ['confirm'],
@@ -83,18 +103,11 @@ export default defineComponent({
     };
   },
 
-  mounted() {
-    this.getZones();
+  async mounted() {
+    this.rows = await this.$refs.wrapper.get();
   },
 
   methods: {
-    getZones() {
-      this.axios.get('/proxy/zones').then((response) => {
-        this.rows = response.data.data;
-        this.spinner = false;
-      });
-    },
-
     handleAdd() {
       this.zone = {};
       this.$refs.form.show();
@@ -105,16 +118,11 @@ export default defineComponent({
       this.$refs.form.show();
     },
 
-    handleSubmit(event) {
-      this.spinner = true;
+    async handleSubmit(event) {
       if (event.update) {
-        this.axios.post('/proxy/zones', event.data).then(() => {
-          this.getZones();
-        });
+        this.rows = await this.$refs.wrapper.update(this.rows, event.data);
       } else {
-        this.axios.put('/proxy/zones', event.data).then(() => {
-          this.getZones();
-        });
+        this.rows = await this.$refs.wrapper.insert(this.rows, event.data);
       }
     },
 
@@ -123,11 +131,7 @@ export default defineComponent({
         message: 'Are you sure to delete this item?',
       });
       if (ok) {
-        this.spinner = true;
-        const url = '/proxy/zones/' + row.id;
-        this.axios.delete(url).then(() => {
-          this.getZones();
-        });
+        this.rows = await this.$refs.wrapper.delete(this.rows, row);
       }
     },
   },

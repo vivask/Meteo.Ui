@@ -6,19 +6,37 @@
     buttonLabel="Add"
     :buttonClick="handleAdd"
   >
-    <q-table hide-header :rows="rows" :columns="columns" row-key="name" :rows-per-page-options="[10, 50, 100, 0]">
-      <template #body-cell-actions="props">
-        <q-td :props="props">
-          <q-btn dense round color="primary" size="md" icon="add" @click="handleAdd"></q-btn>
-          <q-btn class="q-ml-xs" dense round color="positive" size="md" icon="mode_edit" @click="handleEdit(props.row)">
-            <q-tooltip>Create host</q-tooltip>
-          </q-btn>
-          <q-btn class="q-ml-xs" dense round color="negative" size="md" icon="delete" @click="handleDelete(props.row)">
-            <q-tooltip>Delete host</q-tooltip>
-          </q-btn>
-        </q-td>
-      </template>
-    </q-table>
+    <ui-table-wrapper-vue ref="wrapper" api="/proxy/manualvpn">
+      <q-table hide-header :rows="rows" :columns="columns" row-key="name" :rows-per-page-options="[10, 50, 100, 0]">
+        <template #body-cell-actions="props">
+          <q-td :props="props">
+            <q-btn dense round color="primary" size="md" icon="add" @click="handleAdd"></q-btn>
+            <q-btn
+              class="q-ml-xs"
+              dense
+              round
+              color="positive"
+              size="md"
+              icon="mode_edit"
+              @click="handleEdit(props.row)"
+            >
+              <q-tooltip>Create host</q-tooltip>
+            </q-btn>
+            <q-btn
+              class="q-ml-xs"
+              dense
+              round
+              color="negative"
+              size="md"
+              icon="delete"
+              @click="handleDelete(props.row)"
+            >
+              <q-tooltip>Delete host</q-tooltip>
+            </q-btn>
+          </q-td>
+        </template>
+      </q-table>
+    </ui-table-wrapper-vue>
   </ui-box-vue>
 
   <vpn-host-form-vue ref="form" :host="host" :list="list" @submit="handleSubmit" />
@@ -28,6 +46,7 @@
 import { defineComponent, ref, computed } from 'vue';
 import UiBoxVue from '@/components/UiBox.vue';
 import VpnHostFormVue from '@/components/VpnHostForm.vue';
+import UiTableWrapperVue from '../components/UiTableWrapper.vue';
 
 const columns = [
   { name: 'name', align: 'left', field: 'name', sortable: true },
@@ -47,6 +66,7 @@ export default defineComponent({
   components: {
     UiBoxVue,
     VpnHostFormVue,
+    UiTableWrapperVue,
   },
 
   inject: ['confirm'],
@@ -82,13 +102,7 @@ export default defineComponent({
     getLists() {
       this.axios.get('/proxy/vpnlists').then(async (response) => {
         this.list = response.data.data;
-        this.getHosts();
-      });
-    },
-
-    getHosts() {
-      this.axios.get('/proxy/manualvpn').then((response) => {
-        this.rows = response.data.data;
+        this.rows = await this.$refs.wrapper.get();
       });
     },
 
@@ -102,16 +116,11 @@ export default defineComponent({
       this.$refs.form.show();
     },
 
-    handleSubmit(event) {
-      this.spinner = true;
+    async handleSubmit(event) {
       if (event.update) {
-        this.axios.post('/proxy/manualvpn', event.data).then(() => {
-          this.getHosts();
-        });
+        this.rows = await this.$refs.wrapper.update(this.rows, event.data);
       } else {
-        this.axios.put('/proxy/manualvpn', event.data).then(() => {
-          this.getHosts();
-        });
+        this.rows = await this.$refs.wrapper.insert(this.rows, event.data);
       }
     },
 
@@ -120,11 +129,7 @@ export default defineComponent({
         message: 'Are you sure to delete this item?',
       });
       if (ok) {
-        this.spinner = true;
-        const url = '/proxy/manualvpn/' + row.id;
-        this.axios.delete(url).then(() => {
-          this.getHosts();
-        });
+        this.rows = await this.$refs.wrapper.delete(this.rows, row);
       }
     },
   },
