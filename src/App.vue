@@ -1,12 +1,7 @@
 <template>
-  <provider-confirm>
-    <router-view />
-  </provider-confirm>
+  <router-view />
 </template>
 
 <script>
-import ProviderConfirm from '@/components/ProviderConfirm.vue';
-export default {
-  components: { ProviderConfirm },
-};
+export default {};
 </script>

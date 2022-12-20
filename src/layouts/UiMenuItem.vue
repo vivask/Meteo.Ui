@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue';
+import { defineComponent, getCurrentInstance, computed, watch } from 'vue';
 import { useLayoutStore } from '@/stores/useLayoutStore.js';
 
 const prefix = import.meta.env.VITE_ROUTER_MODE === 'hash' ? '#' : '';
@@ -48,36 +48,36 @@ export default defineComponent({
     },
   },
 
-  computed: {
-    hasParentMenu() {
-      return this.$parent.$options.name !== 'QDrawer';
-    },
-
-    path() {
+  setup(props) {
+    const instance = getCurrentInstance();
+    const hasParentMenu = computed(() => instance.parent.ctx.$options.name !== 'QDrawer');
+    const path = computed(() => {
       let path = prefix + '/';
-      for (let item of this.href) {
+      for (let item of props.href) {
         path += path === '#/' ? item : '/' + item;
       }
       return path;
-    },
+    });
+    const active = computed(() => layoutStore.isActive(path.value));
 
-    active() {
-      return layoutStore.isActive(this.path);
-    },
-  },
-
-  watch: {
-    active: {
-      immediate: true,
-      handler(newVal) {
-        if (newVal && this.hasParentMenu) {
-          const parent = this.$parent.$parent.$parent.$parent;
-          if (parent.$options.name === 'UiMenuExpansion') {
-            parent.open();
+    watch(
+      active,
+      (newVal) => {
+        if (newVal && hasParentMenu.value) {
+          const parent = instance.parent.parent.parent.parent.parent;
+          if (parent.ctx.$options.name === 'UiMenuExpansion') {
+            parent.ctx.open();
           }
         }
       },
-    },
+      { immediate: true },
+    );
+
+    return {
+      hasParentMenu,
+      path,
+      active,
+    };
   },
 });
 </script>

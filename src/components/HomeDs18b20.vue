@@ -4,7 +4,7 @@
     class="relative-position container cursor-pointer q-hoverable"
     @mouseover="hover = true"
     @mouseleave="hover = false"
-    @click.prevent="prevent"
+    @click.prevent="() => {}"
   >
     <q-item dense>
       <q-item-section side>
@@ -21,8 +21,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed } from 'vue';
-import { useQuasar } from 'quasar';
+import { defineComponent, ref, computed, inject } from 'vue';
 import HomeLabelVue from '@/components/HomeLabel.vue';
 
 export default defineComponent({
@@ -43,7 +42,7 @@ export default defineComponent({
   },
 
   setup() {
-    const $q = useQuasar();
+    const axios = inject('axios');
     const whiteIcon = new URL('../assets/icons/temperature-48x48-white.png', import.meta.url).href;
     const blueIcon = new URL('../assets/icons/temperature-48x48-blue.png', import.meta.url).href;
     const iconColor = '#3092EA';
@@ -55,15 +54,8 @@ export default defineComponent({
       color: computed(() => (hover.value ? iconColor : 'white')),
 
       check() {
-        axios.put('/esp32/ds18b20/temperature/chk').catch((err) => {
-          $q.notify({
-            type: 'negative',
-            message: err.response.data.message,
-          });
-        });
+        axios.put('/esp32/ds18b20/temperature/chk');
       },
-
-      prevent() {},
     };
   },
 });

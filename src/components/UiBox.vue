@@ -1,8 +1,8 @@
 <template>
-  <ui-container-vue v-if="error">
+  <!--<ui-container-vue v-if="error">
     <ui-alert-vue>{{ message }}</ui-alert-vue>
-  </ui-container-vue>
-  <div v-if="!(spinner && loading) && !error" class="q-pa-md">
+  </ui-container-vue>-->
+  <div v-if="!(spinner && loading)" class="q-pa-md">
     <div class="row justify-center items-start crisper">
       <div class="square rounded-borders" :class="cols">
         <q-item :class="{ 'bottom-line': line }">
@@ -28,23 +28,22 @@
 </template>
 
 <script>
-import { defineComponent, computed } from 'vue';
-import { VueScreenSizeMixin } from 'vue-screen-size';
+import { defineComponent, computed, watch } from 'vue';
 import { useLoaderStore } from '@/stores/useLoaderStore.js';
 import UiContainerVue from '@/components/UiContainer.vue';
-import UiAlertVue from '@/components/UiAlert.vue';
+//import UiAlertVue from '@/components/UiAlert.vue';
 import UiSpinnerVue from '@/components/UiSpinner.vue';
+import { useScreenSize } from '@/composables/useScreenSize.js';
+import { Notify } from 'quasar';
 
 export default defineComponent({
   name: 'UiBox',
 
   components: {
     UiContainerVue,
-    UiAlertVue,
+    //UiAlertVue,
     UiSpinnerVue,
   },
-
-  mixins: [VueScreenSizeMixin],
 
   props: {
     columns: {
@@ -90,23 +89,25 @@ export default defineComponent({
     const error = computed(() => store.error);
     const message = computed(() => store.message);
 
+    const { cols } = useScreenSize(props.columns).ssCols;
+
+    const showError = (message) => {
+      Notify.create({
+        type: 'negative',
+        message: message,
+      });
+    };
+
+    watch(error, () => {
+      showError(message);
+    });
+
     return {
       loading,
       error,
       message,
+      cols,
     };
-  },
-
-  computed: {
-    vssName() {
-      //console.log(this.$vssWidth, 'x', this.$vssHeight);
-      return this.$vssWidth > 1900 ? 'large' : this.$vssWidth > 800 ? 'medium' : 'small';
-    },
-
-    cols() {
-      //console.log(`col-${this.columns[this.vssName]}`);
-      return `col-${this.columns[this.vssName]}`;
-    },
   },
 });
 </script>

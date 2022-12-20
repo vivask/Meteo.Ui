@@ -1,10 +1,10 @@
 // FILE: main.js
 
 import { createApp } from 'vue';
-import { Quasar } from 'quasar';
+import { Quasar, Dialog, Notify } from 'quasar';
 import { router } from './router';
 import { createPinia } from 'pinia';
-import VueAxios from 'vue-axios';
+//import VueAxios from 'vue-axios';
 import axios from '@/helpers/axios.js';
 
 // Import icon libraries
@@ -22,8 +22,9 @@ let app = createApp(App);
 
 //app.config.globalProperties.$prefix = import.meta.env.VITE_ROUTER_MODE === 'hash' ? '#' : '';
 
-app.use(Quasar, { plugins: {} });
-app.use(VueAxios, axios);
+app.use(Quasar, { plugins: { Dialog, Notify } });
+//app.use(VueAxios, axios);
+app.provide('axios', axios);
 app.use(router);
 app.use(createPinia());
 app.mount('#app');

@@ -48,12 +48,12 @@
 
 <script>
 import { defineComponent, computed, onMounted, onBeforeUnmount } from 'vue';
-import { VueScreenSizeMixin } from 'vue-screen-size';
 import HomeBme280Vue from '@/components/HomeBme280.vue';
 import HomeMics6814Vue from '@/components/HomeMics6814.vue';
 import HomeRadsensVue from '@/components/HomeRadsens.vue';
 import HomeDs18b20Vue from '@/components/HomeDs18b20.vue';
 import HomeZe08ch2oVue from '@/components/HomeZe08ch2o.vue';
+import { useScreenSize } from '@/composables/useScreenSize.js';
 
 export default defineComponent({
   name: 'PageHome',
@@ -65,34 +65,17 @@ export default defineComponent({
     HomeZe08ch2oVue,
   },
 
-  mixins: [VueScreenSizeMixin],
-
   setup() {
     let timer;
-    const columns = {
-      large: 3,
-      medium: 5,
-      small: 5,
-    };
 
-    onBeforeUnmount(() => {
-      clearTimeout(timer);
-    });
+    const { cols } = useScreenSize({ large: 7, medium: 7, small: 7 }).ssCols;
+
+    onBeforeUnmount(() => clearTimeout(timer));
 
     return {
       peripheral: {},
-      columns,
+      cols,
     };
-  },
-
-  computed: {
-    vssName() {
-      return this.$vssWidth > 1900 ? 'large' : this.$vssWidth > 900 ? 'medium' : 'small';
-    },
-
-    cols() {
-      return `col-${this.columns[this.vssName]}`;
-    },
   },
 });
 </script>

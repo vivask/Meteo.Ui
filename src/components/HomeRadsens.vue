@@ -4,7 +4,7 @@
     class="relative-position container cursor-pointer q-hoverable"
     @mouseover="hover = true"
     @mouseleave="hover = false"
-    @click.prevent="prevent"
+    @click.prevent="() => {}"
   >
     <q-item dense>
       <q-item-section side>
@@ -16,14 +16,25 @@
         <q-item-label class="text-bold text-h6" :color="color">RadSens</q-item-label>
       </q-item-section>
     </q-item>
-    <home-label-vue :value="static" label="Статич. ИИ:" unit="мкР/ч" :alarm="alarmStatic" :check="checkStatic" />
-    <home-label-vue :value="dynamic" label="Динамич. ИИ:" unit="мкР/ч" :alarm="alarmDynamic" :check="checkDynamic" />
+    <home-label-vue
+      :value="staticIntensity"
+      label="Статич. ИИ:"
+      unit="мкР/ч"
+      :alarm="alarmStatic"
+      :check="checkStatic"
+    />
+    <home-label-vue
+      :value="dynamicIntensity"
+      label="Динамич. ИИ:"
+      unit="мкР/ч"
+      :alarm="alarmDynamic"
+      :check="checkDynamic"
+    />
   </div>
 </template>
 
 <script>
-import { defineComponent, ref, computed } from 'vue';
-import { useQuasar } from 'quasar';
+import { defineComponent, ref, computed, inject } from 'vue';
 import HomeLabelVue from '@/components/HomeLabel.vue';
 
 export default defineComponent({
@@ -34,7 +45,7 @@ export default defineComponent({
   },
 
   props: {
-    static: {
+    staticIntensity: {
       type: Number,
     },
 
@@ -42,7 +53,7 @@ export default defineComponent({
       type: Boolean,
     },
 
-    dynamic: {
+    dynamicIntensity: {
       type: Number,
     },
 
@@ -52,7 +63,7 @@ export default defineComponent({
   },
 
   setup() {
-    const $q = useQuasar();
+    const axios = inject('axios');
     const whiteIcon = new URL('../assets/icons/Radiation-48x48-white.png', import.meta.url).href;
     const blueIcon = new URL('../assets/icons/Radiation-48x48-blue.png', import.meta.url).href;
     const iconColor = '#3092EA';
@@ -64,24 +75,12 @@ export default defineComponent({
       color: computed(() => (hover.value ? iconColor : 'white')),
 
       checkStatic() {
-        axios.put('/esp32/radsens/static/chk').catch((err) => {
-          $q.notify({
-            type: 'negative',
-            message: err.response.data.message,
-          });
-        });
+        axios.put('/esp32/radsens/static/chk');
       },
 
       checkDynamic() {
-        axios.put('/esp32/radsens/dynamic/chk').catch((err) => {
-          $q.notify({
-            type: 'negative',
-            message: err.response.data.message,
-          });
-        });
+        axios.put('/esp32/radsens/dynamic/chk');
       },
-
-      prevent() {},
     };
   },
 });

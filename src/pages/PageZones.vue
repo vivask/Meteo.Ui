@@ -7,52 +7,35 @@
     buttonLabel="Add"
     :buttonClick="handleAdd"
   >
-    <ui-table-wrapper-vue ref="wrapper" api="/proxy/zones">
-      <q-table hide-header :rows="rows" :columns="columns" row-key="name" :rows-per-page-options="[10, 50, 100, 0]">
-        <template #body-cell-state="props">
-          <q-td :props="props" class="wd-30">
-            <q-icon :name="activeIcon(props.row)" size="1.2rem" :color="activeColor(props.row)" />
-          </q-td>
-        </template>
-        <template #body-cell-actions="props">
-          <q-td :props="props">
-            <q-btn dense round color="primary" size="md" icon="add" @click="handleAdd" />
-            <q-btn
-              class="q-ml-xs"
-              dense
-              round
-              color="positive"
-              size="md"
-              icon="mode_edit"
-              @click="handleEdit(props.row)"
-            >
-              <q-tooltip>Create zone</q-tooltip>
-            </q-btn>
-            <q-btn
-              class="q-ml-xs"
-              dense
-              round
-              color="negative"
-              size="md"
-              icon="delete"
-              @click="handleDelete(props.row)"
-            >
-              <q-tooltip>Delete zone</q-tooltip>
-            </q-btn>
-          </q-td>
-        </template>
-      </q-table>
-    </ui-table-wrapper-vue>
+    <q-table hide-header :rows="rows" :columns="columns" row-key="name" :rows-per-page-options="[10, 50, 100, 0]">
+      <template #body-cell-state="props">
+        <q-td :props="props" class="wd-30">
+          <q-icon :name="activeIcon(props.row)" size="1.2rem" :color="activeColor(props.row)" />
+        </q-td>
+      </template>
+      <template #body-cell-actions="props">
+        <q-td :props="props">
+          <q-btn dense round color="primary" size="md" icon="add" @click="handleAdd" />
+          <q-btn class="q-ml-xs" dense round color="positive" size="md" icon="mode_edit" @click="handleEdit(props.row)">
+            <q-tooltip>Create zone</q-tooltip>
+          </q-btn>
+          <q-btn class="q-ml-xs" dense round color="negative" size="md" icon="delete" @click="handleDelete(props.row)">
+            <q-tooltip>Delete zone</q-tooltip>
+          </q-btn>
+        </q-td>
+      </template>
+    </q-table>
   </ui-box-vue>
 
   <zone-form-vue ref="form" :zone="zone" @submit="handleSubmit" />
 </template>
 
 <script>
-import { defineComponent, ref, computed } from 'vue';
+import { defineComponent, ref, computed, onMounted, inject } from 'vue';
 import UiBoxVue from '@/components/UiBox.vue';
 import ZoneFormVue from '@/components/ZoneForm.vue';
-import UiTableWrapperVue from '../components/UiTableWrapper.vue';
+import { useTableWrapper } from '@/composables/useTableWrapper.js';
+import { useConfirmDialog } from '@/composables/useConfirmDialog.js';
 
 const columns = [
   { name: 'state' },
@@ -69,16 +52,21 @@ export default defineComponent({
   components: {
     UiBoxVue,
     ZoneFormVue,
-    UiTableWrapperVue,
   },
 
-  inject: ['confirm'],
-
   setup() {
+    const axios = inject('axios');
+    const wrapper = useTableWrapper('/proxy/zones', axios);
+    const confirm = useConfirmDialog();
     const spinner = ref(true);
+    const form = ref(null);
     const rows = ref([]);
     const zone = ref({});
     const buttonShow = computed(() => rows.value.length === 0);
+
+    onMounted(async () => {
+      rows.value = await wrapper.Get();
+    });
 
     return {
       spinner,
@@ -86,6 +74,9 @@ export default defineComponent({
       rows,
       zone,
       buttonShow,
+      wrapper,
+      form,
+      confirm,
 
       boxCols: {
         large: 5,
@@ -93,47 +84,35 @@ export default defineComponent({
         small: 5,
       },
 
-      activeIcon(row) {
-        return row.active ? 'task_alt' : 'highlight_off';
+      activeIcon: (row) => (row.active ? 'task_alt' : 'highlight_off'),
+
+      activeColor: (row) => (row.active ? 'positive' : 'grey'),
+
+      handleAdd() {
+        zone.value = {};
+        form.value.show();
       },
 
-      activeColor(row) {
-        return row.active ? 'positive' : 'grey';
+      handleEdit(row) {
+        zone.value = row;
+        form.value.show();
+      },
+
+      async handleSubmit(event) {
+        if (event.update) {
+          rows.value = await wrapper.Update(rows.value, event.data);
+        } else {
+          rows.value = await wrapper.Insert(rows.value, event.data);
+        }
+      },
+
+      async handleDelete(row) {
+        const ok = await confirm.show('Are you sure to delete this item?');
+        if (ok) {
+          rows.value = await wrapper.Delete(rows.value, row);
+        }
       },
     };
-  },
-
-  async mounted() {
-    this.rows = await this.$refs.wrapper.get();
-  },
-
-  methods: {
-    handleAdd() {
-      this.zone = {};
-      this.$refs.form.show();
-    },
-
-    handleEdit(row) {
-      this.zone = row;
-      this.$refs.form.show();
-    },
-
-    async handleSubmit(event) {
-      if (event.update) {
-        this.rows = await this.$refs.wrapper.update(this.rows, event.data);
-      } else {
-        this.rows = await this.$refs.wrapper.insert(this.rows, event.data);
-      }
-    },
-
-    async handleDelete(row) {
-      const ok = await this.confirm.show({
-        message: 'Are you sure to delete this item?',
-      });
-      if (ok) {
-        this.rows = await this.$refs.wrapper.delete(this.rows, row);
-      }
-    },
   },
 });
 </script>

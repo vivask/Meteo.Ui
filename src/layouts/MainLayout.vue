@@ -34,6 +34,7 @@ import UiToolBarVue from '@/layouts/UiToolBar.vue';
 import UiMenuMainVue from '@/layouts/UiMenuMain.vue';
 import UiContainerVue from '@/components/UiContainer.vue';
 import UiSpinnerVue from '@/components/UiSpinner.vue';
+import { useQuasar } from 'quasar';
 
 export default defineComponent({
   name: 'MainLayout',
@@ -46,18 +47,20 @@ export default defineComponent({
   },
 
   setup() {
+    const $q = useQuasar();
+
+    //$q.dark.set(true);
+
     return {
-      drawer: ref(true),
-      ajaxFilter: useAjaxFilter,
+      drawer: ref(false),
+      useAjaxFilter,
       isAuthenticated: ref(true),
       isActivePeripheral: ref(false),
-    };
-  },
 
-  methods: {
-    ajaxFilterFn(url) {
-      return !this.ajaxFilter.includes(url);
-    },
+      ajaxFilterFn(url) {
+        return !useAjaxFilter.includes(url);
+      },
+    };
   },
 });
 </script>

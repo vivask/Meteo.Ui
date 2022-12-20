@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue';
+import { defineComponent, getCurrentInstance, computed, ref } from 'vue';
 
 export default defineComponent({
   name: 'UiMenuExpansion',
@@ -27,27 +27,24 @@ export default defineComponent({
   },
 
   setup() {
+    const model = ref(false);
+    const instance = getCurrentInstance();
+    const hasParentMenu = computed(() => instance.parent.ctx.$options.name !== 'QDrawer');
+
     return {
-      model: ref(false),
-    };
-  },
+      model,
+      hasParentMenu,
 
-  computed: {
-    hasParentMenu() {
-      return this.$parent.$options.name !== 'QDrawer';
-    },
-  },
-
-  methods: {
-    open() {
-      this.model = true;
-      if (this.hasParentMenu) {
-        const parent = this.$parent.$parent.$parent.$parent;
-        if (parent.$options.name === 'UiMenuExpansion') {
-          parent.open();
+      open() {
+        model.value = true;
+        if (hasParentMenu.value) {
+          const parent = instance.parent.parent.parent.parent.parent;
+          if (parent.ctx.$options.name === 'UiMenuExpansion') {
+            parent.ctx.open();
+          }
         }
-      }
-    },
+      },
+    };
   },
 });
 </script>

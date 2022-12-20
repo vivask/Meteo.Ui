@@ -7,7 +7,7 @@
       }"
       class="col-12 col-md-6 flex content-center"
     >
-      <q-card :style="$q.screen.lt.sm ? { width: '80%' } : { width: '50%' }">
+      <q-card :style="size === 'large' ? { width: '80%' } : { width: '50%' }">
         <q-card-section>
           <q-avatar size="103px" class="absolute-center shadow-10">
             <img src="../assets/icons/account-circle-1.svg" alt="avatar" />
@@ -22,10 +22,10 @@
         </q-card-section>
         <q-card-section>
           <q-form class="q-gutter-md" @submit="onSubmit()">
-            <q-input label="Username *" v-model="signup.username"> </q-input>
-            <q-input label="Email *" v-model="signup.email"> </q-input>
-            <q-input label="Password *" type="password" v-model="signup.password"> </q-input>
-            <q-input label="Confirm password *" type="password" v-model="signup.confirm"> </q-input>
+            <q-input v-model="signup.username" label="Username *"> </q-input>
+            <q-input v-model="signup.email" label="Email *"> </q-input>
+            <q-input v-model="signup.password" label="Password *" type="password"> </q-input>
+            <q-input v-model="signup.confirm" label="Confirm password *" type="password"> </q-input>
             <div>
               <q-btn class="full-width" color="primary" label="Signup" type="submit" rounded></q-btn>
               <div class="text-center q-mt-sm q-gutter-lg">
@@ -40,8 +40,8 @@
 </template>
 
 <script>
-import { useQuasar } from 'quasar';
 import { defineComponent, ref } from 'vue';
+import { useScreenSize } from '@/composables/useScreenSize.js';
 
 const signup = {
   username: null,
@@ -54,11 +54,11 @@ export default defineComponent({
   name: 'PageSign',
 
   setup() {
-    const $q = useQuasar();
+    const { size } = useScreenSize().ssSize;
 
     return {
       signup: ref(signup),
-      confirm,
+      size,
     };
   },
 });

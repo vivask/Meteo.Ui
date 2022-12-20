@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, onMounted, inject } from 'vue';
 import UiProxyVue from '@/components/UiProxy.vue';
 import UiBoxVue from '@/components/UiBox.vue';
 
@@ -34,8 +34,33 @@ export default defineComponent({
   },
 
   setup() {
+    const axios = inject('axios');
     const main = ref({});
     const backup = ref({});
+
+    const getState = () => {
+      axios.get('/proxy/status').then((response) => {
+        if (response.data.data[0].main) {
+          main.value = response.data.data[0];
+          backup.value = response.data.data[1];
+        } else {
+          main.value = response.data.data[1];
+          backup.value = response.data.data[0];
+        }
+      });
+    };
+
+    const toggle = (active, start, stop) => {
+      if (active) {
+        axios.put(start);
+      } else {
+        axios.put(stop);
+      }
+    };
+
+    onMounted(async () => {
+      getState();
+    });
 
     return {
       main,
@@ -46,71 +71,39 @@ export default defineComponent({
         medium: 3,
         small: 3,
       },
+
+      toggleActiveMain() {
+        toggle(main.value.active, '/proxy/main/server/start', '/proxy/main/server/stop');
+      },
+
+      toggleAdblockMain() {
+        toggle(main.value.adblock, '/proxy/main/adblock/on', '/proxy/main/adblock/off');
+      },
+
+      toggleCacheMain() {
+        toggle(main.value.cache, '/proxy/main/cache/on', '/proxy/main/cache/off');
+      },
+
+      toggleUnlockMain() {
+        toggle(main.value.unlock, '/proxy/main/unlock/on', '/proxy/main/unlock/off');
+      },
+
+      toggleActiveBackup() {
+        toggle(backup.value.active, '/proxy/backup/server/start', '/proxy/backup/server/stop');
+      },
+
+      toggleAdblockBackup() {
+        toggle(backup.value.adblock, '/proxy/backup/adblock/on', '/proxy/backup/adblock/off');
+      },
+
+      toggleCacheBackup() {
+        toggle(backup.value.cache, '/proxy/backup/cache/on', '/proxy/backup/cache/off');
+      },
+
+      toggleUnlockBackup() {
+        toggle(backup.value.unlock, '/proxy/backup/unlock/on', '/proxy/backup/unlock/off');
+      },
     };
-  },
-
-  mounted() {
-    this.getState();
-  },
-
-  methods: {
-    getState() {
-      this.axios.get('/proxy/status').then((response) => {
-        if (response.data.data[0].main) {
-          this.main = response.data.data[0];
-          this.backup = response.data.data[1];
-        } else {
-          this.main.value = response.data.data[1];
-          this.backup = response.data.data[0];
-        }
-      });
-    },
-
-    put(url) {
-      this.axios.put(url).then(() => {
-        this.getState();
-      });
-    },
-
-    toggle(active, start, stop) {
-      if (active) {
-        this.put(start);
-      } else {
-        this.put(stop);
-      }
-    },
-
-    toggleActiveMain() {
-      this.toggle(this.main.active, '/proxy/main/server/start', '/proxy/main/server/stop');
-    },
-
-    toggleAdblockMain() {
-      this.toggle(this.main.adblock, '/proxy/main/adblock/on', '/proxy/main/adblock/off');
-    },
-
-    toggleCacheMain() {
-      this.toggle(this.main.cache, '/proxy/main/cache/on', '/proxy/main/cache/off');
-    },
-
-    toggleUnlockMain() {
-      this.toggle(this.main.unlock, '/proxy/main/unlock/on', '/proxy/main/unlock/off');
-    },
-
-    toggleActiveBackup() {
-      this.toggle(this.backup.active, '/proxy/backup/server/start', '/proxy/backup/server/stop');
-    },
-
-    toggleAdblockBackup() {
-      this.toggle(this.backup.adblock, '/proxy/backup/adblock/on', '/proxy/backup/adblock/off');
-    },
-
-    toggleCacheBackup() {
-      this.toggle(this.backup.cache, '/proxy/backup/cache/on', '/proxy/backup/cache/off');
-    },
-
-    toggleUnlockBackup() {
-      this.toggle(this.backup.unlock, '/proxy/backup/unlock/on', '/proxy/backup/unlock/off');
-    },
   },
 });
 </script>

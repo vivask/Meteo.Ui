@@ -1,5 +1,5 @@
 <template>
-  <q-drawer v-model="model" show-if-above bordered :width="width" :class="color">
+  <q-drawer v-model="localModel" show-if-above bordered :width="width" :class="color">
     <ui-menu-item-vue :icon="menuHome.icon" :title="menuHome.title" />
     <ui-menu-expansion-vue :icon="menuPeripheral.icon" :title="menuPeripheral.title">
       <ui-menu-expansion-vue v-for="expansion in menuPeripheral.menu" :key="expansion.value" :label="expansion.label">
@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { defineComponent, computed, onMounted } from 'vue';
+import { defineComponent, computed, ref } from 'vue';
 import { useMenuHome, useMenuPeripheral, useMenuController, useMenuServices } from '@/layouts/menuMain.js';
 import UiMenuItemVue from '@/layouts/UiMenuItem.vue';
 import UiMenuExpansionVue from '@/layouts/UiMenuExpansion.vue';
@@ -69,15 +69,16 @@ export default defineComponent({
 
   setup(props) {
     const authStore = useAuthStore();
+    const localModel = computed(() => props.modelValue);
+    const show = computed(() => authStore.loggedIn);
 
     return {
-      model: computed(() => props.modelValue),
+      localModel,
       menuHome: useMenuHome,
       menuPeripheral: useMenuPeripheral,
       menuController: useMenuController,
       menuServices: useMenuServices,
-
-      show: computed(() => authStore.loggedIn),
+      show,
     };
   },
 });

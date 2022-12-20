@@ -9,7 +9,7 @@
     <q-item-section class="unit-width">
       <q-item-label>{{ unit }}</q-item-label>
     </q-item-section>
-    <q-item-section side v-if="alarm">
+    <q-item-section v-if="alarm" side>
       <q-btn dense round color="pink" size="xs" icon="mdi-check" @click.stop="check" />
     </q-item-section>
   </q-item>

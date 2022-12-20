@@ -1,12 +1,7 @@
 <template>
   <div class="row" style="height: 90vh">
     <div class="col-0 col-md-4 flex justify-center content-center"></div>
-    <div
-      :class="{
-        'justify-center': $q.screen.md || $q.screen.sm || $q.screen.xs,
-      }"
-      class="col-12 col-md-6 flex content-center"
-    >
+    <div class="col-12 col-md-6 flex content-center">
       <q-card :style="$q.screen.lt.sm ? { width: '80%' } : { width: '50%' }">
         <q-card-section>
           <q-avatar size="103px" class="absolute-center shadow-10">
@@ -22,8 +17,8 @@
         </q-card-section>
         <q-card-section>
           <q-form class="q-gutter-md" @submit="onSubmit">
-            <q-input label="Username" v-model="login.username"> </q-input>
-            <q-input label="Password" type="password" v-model="login.password"> </q-input>
+            <q-input v-model="login.username" label="Username"> </q-input>
+            <q-input v-model="login.password" label="Password" type="password"> </q-input>
             <div>
               <q-btn class="full-width" color="primary" label="Login" type="submit" rounded></q-btn>
               <div class="text-center q-mt-sm q-gutter-lg">

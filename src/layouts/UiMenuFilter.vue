@@ -4,8 +4,8 @@
       <q-list>
         <q-item v-for="option in options" :key="option.value" v-close-popup>
           <q-radio
+            id="${name}_${option.value}"
             v-model="radio"
-            :id="`\${name}_\${option.value}`"
             :val="option.value"
             :label="option.text"
             :name="name"
@@ -20,14 +20,12 @@
 </template>
 
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref } from 'vue';
 
 let id = 0;
 
 export default defineComponent({
-  name: "UiFilter",
-
-  emits: ["update:modelValue"],
+  name: 'UiFilter',
 
   props: {
     icon: {
@@ -50,13 +48,18 @@ export default defineComponent({
     },
   },
 
-  setup(props) {
+  emits: ['update:modelValue'],
+
+  setup(props, { emit }) {
+    const radio = ref(props.modelValue);
+    const menu = ref(false);
+
     return {
-      radio: ref(props.modelValue),
-      menu: ref(false),
+      radio,
+      menu,
       emitVal(value) {
-        this.$emit("update:modelValue", value);
-        this.menu = false;
+        emit('update:modelValue', value);
+        menu.value = false;
       },
     };
   },
