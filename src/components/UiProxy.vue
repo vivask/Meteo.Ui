@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, watch, toRefs } from 'vue';
 export default defineComponent({
   name: 'UiProxy',
 
@@ -84,41 +84,41 @@ export default defineComponent({
 
   emits: ['update:modelValue'],
 
-  setup(props) {
-    return {
-      localModel: ref({ ...props.modelValue }),
-    };
-  },
+  setup(props, { emit }) {
+    const { modelValue } = toRefs(props);
+    const localModel = ref(null);
 
-  watch: {
-    modelValue: {
-      immediate: true,
-      handler(newVal) {
-        this.localModel = { ...newVal };
+    watch(
+      modelValue,
+      (newVal) => {
+        localModel.value = { ...newVal };
       },
-    },
-  },
+      { immediate: true },
+    );
 
-  methods: {
-    handleActive() {
-      this.$emit('update:modelValue', { ...this.localModel });
-      this.onActive();
-    },
+    return {
+      localModel,
 
-    handleAdblock() {
-      this.$emit('update:modelValue', { ...this.localModel });
-      this.onAdblock();
-    },
+      handleActive() {
+        emit('update:modelValue', { ...localModel.value });
+        props.onActive();
+      },
 
-    handleCache() {
-      this.$emit('update:modelValue', { ...this.localModel });
-      this.onCache();
-    },
+      handleAdblock() {
+        emit('update:modelValue', { ...localModel.value });
+        props.onAdblock();
+      },
 
-    handleUnlock() {
-      this.$emit('update:modelValue', { ...this.localModel });
-      this.onUnlock();
-    },
+      handleCache() {
+        emit('update:modelValue', { ...localModel.value });
+        props.onCache();
+      },
+
+      handleUnlock() {
+        emit('update:modelValue', { ...localModel.value });
+        props.onUnlock();
+      },
+    };
   },
 });
 </script>

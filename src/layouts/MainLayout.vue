@@ -52,7 +52,7 @@ export default defineComponent({
     //$q.dark.set(true);
 
     return {
-      drawer: ref(false),
+      drawer: ref(true),
       useAjaxFilter,
       isAuthenticated: ref(true),
       isActivePeripheral: ref(false),

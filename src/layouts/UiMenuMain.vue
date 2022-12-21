@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { defineComponent, computed, ref } from 'vue';
+import { defineComponent, computed, ref, toRefs, watch } from 'vue';
 import { useMenuHome, useMenuPeripheral, useMenuController, useMenuServices } from '@/layouts/menuMain.js';
 import UiMenuItemVue from '@/layouts/UiMenuItem.vue';
 import UiMenuExpansionVue from '@/layouts/UiMenuExpansion.vue';
@@ -68,9 +68,18 @@ export default defineComponent({
   },
 
   setup(props) {
+    const { modelValue } = toRefs(props);
     const authStore = useAuthStore();
-    const localModel = computed(() => props.modelValue);
+    const localModel = ref(null);
     const show = computed(() => authStore.loggedIn);
+
+    watch(
+      modelValue,
+      (newVal) => {
+        localModel.value = newVal;
+      },
+      { immediate: true },
+    );
 
     return {
       localModel,

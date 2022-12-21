@@ -1,7 +1,7 @@
-<template v-model="localModel">
+<template>
   <q-header elevated>
     <q-toolbar>
-      <q-btn flat dense round icon="mdi-menu" class="q-mr-sm" @click="emitVal(!localModel)" />
+      <q-btn flat dense round icon="mdi-menu" class="q-mr-sm" @click="localModel = !localModel" />
 
       <q-toolbar-title> Meteo </q-toolbar-title>
 
@@ -16,10 +16,11 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed } from 'vue';
+import { defineComponent, toRefs, computed } from 'vue';
 import { useMenuFilters } from '@/layouts/menuFilters.js';
 import UiMenuFilterVue from '@/layouts/UiMenuFilter.vue';
 import { useAuthStore } from '@/stores/useAuthStore.js';
+import { useModelProxy } from '@/composables/useModelProxy.js';
 
 export default defineComponent({
   name: 'UiToolBar',
@@ -38,19 +39,15 @@ export default defineComponent({
   emits: ['update:modelValue'],
 
   setup(props, { emit }) {
+    const { modelValue } = toRefs(props);
+    const { modelProxy } = useModelProxy(modelValue, emit);
     const authStore = useAuthStore();
-    const localModel = ref(true); //ref(props.modelValue);
     const isLoged = computed(() => authStore.loggedIn);
 
     return {
       filters: useMenuFilters,
-      localModel,
+      localModel: modelProxy,
       isLoged,
-
-      emitVal(value) {
-        emit('update:modelValue', value);
-        localModel.value = value;
-      },
 
       logout() {
         authStore.logout();
