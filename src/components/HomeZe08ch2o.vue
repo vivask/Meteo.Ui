@@ -16,7 +16,7 @@
         <q-item-label class="text-bold text-h6" :color="color">ZE08CH2O</q-item-label>
       </q-item-section>
     </q-item>
-    <home-label-vue :value="ch2o" label="CH2O:" unit="ppm" :alarm="alarm" :check="check" />
+    <home-label-vue :value="ch2o" label="CH2O:" unit="ppm" :alarm="alarm" :check="check" :available="available" />
   </div>
 </template>
 
@@ -32,13 +32,9 @@ export default defineComponent({
   },
 
   props: {
-    ch2o: {
-      type: Number,
-    },
-
-    alarm: {
-      type: Boolean,
-    },
+    available: Boolean,
+    ch2o: [String, Number],
+    alarm: Boolean,
   },
 
   setup() {

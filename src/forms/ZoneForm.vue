@@ -3,10 +3,10 @@
     <q-card class="min-width">
       <q-card-section>
         <q-form class="q-gutter-md" @submit.prevent="handleSubmit">
-          <ui-input-vue v-model="localZone.name" hint="Host Name *" />
-          <ui-input-vue v-model="localZone.address" hint="IP Address *" rule="ip" />
-          <q-input v-model="localZone.mac" dense outlined hint="MAC Address" />
-          <q-input v-model="localZone.note" dense outlined hint="Note" />
+          <ui-input-vue v-model="localProp.name" hint="Host Name *" />
+          <ui-input-vue v-model="localProp.address" hint="IP Address *" rule="ip" />
+          <q-input v-model="localProp.mac" dense outlined hint="MAC Address" />
+          <q-input v-model="localProp.note" dense outlined hint="Note" />
           <q-card-actions align="left" class="text-primary">
             <q-btn label="Submit" type="submit" color="primary" />
             <q-btn label="Cancel" color="primary" flat class="q-ml-sm" @click="handleCancel" />
@@ -18,8 +18,9 @@
 </template>
 
 <script>
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, ref, toRefs } from 'vue';
 import UiInputVue from '@/components/UiInput.vue';
+import { useSubmitForm } from '@/composables/useSubmitForm';
 
 export default defineComponent({
   name: 'ZoneForm',
@@ -37,29 +38,19 @@ export default defineComponent({
 
   emits: ['cancel', 'submit'],
 
-  setup(props) {
-    const localZone = computed(() => ({ ...props.zone }));
-    const isUpdate = computed(() => !!props.zone?.id);
+  setup(props, { emit }) {
+    const popup = ref(null);
+
+    const { localProp, show, handleSubmit, handleCancel } = useSubmitForm(popup, emit);
+
     return {
-      localZone,
-      isUpdate,
+      localProp,
+      popup,
+
+      show,
+      handleSubmit,
+      handleCancel,
     };
-  },
-
-  methods: {
-    show() {
-      this.$refs.popup.show();
-    },
-
-    handleSubmit() {
-      this.$refs.popup.hide();
-      this.$emit('submit', { data: this.localZone, update: this.isUpdate });
-    },
-
-    handleCancel() {
-      this.$refs.popup.hide();
-      this.$emit('cancel');
-    },
   },
 });
 </script>

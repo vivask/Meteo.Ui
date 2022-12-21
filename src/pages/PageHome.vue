@@ -3,42 +3,46 @@
     <div class="row justify-center">
       <div class="q-ml-sm square rounded-borders shadow-8" :class="cols">
         <HomeBme280Vue
-          :temperature="peripheral.bmx280_tempr"
-          :pressure="peripheral.bmx280_press"
-          :humidity="peripheral.bmx280_hum"
-          :alarm="peripheral.max_bmx280_tempr_alarm || peripheral.min_bmx280_tempr_alarm"
+          :available="alive.bme280"
+          :temperature="data.bmx280_tempr"
+          :pressure="data.bmx280_press"
+          :humidity="data.bmx280_hum"
+          :alarm="data.max_bmx280_tempr_alarm || data.min_bmx280_tempr_alarm"
         />
       </div>
       <div v-if="$q.screen.name == 'xs'" class="flex-break"></div>
       <div class="q-ml-sm square rounded-borders shadow-8" :class="cols">
         <HomeMics6814Vue
-          :nh3="peripheral.mics6814_nh3"
-          :alarm-nh3="peripheral.max_6814_nh3_alarm"
-          :no2="peripheral.mics6814_no2"
-          :alarm-no2="peripheral.max_6814_no2_alarm"
-          :co="peripheral.mics6814_co"
-          :alarm-co="peripheral.max_6814_co_alarm"
+          :available="alive.mics6814"
+          :nh3="data.mics6814_nh3"
+          :alarm-nh3="data.max_6814_nh3_alarm"
+          :no2="data.mics6814_no2"
+          :alarm-no2="data.max_6814_no2_alarm"
+          :co="data.mics6814_co"
+          :alarm-co="data.max_6814_co_alarm"
         />
       </div>
       <div v-if="$q.screen.name == 'xs' || $q.screen.name == 'sm'" class="flex-break" />
       <div class="q-ml-sm square rounded-borders shadow-8" :class="cols">
         <HomeRadsensVue
-          :static="peripheral.radsens_static"
-          :static-alarm="peripheral.max_rad_stat_alarm"
-          :dynamic="peripheral.radsens_dynamic"
-          :dynamic-alarm="peripheral.max_rad_dyn_alarm"
+          :available="alive.radsens"
+          :static="data.radsens_static"
+          :static-alarm="data.max_rad_stat_alarm"
+          :dynamic="data.radsens_dynamic"
+          :dynamic-alarm="data.max_rad_dyn_alarm"
         />
       </div>
       <div v-if="$q.screen.name == 'xs' || $q.screen.name == 'xl'" class="flex-break" />
       <div class="q-ml-sm square rounded-borders shadow-8" :class="cols">
         <HomeDs18b20Vue
-          :temperature="peripheral.ds18b20_tempr"
-          :alarm="peripheral.max_ds18b20_alarm || peripheral.min_ds18b20_alarm"
+          :available="alive.ds18b20"
+          :temperature="data.ds18b20_tempr"
+          :alarm="data.max_ds18b20_alarm || data.min_ds18b20_alarm"
         />
       </div>
       <div v-if="$q.screen.name == 'xs' || $q.screen.name == 'sm'" class="flex-break" />
       <div class="q-ml-sm square rounded-borders shadow-8" :class="cols">
-        <HomeZe08ch2oVue :ch2o="peripheral.ze08_ch2o" :alarm="peripheral.max_ch2o_alarm" />
+        <HomeZe08ch2oVue :available="alive.ze08ch2o" :ch2o="data.ze08_ch2o" :alarm="data.max_ch2o_alarm" />
       </div>
       <div v-if="$q.screen.name == 'xs'" class="flex-break"></div>
       <div class="q-ml-sm" :class="cols"></div>
@@ -53,7 +57,8 @@ import HomeMics6814Vue from '@/components/HomeMics6814.vue';
 import HomeRadsensVue from '@/components/HomeRadsens.vue';
 import HomeDs18b20Vue from '@/components/HomeDs18b20.vue';
 import HomeZe08ch2oVue from '@/components/HomeZe08ch2o.vue';
-import { useScreenSize } from '@/composables/useScreenSize.js';
+import { Screen } from 'quasar';
+import { useEsp32Store } from '@/stores/useEsp32Store.js';
 
 export default defineComponent({
   name: 'PageHome',
@@ -66,15 +71,23 @@ export default defineComponent({
   },
 
   setup() {
+    const store = useEsp32Store();
     let timer;
 
-    const { cols } = useScreenSize({ large: 7, medium: 7, small: 7 }).ssCols;
+    const columns = { large: 3, medium: 4, small: 7 };
+
+    onMounted(() => {
+      timer = setInterval(() => {
+        store.esp32Data();
+      }, 1000);
+    });
 
     onBeforeUnmount(() => clearTimeout(timer));
 
     return {
-      peripheral: {},
-      cols,
+      data: computed(() => store.data),
+      alive: computed(() => store.alive),
+      cols: computed(() => `col-${columns[Screen.gt.md ? 'large' : Screen.gt.sm ? 'medium' : 'small']}`),
     };
   },
 });

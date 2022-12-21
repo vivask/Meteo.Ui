@@ -33,9 +33,9 @@
 <script>
 import { defineComponent, ref, computed, onMounted, inject } from 'vue';
 import UiBoxVue from '@/components/UiBox.vue';
-import ZoneFormVue from '@/components/ZoneForm.vue';
+import ZoneFormVue from '@/forms/ZoneForm.vue';
 import { useTableWrapper } from '@/composables/useTableWrapper.js';
-import { useConfirmDialog } from '@/composables/useConfirmDialog.js';
+import { useTableHandlers } from '@/composables/useTableHandlers';
 
 const columns = [
   { name: 'state' },
@@ -57,12 +57,13 @@ export default defineComponent({
   setup() {
     const axios = inject('axios');
     const wrapper = useTableWrapper('/proxy/zones', axios);
-    const confirm = useConfirmDialog();
     const spinner = ref(true);
     const form = ref(null);
     const rows = ref([]);
     const zone = ref({});
     const buttonShow = computed(() => rows.value.length === 0);
+
+    const { handleAdd, handleEdit, handleSubmit, handleDelete } = useTableHandlers(form, rows, wrapper, {});
 
     onMounted(async () => {
       rows.value = await wrapper.Get();
@@ -76,7 +77,6 @@ export default defineComponent({
       buttonShow,
       wrapper,
       form,
-      confirm,
 
       boxCols: {
         large: 5,
@@ -88,30 +88,10 @@ export default defineComponent({
 
       activeColor: (row) => (row.active ? 'positive' : 'grey'),
 
-      handleAdd() {
-        zone.value = {};
-        form.value.show();
-      },
-
-      handleEdit(row) {
-        zone.value = row;
-        form.value.show();
-      },
-
-      async handleSubmit(event) {
-        if (event.update) {
-          rows.value = await wrapper.Update(rows.value, event.data);
-        } else {
-          rows.value = await wrapper.Insert(rows.value, event.data);
-        }
-      },
-
-      async handleDelete(row) {
-        const ok = await confirm.show('Are you sure to delete this item?');
-        if (ok) {
-          rows.value = await wrapper.Delete(rows.value, row);
-        }
-      },
+      handleAdd,
+      handleEdit,
+      handleSubmit,
+      handleDelete,
     };
   },
 });

@@ -16,7 +16,14 @@
         <q-item-label class="text-bold text-h6" :color="color">DS18B20</q-item-label>
       </q-item-section>
     </q-item>
-    <home-label-vue :value="temperature" label="Температура:" unit="°C" :alarm="alarm" :check="check" />
+    <home-label-vue
+      :value="temperature"
+      label="Температура:"
+      unit="°C"
+      :alarm="alarm"
+      :check="check"
+      :available="available"
+    />
   </div>
 </template>
 
@@ -32,13 +39,9 @@ export default defineComponent({
   },
 
   props: {
-    temperature: {
-      type: Number,
-    },
-
-    alarm: {
-      type: Boolean,
-    },
+    available: Boolean,
+    temperature: [String, Number],
+    alarm: Boolean,
   },
 
   setup() {

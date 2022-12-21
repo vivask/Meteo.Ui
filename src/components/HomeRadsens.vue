@@ -22,6 +22,7 @@
       unit="мкР/ч"
       :alarm="alarmStatic"
       :check="checkStatic"
+      :available="available"
     />
     <home-label-vue
       :value="dynamicIntensity"
@@ -29,6 +30,7 @@
       unit="мкР/ч"
       :alarm="alarmDynamic"
       :check="checkDynamic"
+      :available="available"
     />
   </div>
 </template>
@@ -45,21 +47,11 @@ export default defineComponent({
   },
 
   props: {
-    staticIntensity: {
-      type: Number,
-    },
-
-    alarmStatic: {
-      type: Boolean,
-    },
-
-    dynamicIntensity: {
-      type: Number,
-    },
-
-    alarmDynamic: {
-      type: Boolean,
-    },
+    available: Boolean,
+    staticIntensity: [String, Number],
+    alarmStatic: Boolean,
+    dynamicIntensity: [String, Number],
+    alarmDynamic: Boolean,
   },
 
   setup() {

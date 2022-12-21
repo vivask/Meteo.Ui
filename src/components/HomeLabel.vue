@@ -4,7 +4,7 @@
       <q-item-label>{{ label }}</q-item-label>
     </q-item-section>
     <q-item-section class="data-width text-right">
-      <q-item-label :color="color">{{ parseFloat(data).toFixed(resolution) }}</q-item-label>
+      <q-item-label :class="{ available: available }">{{ parseFloat(data).toFixed(resolution) }}</q-item-label>
     </q-item-section>
     <q-item-section class="unit-width">
       <q-item-label>{{ unit }}</q-item-label>
@@ -22,6 +22,11 @@ export default defineComponent({
   name: 'HomeLabel',
 
   props: {
+    available: {
+      type: Boolean,
+      default: false,
+    },
+
     label: {
       type: String,
       required: true,
@@ -32,17 +37,11 @@ export default defineComponent({
       default: 120,
     },
 
-    value: {
-      type: String,
-    },
+    value: [String, Number],
 
     valueWidth: {
       type: Number,
       default: 50,
-    },
-
-    color: {
-      type: String,
     },
 
     unit: {
@@ -65,9 +64,7 @@ export default defineComponent({
       default: false,
     },
 
-    check: {
-      type: Function,
-    },
+    check: Function,
   },
 
   setup(props) {
@@ -93,4 +90,6 @@ export default defineComponent({
   --unit-width: unitWidth
   width: var(--unit-width)px
   max-width: var(--unit-width)px
+.available
+  color: #1976D2
 </style>

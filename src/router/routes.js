@@ -66,6 +66,13 @@ const routes = [
           requiresAuth: true,
         },
       },
+      {
+        path: '/schedule/tasks',
+        component: () => import('@/pages/PageTasks.vue'),
+        meta: {
+          requiresAuth: true,
+        },
+      },
     ],
   },
 

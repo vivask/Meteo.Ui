@@ -16,9 +16,16 @@
         <q-item-label class="text-bold text-h6" :color="color">BME280</q-item-label>
       </q-item-section>
     </q-item>
-    <home-label-vue :value="temperature" label="Температура:" unit="°C" :alarm="alarm" :check="check" />
-    <home-label-vue :value="pressure" label="Давлeние:" unit="mmHg" />
-    <home-label-vue :value="humidity" label="Влажность:" unit="%" />
+    <home-label-vue
+      :value="temperature"
+      label="Температура:"
+      unit="°C"
+      :alarm="alarm"
+      :check="check"
+      :available="available"
+    />
+    <home-label-vue :value="pressure" label="Давлeние:" unit="mmHg" :available="available" />
+    <home-label-vue :value="humidity" label="Влажность:" unit="%" :available="available" />
   </div>
 </template>
 
@@ -34,21 +41,11 @@ export default defineComponent({
   },
 
   props: {
-    temperature: {
-      type: Number,
-    },
-
-    alarm: {
-      type: Boolean,
-    },
-
-    pressure: {
-      type: Number,
-    },
-
-    humidity: {
-      type: Number,
-    },
+    available: Boolean,
+    temperature: [String, Number],
+    alarm: Boolean,
+    pressure: [String, Number],
+    humidity: [String, Number],
   },
 
   setup() {

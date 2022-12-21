@@ -1,7 +1,4 @@
 <template>
-  <!--<ui-container-vue v-if="error">
-    <ui-alert-vue>{{ message }}</ui-alert-vue>
-  </ui-container-vue>-->
   <div v-if="!(spinner && loading)" class="q-pa-md">
     <div class="row justify-center items-start crisper">
       <div class="square rounded-borders" :class="cols">
@@ -31,17 +28,14 @@
 import { defineComponent, computed, watch } from 'vue';
 import { useLoaderStore } from '@/stores/useLoaderStore.js';
 import UiContainerVue from '@/components/UiContainer.vue';
-//import UiAlertVue from '@/components/UiAlert.vue';
 import UiSpinnerVue from '@/components/UiSpinner.vue';
-import { useScreenSize } from '@/composables/useScreenSize.js';
-import { Notify } from 'quasar';
+import { Notify, Screen } from 'quasar';
 
 export default defineComponent({
   name: 'UiBox',
 
   components: {
     UiContainerVue,
-    //UiAlertVue,
     UiSpinnerVue,
   },
 
@@ -89,10 +83,10 @@ export default defineComponent({
     const error = computed(() => store.error);
     const message = computed(() => store.message);
 
-    const { cols } = useScreenSize(props.columns).ssCols;
-
     const showError = (message) => {
       Notify.create({
+        spinner: true,
+        timeout: import.meta.env.ERROR_TIMEOUT,
         type: 'negative',
         message: message,
       });
@@ -106,7 +100,7 @@ export default defineComponent({
       loading,
       error,
       message,
-      cols,
+      cols: computed(() => `col-${props.columns[Screen.gt.md ? 'large' : Screen.gt.sm ? 'medium' : 'small']}`),
     };
   },
 });

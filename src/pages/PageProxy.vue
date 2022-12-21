@@ -1,5 +1,5 @@
 <template>
-  <ui-box-vue :columns="boxCols" header="Proxy Servers">
+  <ui-box-vue :columns="boxCols" header="Proxy Servers" :spinner="spinner">
     <ui-proxy-vue
       v-model="main"
       :line="true"
@@ -37,18 +37,7 @@ export default defineComponent({
     const axios = inject('axios');
     const main = ref({});
     const backup = ref({});
-
-    const getState = () => {
-      axios.get('/proxy/status').then((response) => {
-        if (response.data.data[0].main) {
-          main.value = response.data.data[0];
-          backup.value = response.data.data[1];
-        } else {
-          main.value = response.data.data[1];
-          backup.value = response.data.data[0];
-        }
-      });
-    };
+    const spinner = ref(true);
 
     const toggle = (active, start, stop) => {
       if (active) {
@@ -59,10 +48,20 @@ export default defineComponent({
     };
 
     onMounted(async () => {
-      getState();
+      axios.get('/proxy/status').then((response) => {
+        if (response.data.data[0].main) {
+          main.value = response.data.data[0];
+          backup.value = response.data.data[1];
+        } else {
+          main.value = response.data.data[1];
+          backup.value = response.data.data[0];
+        }
+        spinner.value = false;
+      });
     });
 
     return {
+      spinner,
       main,
       backup,
 

@@ -16,9 +16,9 @@
         <q-item-label class="text-bold text-h6" :color="color">MICS6814</q-item-label>
       </q-item-section>
     </q-item>
-    <home-label-vue :value="nh3" label="NH3:" unit="мг/м3" :alarm="alarmNh3" :check="checkNh3" />
-    <home-label-vue :value="no2" label="NO2:" unit="мг/м3" :alarm="alarmNo2" :check="checkNo2" />
-    <home-label-vue :value="co" label="CO:" unit="мг/м3" :alarm="alarmCo" :check="checkCo" />
+    <home-label-vue :value="nh3" label="NH3:" unit="мг/м3" :alarm="alarmNh3" :check="checkNh3" :available="available" />
+    <home-label-vue :value="no2" label="NO2:" unit="мг/м3" :alarm="alarmNo2" :check="checkNo2" :available="available" />
+    <home-label-vue :value="co" label="CO:" unit="мг/м3" :alarm="alarmCo" :check="checkCo" :available="available" />
   </div>
 </template>
 
@@ -27,36 +27,20 @@ import { defineComponent, ref, computed, inject } from 'vue';
 import HomeLabelVue from '@/components/HomeLabel.vue';
 
 export default defineComponent({
-  name: 'HomeBme280',
+  name: 'HomeMics6814',
 
   components: {
     HomeLabelVue,
   },
 
   props: {
-    nh3: {
-      type: Number,
-    },
-
-    alarmNh3: {
-      type: Boolean,
-    },
-
-    no2: {
-      type: Number,
-    },
-
-    alarmNo2: {
-      type: Boolean,
-    },
-
-    co: {
-      type: Number,
-    },
-
-    alarmCo: {
-      type: Boolean,
-    },
+    available: Boolean,
+    nh3: [String, Number],
+    alarmNh3: Boolean,
+    no2: [String, Number],
+    alarmNo2: Boolean,
+    co: [String, Number],
+    alarmCo: Boolean,
   },
 
   setup() {

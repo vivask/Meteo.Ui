@@ -3,17 +3,17 @@
     <q-card class="min-width">
       <q-card-section>
         <q-form class="q-gutter-md" @submit.prevent="handleSubmit">
-          <ui-input-vue v-model="localHost.name" hint="Name/IP Address *" rule="host" />
+          <ui-input-vue v-model="localProp.name" hint="Name/IP Address *" rule="host" />
           <q-select
-            v-model="localHost.list.id"
+            v-model="localProp.list.id"
             outlined
             dense
             :options="localList"
             hint="Acess list *"
             lazy-rules
-            :rules="[() => localHost.list || 'Please select something']"
+            :rules="[() => localProp.list || 'Please select something']"
           />
-          <q-input v-model="localHost.note" dense outlined hint="Note" />
+          <q-input v-model="localProp.note" dense outlined hint="Note" />
           <q-card-actions align="left" class="text-primary">
             <q-btn label="Submit" type="submit" color="primary" />
             <q-btn label="Cancel" color="primary" flat class="q-ml-sm" @click="handleCancel" />
@@ -25,8 +25,9 @@
 </template>
 
 <script>
-import { defineComponent, computed, ref } from 'vue';
+import { defineComponent, computed, ref, watch, toRefs } from 'vue';
 import UiInputVue from '@/components/UiInput.vue';
+import { useSubmitForm } from '@/composables/useSubmitForm';
 
 export default defineComponent({
   name: 'VpnHostForm',
@@ -36,11 +37,6 @@ export default defineComponent({
   },
 
   props: {
-    host: {
-      type: Object,
-      require: true,
-    },
-
     list: {
       type: Array,
       require: true,
@@ -49,32 +45,20 @@ export default defineComponent({
 
   emits: ['cancel', 'submit'],
 
-  setup(props) {
-    const localHost = computed(() => ({ ...props.host }));
+  setup(props, { emit }) {
     const localList = computed(() => props.list.map(({ id }) => id));
-    const isUpdate = computed(() => !!props.host?.id);
+    const popup = ref(null);
+
+    const { localProp, show, handleSubmit, handleCancel } = useSubmitForm(popup, emit);
 
     return {
-      localHost,
+      localProp,
       localList,
-      isUpdate,
+      popup,
+      show,
+      handleSubmit,
+      handleCancel,
     };
-  },
-
-  methods: {
-    show() {
-      this.$refs.popup.show();
-    },
-
-    handleSubmit() {
-      this.$refs.popup.hide();
-      this.$emit('submit', { data: this.localHost, update: this.isUpdate });
-    },
-
-    handleCancel() {
-      this.$refs.popup.hide();
-      this.$emit('cancel');
-    },
   },
 });
 </script>

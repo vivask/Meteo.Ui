@@ -1,5 +1,6 @@
 <template>
   <ui-box-vue
+    :spinner="spinner"
     :columns="boxCols"
     header="Hosts Redirected to VPN"
     :buttonShow="buttonShow"
@@ -21,15 +22,15 @@
     </q-table>
   </ui-box-vue>
 
-  <vpn-host-form-vue ref="form" :host="host" :list="list" @submit="handleSubmit" />
+  <vpn-host-form-vue ref="form" :list="list" @submit="handleSubmit" />
 </template>
 
 <script>
 import { defineComponent, ref, computed, inject, onMounted } from 'vue';
 import UiBoxVue from '@/components/UiBox.vue';
-import VpnHostFormVue from '@/components/VpnHostForm.vue';
+import VpnHostFormVue from '@/forms/VpnHostForm.vue';
 import { useTableWrapper } from '@/composables/useTableWrapper.js';
-import { useConfirmDialog } from '@/composables/useConfirmDialog.js';
+import { useTableHandlers } from '@/composables/useTableHandlers';
 
 const columns = [
   { name: 'name', align: 'left', field: 'name', sortable: true },
@@ -54,7 +55,6 @@ export default defineComponent({
   setup() {
     const axios = inject('axios');
     const wrapper = useTableWrapper('/proxy/manualvpn', axios);
-    const confirm = useConfirmDialog();
     const spinner = ref(true);
     const rows = ref([]);
     const list = ref([]);
@@ -62,10 +62,15 @@ export default defineComponent({
     const buttonShow = computed(() => rows.value.length === 0);
     const form = ref(null);
 
+    const { handleAdd, handleEdit, handleSubmit, handleDelete } = useTableHandlers(form, rows, wrapper, {
+      list: { id: null },
+    });
+
     onMounted(async () => {
       axios.get('/proxy/vpnlists').then(async (response) => {
         list.value = response.data.data;
         rows.value = await wrapper.Get();
+        spinner.value = false;
       });
     });
 
@@ -77,7 +82,6 @@ export default defineComponent({
       host,
       buttonShow,
       form,
-      confirm,
 
       boxCols: {
         large: 5,
@@ -85,31 +89,13 @@ export default defineComponent({
         small: 5,
       },
 
-      handleAdd() {
-        host.value = { list: { id: null } };
-        form.value.show();
-      },
-
-      handleEdit(row) {
-        host.value = row;
-        form.value.show();
-      },
-
-      async handleSubmit(event) {
-        if (event.update) {
-          rows.value = await wrapper.Update(rows.value, event.data);
-        } else {
-          rows.value = await wrapper.Insert(rows.value, event.data);
-        }
-      },
-
-      async handleDelete(row) {
-        const ok = await confirm.show('Are you sure to delete this item?');
-        if (ok) {
-          rows.value = await wrapper.Delete(rows.value, row);
-        }
-      },
+      handleAdd,
+      handleEdit,
+      handleSubmit,
+      handleDelete,
     };
   },
+
+  methods: {},
 });
 </script>
