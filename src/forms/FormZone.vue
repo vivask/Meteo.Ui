@@ -18,22 +18,15 @@
 </template>
 
 <script>
-import { defineComponent, computed, ref, toRefs } from 'vue';
+import { defineComponent, ref } from 'vue';
 import UiInputVue from '@/components/UiInput.vue';
 import { useSubmitForm } from '@/composables/useSubmitForm';
 
 export default defineComponent({
-  name: 'ZoneForm',
+  name: 'FormZone',
 
   components: {
     UiInputVue,
-  },
-
-  props: {
-    zone: {
-      type: Object,
-      required: true,
-    },
   },
 
   emits: ['cancel', 'submit'],

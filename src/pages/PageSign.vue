@@ -7,7 +7,7 @@
       }"
       class="col-12 col-md-6 flex content-center"
     >
-      <q-card :style="size === 'large' ? { width: '80%' } : { width: '50%' }">
+      <q-card :style="Screen.name === 'xs' ? { width: '80%' } : { width: '50%' }">
         <q-card-section>
           <q-avatar size="103px" class="absolute-center shadow-10">
             <img src="../assets/icons/account-circle-1.svg" alt="avatar" />
@@ -41,7 +41,7 @@
 
 <script>
 import { defineComponent, ref } from 'vue';
-import { useScreenSize } from '@/composables/useScreenSize.js';
+import { Screen } from 'quasar';
 
 const signup = {
   username: null,
@@ -54,11 +54,9 @@ export default defineComponent({
   name: 'PageSign',
 
   setup() {
-    const { size } = useScreenSize().ssSize;
-
     return {
       signup: ref(signup),
-      size,
+      Screen,
     };
   },
 });

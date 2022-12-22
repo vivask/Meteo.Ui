@@ -30,7 +30,7 @@ import UiInputVue from '@/components/UiInput.vue';
 import { useSubmitForm } from '@/composables/useSubmitForm';
 
 export default defineComponent({
-  name: 'VpnHostForm',
+  name: 'FormVpnHost',
 
   components: {
     UiInputVue,

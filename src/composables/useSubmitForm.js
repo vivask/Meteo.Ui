@@ -5,16 +5,17 @@ const deepClone = (obj) => JSON.parse(JSON.stringify(obj));
 
 export function useSubmitForm(popup, emit) {
   const localProp = ref(null);
+  const isUpdate = ref(false);
 
   const show = (prop) => {
+    isUpdate.value = !!prop?.id;
     localProp.value = deepClone(prop);
     popup.value.show();
   };
 
   const handleSubmit = () => {
     popup.value.hide();
-    const isUpdate = !!localProp.value?.id;
-    emit('submit', { data: deepClone(localProp.value), update: isUpdate });
+    emit('submit', { data: deepClone(localProp.value), update: isUpdate.value });
   };
 
   const handleCancel = () => {
@@ -22,5 +23,5 @@ export function useSubmitForm(popup, emit) {
     emit('cancel');
   };
 
-  return { localProp, show, handleSubmit, handleCancel };
+  return { localProp, show, handleSubmit, handleCancel, isUpdate };
 }

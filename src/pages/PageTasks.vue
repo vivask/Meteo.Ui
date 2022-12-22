@@ -50,13 +50,16 @@
       </template>
     </q-table>
   </ui-box-vue>
+
+  <form-task-vue ref="form" @submit="handleSubmit" />
 </template>
 
 <script>
 import { defineComponent, ref, computed, onMounted, inject } from 'vue';
 import UiBoxVue from '@/components/UiBox.vue';
 import { useTableWrapper } from '@/composables/useTableWrapper.js';
-import { useConfirmDialog } from '@/composables/useConfirmDialog.js';
+import { useTableHandlers } from '@/composables/useTableHandlers';
+import FormTaskVue from '@/forms/FormTask.vue';
 
 const columns = [
   { name: 'state' },
@@ -72,17 +75,19 @@ export default defineComponent({
 
   components: {
     UiBoxVue,
+    FormTaskVue,
   },
 
   setup() {
     const axios = inject('axios');
     const wrapper = useTableWrapper('/schedule/tasks', axios);
-    const confirm = useConfirmDialog();
     const spinner = ref(true);
     const form = ref(null);
     const rows = ref([]);
     const task = ref({});
     const buttonShow = computed(() => rows.value.length === 0);
+
+    const { handleAdd, handleEdit, handleSubmit, handleDelete } = useTableHandlers(form, rows, wrapper, {});
 
     onMounted(async () => {
       rows.value = await wrapper.Get();
@@ -96,7 +101,6 @@ export default defineComponent({
       buttonShow,
       wrapper,
       form,
-      confirm,
 
       boxCols: {
         large: 5,
@@ -104,30 +108,10 @@ export default defineComponent({
         small: 5,
       },
 
-      handleAdd() {
-        task.value = {};
-        form.value.show();
-      },
-
-      handleEdit(row) {
-        task.value = row;
-        form.value.show();
-      },
-
-      async handleSubmit(event) {
-        if (event.update) {
-          rows.value = await wrapper.Update(rows.value, event.data);
-        } else {
-          rows.value = await wrapper.Insert(rows.value, event.data);
-        }
-      },
-
-      async handleDelete(row) {
-        const ok = await confirm.show('Are you sure to delete this item?');
-        if (ok) {
-          rows.value = await wrapper.Delete(rows.value, row);
-        }
-      },
+      handleAdd,
+      handleEdit,
+      handleSubmit,
+      handleDelete,
     };
   },
 });

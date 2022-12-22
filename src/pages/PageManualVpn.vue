@@ -22,13 +22,13 @@
     </q-table>
   </ui-box-vue>
 
-  <vpn-host-form-vue ref="form" :list="list" @submit="handleSubmit" />
+  <form-vpn-host-vue ref="form" :list="list" @submit="handleSubmit" />
 </template>
 
 <script>
 import { defineComponent, ref, computed, inject, onMounted } from 'vue';
 import UiBoxVue from '@/components/UiBox.vue';
-import VpnHostFormVue from '@/forms/VpnHostForm.vue';
+import FormVpnHostVue from '@/forms/FormVpnHost.vue';
 import { useTableWrapper } from '@/composables/useTableWrapper.js';
 import { useTableHandlers } from '@/composables/useTableHandlers';
 
@@ -49,7 +49,7 @@ export default defineComponent({
 
   components: {
     UiBoxVue,
-    VpnHostFormVue,
+    FormVpnHostVue,
   },
 
   setup() {

@@ -67,6 +67,13 @@ const routes = [
         },
       },
       {
+        path: '/schedule/timetable',
+        component: () => import('@/pages/PageJobs.vue'),
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
         path: '/schedule/tasks',
         component: () => import('@/pages/PageTasks.vue'),
         meta: {

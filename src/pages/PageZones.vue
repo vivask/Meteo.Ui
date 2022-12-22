@@ -27,13 +27,13 @@
     </q-table>
   </ui-box-vue>
 
-  <zone-form-vue ref="form" :zone="zone" @submit="handleSubmit" />
+  <form-zone-vue ref="form" @submit="handleSubmit" />
 </template>
 
 <script>
 import { defineComponent, ref, computed, onMounted, inject } from 'vue';
 import UiBoxVue from '@/components/UiBox.vue';
-import ZoneFormVue from '@/forms/ZoneForm.vue';
+import FormZoneVue from '@/forms/FormZone.vue';
 import { useTableWrapper } from '@/composables/useTableWrapper.js';
 import { useTableHandlers } from '@/composables/useTableHandlers';
 
@@ -51,7 +51,7 @@ export default defineComponent({
 
   components: {
     UiBoxVue,
-    ZoneFormVue,
+    FormZoneVue,
   },
 
   setup() {
