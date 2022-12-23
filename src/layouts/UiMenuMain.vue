@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { defineComponent, computed, ref, toRefs, watch } from 'vue';
+import { defineComponent, computed, ref, watch } from 'vue';
 import { useMenuHome, useMenuPeripheral, useMenuController, useMenuServices } from '@/layouts/menuMain.js';
 import UiMenuItemVue from '@/layouts/UiMenuItem.vue';
 import UiMenuExpansionVue from '@/layouts/UiMenuExpansion.vue';
@@ -51,7 +51,7 @@ export default defineComponent({
   },
 
   props: {
-    modelValue: {
+    drawer: {
       type: Boolean,
       required: true,
     },
@@ -68,18 +68,14 @@ export default defineComponent({
   },
 
   setup(props) {
-    const { modelValue } = toRefs(props);
-    const authStore = useAuthStore();
     const localModel = ref(null);
+    const localDrawer = computed(() => props.drawer);
+    const authStore = useAuthStore();
     const show = computed(() => authStore.loggedIn);
 
-    watch(
-      modelValue,
-      (newVal) => {
-        localModel.value = newVal;
-      },
-      { immediate: true },
-    );
+    watch(localDrawer, () => {
+      localModel.value = !localModel.value;
+    });
 
     return {
       localModel,

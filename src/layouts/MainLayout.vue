@@ -1,8 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <UiToolBarVue v-model="drawer" />
-
-    <UiMenuMainVue v-model="drawer" />
+    <ui-tool-bar-vue v-model="drawer" />
+    <ui-menu-main-vue :drawer="drawer" />
 
     <q-ajax-bar position="bottom" color="yellow" size="10px" :hijack-filter="ajaxFilterFn" />
 
@@ -48,11 +47,12 @@ export default defineComponent({
 
   setup() {
     const $q = useQuasar();
+    const drawer = ref(false);
 
     //$q.dark.set(true);
 
     return {
-      drawer: ref(true),
+      drawer,
       useAjaxFilter,
       isAuthenticated: ref(true),
       isActivePeripheral: ref(false),
