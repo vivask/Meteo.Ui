@@ -1,30 +1,28 @@
 import { defineStore } from 'pinia';
+import { computed, ref } from 'vue';
 
-export const useLayoutStore = defineStore({
-  id: 'lyaout',
+export const useLayoutStore = defineStore('layout', () => {
+  const items = ref({});
 
-  state: () => ({
-    items: {},
-  }),
+  const aciveItem = computed(() => {
+    for (let [key, value] of Object.entries(items.value)) {
+      if (value) return key;
+    }
+    return null;
+  });
 
-  getters: {
-    aciveItem: (state) => {
-      for (let [key, value] of Object.entries(state.items)) {
-        if (value) return key;
-      }
-      return null;
-    },
-  },
+  return {
+    items,
+    aciveItem,
 
-  actions: {
     setItems(item) {
-      Object.keys(this.items).forEach((key) => (this.items[key] = false));
-      this.items[item] = true;
+      Object.keys(items.value).forEach((key) => (items.value[key] = false));
+      items.value[item] = true;
     },
 
     isActive(item) {
-      const itemExist = Object.keys(this.items).some((key) => key === item);
-      return itemExist && this.items[item];
+      const itemExist = Object.keys(items.value).some((key) => key === item);
+      return itemExist && items.value[item];
     },
-  },
+  };
 });

@@ -1,37 +1,30 @@
 import { defineStore } from 'pinia';
+import { computed, ref } from 'vue';
 
-export const useLoaderStore = defineStore({
-  id: 'loader',
+export const useLoaderStore = defineStore('loader', () => {
+  const loading = ref(false);
+  const error = ref(false);
+  const message = ref(null);
 
-  expose: [],
+  return {
+    loading,
+    error,
+    message,
 
-  state: () => ({
-    _loading: false,
-    _error: false,
-    _message: '',
-  }),
-
-  getters: {
-    loading: (state) => state._loading,
-    error: (state) => state._error,
-    message: (state) => state._message,
-  },
-
-  actions: {
     start() {
-      this._loading = true;
-      this._error = false;
-      this._message = '';
+      loading.value = true;
+      error.value = false;
+      message.value = '';
     },
 
     stop() {
-      this._loading = false;
+      loading.value = false;
     },
 
     fault(m) {
-      this.stop();
-      this._error = true;
-      this._message = m;
+      stop();
+      error.value = true;
+      message.value = m;
     },
-  },
+  };
 });

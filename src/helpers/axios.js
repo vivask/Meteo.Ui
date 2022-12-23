@@ -13,7 +13,7 @@ axios.defaults.headers = {
 axios.interceptors.request.use((request) => {
   // add auth header with jwt if account is logged in and request is to the api url
   const accountService = useAuthStore();
-  const account = accountService.accountValue;
+  const account = accountService.user;
   const isLoggedIn = accountService.loggedIn;
 
   const isNotExpired = new Date(account.expire) > Date.now();
@@ -50,13 +50,13 @@ axios.interceptors.response.use(
     const originalConfig = error.config;
 
     if (originalConfig.url !== '/signup' && error.response) {
-      if ([401, 403].includes(response.status) && accountService.accountValue) {
+      if ([401, 403].includes(response.status) && accountService.user) {
         if (response.status === 403) {
           accountService.logout();
         } else {
           try {
             await accountService.refreshToken();
-            console.log('Refresh: ', accountService.accountValue);
+            console.log('Refresh: ', accountService.user);
             return axios(originalConfig);
           } catch (error) {
             accountService.logout();

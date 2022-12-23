@@ -17,11 +17,10 @@
 </template>
 
 <script>
-import { defineComponent, getCurrentInstance, computed, watch } from 'vue';
+import { defineComponent, getCurrentInstance, computed, watch, ref } from 'vue';
 import { useLayoutStore } from '@/stores/useLayoutStore.js';
 
 const prefix = import.meta.env.VITE_ROUTER_MODE === 'hash' ? '#' : '';
-const layoutStore = useLayoutStore();
 
 export default defineComponent({
   name: 'UiMenuItem',
@@ -49,6 +48,7 @@ export default defineComponent({
   },
 
   setup(props) {
+    const store = useLayoutStore();
     const instance = getCurrentInstance();
     const hasParentMenu = computed(() => instance.parent.type.name !== 'QDrawer');
     const path = computed(() => {
@@ -58,7 +58,7 @@ export default defineComponent({
       }
       return path;
     });
-    const active = computed(() => layoutStore.isActive(path.value));
+    const active = computed(() => store.isActive(path.value));
 
     watch(
       active,
