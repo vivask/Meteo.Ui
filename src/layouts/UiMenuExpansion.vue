@@ -29,7 +29,7 @@ export default defineComponent({
   setup() {
     const model = ref(false);
     const instance = getCurrentInstance();
-    const hasParentMenu = computed(() => instance.parent.ctx.$options.name !== 'QDrawer');
+    const hasParentMenu = computed(() => instance.parent.type.name !== 'QDrawer');
 
     return {
       model,
@@ -39,7 +39,7 @@ export default defineComponent({
         model.value = true;
         if (hasParentMenu.value) {
           const parent = instance.parent.parent.parent.parent.parent;
-          if (parent.ctx.$options.name === 'UiMenuExpansion') {
+          if (parent.type.name === 'UiMenuExpansion') {
             parent.ctx.open();
           }
         }

@@ -50,7 +50,7 @@ export default defineComponent({
 
   setup(props) {
     const instance = getCurrentInstance();
-    const hasParentMenu = computed(() => instance.parent.ctx.$options.name !== 'QDrawer');
+    const hasParentMenu = computed(() => instance.parent.type.name !== 'QDrawer');
     const path = computed(() => {
       let path = prefix + '/';
       for (let item of props.href) {
@@ -65,7 +65,7 @@ export default defineComponent({
       (newVal) => {
         if (newVal && hasParentMenu.value) {
           const parent = instance.parent.parent.parent.parent.parent;
-          if (parent.ctx.$options.name === 'UiMenuExpansion') {
+          if (parent.type.name === 'UiMenuExpansion') {
             parent.ctx.open();
           }
         }
