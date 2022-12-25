@@ -13,8 +13,7 @@
             option-label="name"
             hint="Task *"
             lazy-rules
-            :rules="[() => localProp.task || 'Please select something']"
-            @update:model-value="(val) => (paramsDisabled = val)"
+            :rules="[(val) => val || 'Please select something']"
           />
           <q-select
             v-model="localProp.executor"
@@ -27,8 +26,8 @@
             :rules="[() => localProp.executor || 'Please select something']"
           />
           <div class="row">
-            <div v-if="showValue" class="wd-50">
-              <q-input v-model="localProp.value" outlined dense />
+            <div v-if="showValue" class="wd-70">
+              <q-input v-model.number="localProp.value" type="number" outlined dense class="mr-5" />
             </div>
             <div :class="periodState">
               <q-select
@@ -40,8 +39,7 @@
                 hint="Period *"
                 reactive-rules
                 lazy-rules
-                :rules="[() => localProp.period || 'Please select something']"
-                @update:model-value="(val) => (showValue = val !== 'once')"
+                :rules="[(val) => val || 'Please select something']"
               />
             </div>
           </div>
@@ -80,7 +78,7 @@
             reactive-rules
             lazy-rules
             :rules="[
-              (val) => checkDate(val) || 'Incorrect date',
+              (val) => validDate(val) || 'Incorrect date',
               (val) => moreThanNow(localProp.time, val, localProp.value) || 'Time has expired',
             ]"
           >
@@ -106,7 +104,7 @@
             @click="showParams = !showParams"
           />
           <div v-if="showParams">
-            <q-table hide-header hide-bottom :rows="params" :columns="columns" row-key="name">
+            <q-table hide-header hide-bottom :rows="localProp.params" :columns="columns" row-key="name">
               <template #body-cell-actions="props">
                 <q-td :props="props">
                   <q-btn dense round color="primary" size="md" icon="add" @click="handleAdd()" />
@@ -143,15 +141,20 @@
       </q-card-section>
     </q-card>
   </q-dialog>
+
+  <form-job-param-vue ref="form" @submit="handleParamSubmit" />
 </template>
 
 <script>
-import { defineComponent, computed, ref, watch, onMounted, inject } from 'vue';
+import { defineComponent, computed, ref, watch, onMounted, inject, toRefs } from 'vue';
 import UiInputVue from '@/components/UiInput.vue';
 import { useSubmitForm } from '@/composables/useSubmitForm';
 import { useConfirmDialog } from '@/composables/useConfirmDialog.js';
 import { isTime, isDate } from '@/helpers/utils.js';
 import { date } from 'quasar';
+import UiSelectVue from '@/components/UiSelect.vue';
+import FormJobParamVue from '@/forms/FormJobParam.vue';
+import { Notify } from 'quasar';
 
 const columns = [
   {
@@ -175,6 +178,8 @@ export default defineComponent({
 
   components: {
     UiInputVue,
+    UiSelectVue,
+    FormJobParamVue,
   },
 
   emits: ['cancel', 'submit'],
@@ -185,7 +190,7 @@ export default defineComponent({
     const form = ref(null);
     const showParams = ref(false);
     const labelBtnParams = computed(() => (showParams.value ? '<<' : '>>'));
-    const { localProp, show, handleSubmit, handleCancel } = useSubmitForm(popup, emit);
+    const { localProp, show, handleSubmit: formSubmit, handleCancel } = useSubmitForm(popup, emit);
     const confirm = useConfirmDialog();
     const showValue = ref(true);
     const paramsDisabled = ref(false);
@@ -193,13 +198,14 @@ export default defineComponent({
     const tasks = ref([]);
     const periods = ref([]);
 
-    /*watch(
-      localProp['period'],
+    watch(
+      localProp,
       (newVal) => {
-        showValue.value = newVal !== 'once';
+        showValue.value = newVal?.period ? newVal.period.id !== 'once' : false;
+        paramsDisabled.value = !newVal?.task;
       },
-      { immediate: true },
-    );*/
+      { deep: true },
+    );
 
     onMounted(async () => {
       axios.get('/schedule/executors').then(async (response) => {
@@ -223,7 +229,7 @@ export default defineComponent({
       showValue,
       showParams,
       paramsDisabled,
-      periodState: computed(() => (!showValue.value ? 'wd-max' : 'wd-260 ml-10')),
+      periodState: computed(() => (!showValue.value ? 'wd-320' : 'with-value')),
       executors,
       tasks,
       periods,
@@ -231,18 +237,19 @@ export default defineComponent({
         showParams.value ? (localProp.value?.params ? localProp.value.params.length === 0 : true) : false,
       ),
 
-      validTime: (v) => {
-        return ['once', 'day', 'week', 'month', 'year'].includes(localProp.value.period.id)
+      validTime: (v) =>
+        localProp.value?.period && ['once', 'day', 'week', 'month', 'year'].includes(localProp.value.period.id)
           ? isTime(v)
           : !v || !v.length
           ? true
-          : isTime(v);
-      },
+          : isTime(v),
 
-      validDate: (v) => {
-        const period = localProp.value.period.id;
-        return period === 'month' || period === 'year' ? isDate(v) : !v || !v.length ? true : isDate(v);
-      },
+      validDate: (v) =>
+        localProp.value?.period && (localProp.value.period.id === 'month' || localProp.value.period.id === 'year')
+          ? isDate(v)
+          : !v || !v.length
+          ? true
+          : isDate(v),
 
       moreThanNow: (ts, ds, repeat) => {
         try {
@@ -258,15 +265,31 @@ export default defineComponent({
       },
 
       show,
-      handleSubmit,
+
+      handleSubmit() {
+        const valid =
+          (localProp.value.task.params.length === 0 && !localProp.value?.params) ||
+          (!!localProp.value?.params && localProp.value.params.length === localProp.value.task.params.length);
+
+        if (!valid) {
+          Notify.create({
+            type: 'negative',
+            message: 'The number of task and job parameters do not match!',
+          });
+          showParams.value = true;
+        } else {
+          formSubmit();
+        }
+      },
+
       handleCancel,
 
       handleAdd() {
-        form.value.show({});
+        form.value.show({ row: {}, params: localProp.value.task.params });
       },
 
       handleEdit(row) {
-        form.value.show(row);
+        form.value.show({ row: row, params: localProp.value.task.params });
       },
 
       async handleDelete(id) {
@@ -292,17 +315,17 @@ export default defineComponent({
 </script>
 
 <style lang="sass" scoped>
-.wd-50
-  width: 50px
-  max-width: 50px
-.wd-260
-  width: 260px
-  max-width: 260px
+.wd-70
+  width: 70px
+  max-width: 70px
+.with-value
+  width: 250px
+  max-width: 250px
 .wd-320
   width: 320px
   max-width: 320px
 .wd-max
   width: 100%
-.ml-10
-  margin-left: 10
+.mr-5
+  margin-right: 5px
 </style>

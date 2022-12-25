@@ -1,19 +1,22 @@
 <template>
   <q-dialog ref="popup" transition-show="rotate" transition-hide="rotate" persistent>
-    <q-card class="min-width">
+    <q-card style="min-width: 300px">
       <q-card-section>
         <q-form class="q-gutter-md" @submit.prevent="handleSubmit">
-          <ui-input-vue v-model="localProp.name" hint="Name/IP Address *" rule="host" />
           <q-select
-            v-model="localProp.list.id"
+            v-model="localProp.name"
             outlined
             dense
-            :options="localList"
-            hint="Acess list *"
+            :options="params"
+            option-label="name"
+            option-value="name"
+            hint="Parameter name *"
+            emit-value
+            map-options
             lazy-rules
-            :rules="[() => localProp.list || 'Please select something']"
+            :rules="[(val) => (val && val.length > 0) || 'Please select something']"
           />
-          <q-input v-model="localProp.note" dense outlined hint="Note" />
+          <ui-input-vue v-model="localProp.value" hint="Parameter value *" />
           <q-card-actions align="left" class="text-primary">
             <q-btn label="Submit" type="submit" color="primary" />
             <q-btn label="Cancel" color="primary" flat class="q-ml-sm" @click="handleCancel" />
@@ -25,45 +28,39 @@
 </template>
 
 <script>
-import { defineComponent, computed, ref } from 'vue';
+import { defineComponent, ref, watch } from 'vue';
 import UiInputVue from '@/components/UiInput.vue';
 import { useSubmitForm } from '@/composables/useSubmitForm';
 
 export default defineComponent({
-  name: 'FormVpnHost',
+  name: 'FormTaskParam',
 
   components: {
     UiInputVue,
   },
 
-  props: {
-    list: {
-      type: Array,
-      require: true,
-    },
-  },
-
   emits: ['cancel', 'submit'],
 
   setup(props, { emit }) {
-    const localList = computed(() => props.list.map(({ id }) => id));
     const popup = ref(null);
+    const params = ref([]);
 
-    const { localProp, show, handleSubmit, handleCancel } = useSubmitForm(popup, emit);
+    const { localProp, show: formShow, handleSubmit, handleCancel } = useSubmitForm(popup, emit);
 
     return {
       localProp,
-      localList,
       popup,
-      show,
+      params,
+
+      show(prop) {
+        const { row: row, params: list } = { ...prop };
+        params.value = list;
+        formShow(row);
+      },
+
       handleSubmit,
       handleCancel,
     };
   },
 });
 </script>
-
-<style lang="sass" scoped>
-.min-width
-  min-width: 350px
-</style>

@@ -69,6 +69,7 @@ import UiBoxVue from '@/components/UiBox.vue';
 import { useTableWrapper } from '@/composables/useTableWrapper.js';
 import { useTableHandlers } from '@/composables/useTableHandlers';
 import FormJobVue from '@/forms/FormJob.vue';
+import { Notify } from 'quasar';
 
 const columns = [{ name: 'state' }, { name: 'job' }, { name: 'actions' }];
 
@@ -80,6 +81,14 @@ export default defineComponent({
     FormJobVue,
   },
 
+  beforeRouteEnter(to, from) {
+    if (from.path === '/schedule/tasks') {
+      return (vm) => {
+        vm.getTasks();
+      };
+    }
+  },
+
   setup() {
     const axios = inject('axios');
     const wrapper = useTableWrapper('/schedule/jobs', axios);
@@ -89,10 +98,13 @@ export default defineComponent({
     const task = ref({});
     const buttonShow = computed(() => rows.value.length === 0);
 
-    const { handleAdd, handleEdit, handleSubmit, handleDelete } = useTableHandlers(form, rows, wrapper, {});
+    const { handleAdd, handleEdit, handleDelete } = useTableHandlers(form, rows, wrapper, {
+      verbose: false,
+    });
 
     onMounted(async () => {
       rows.value = await wrapper.Get();
+      spinner.value = false;
     });
 
     return {
@@ -120,11 +132,52 @@ export default defineComponent({
 
       handleAdd,
       handleEdit,
-      handleSubmit,
+
+      handleSubmit(event) {
+        if (event.update) {
+          axios.post('/schedule/jobs', event.data).then((resp) => {
+            const idx = rows.value.findIndex((item) => item.id === event.data.id);
+            event.data.active = resp.data.data;
+            rows.value[idx] = event.data;
+          });
+        } else {
+          axios.put('/schedule/jobs', event.data).then((resp) => {
+            event.data.id = resp.data.data.id;
+            event.data.active = resp.data.data.activate;
+            rows.value.push(event.data);
+          });
+        }
+      },
+
       handleDelete,
 
-      handleActivate: (row) => {},
-      handleRun: (row) => {},
+      async getTasks() {
+        rows.value = await wrapper.Get();
+      },
+
+      handleActivate: (row) => {
+        if (row.active) {
+          const url = '/schedule/job/deactivate/' + row.id;
+          axios.put(url).then(() => {
+            row.active = false;
+          });
+        } else {
+          const url = '/schedule/job/activate/' + row.id;
+          axios.put(url).then(async () => {
+            row.active = true;
+          });
+        }
+      },
+
+      handleRun: (row) => {
+        const url = '/schedule/job/run/' + row.id;
+        axios.put(url).then(() => {
+          Notify.create({
+            type: 'info',
+            message: 'Job completed',
+          });
+        });
+      },
     };
   },
 });

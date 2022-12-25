@@ -3,10 +3,12 @@ import { router } from '@/router';
 import { fetchWrapper } from '@/helpers/fetchWrapper.js';
 import { computed, ref } from 'vue';
 
-const baseUrl = `${import.meta.env.VITE_API_URL}`;
+const baseUrl = import.meta.env.VITE_API_URL;
 
 export const useAuthStore = defineStore('auth', () => {
-  const user = ref(JSON.parse(localStorage.getItem('user')));
+  const storedUser = JSON.parse(localStorage.getItem('user'));
+  const initUser = storedUser?.value && new Date(storedUser.value.expire) < Date.now() ? storedUser : null;
+  const user = ref(initUser);
   const returnUrl = ref(null);
   const refresh = ref(false);
   const loggedIn = computed(() => !!user.value);

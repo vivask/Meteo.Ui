@@ -10,17 +10,17 @@ axios.defaults.headers = {
   'Content-Type': 'application/json',
 };
 
+const signup = import.meta.env.VITE_ROUTER_MODE === 'hash' ? '#/signup' : '/signup';
+
 axios.interceptors.request.use((request) => {
   // add auth header with jwt if account is logged in and request is to the api url
   const accountService = useAuthStore();
   const account = accountService.user;
   const isLoggedIn = accountService.loggedIn;
 
-  const isNotExpired = new Date(account.expire) > Date.now();
-
   //console.log('JWT: ', account);
   //console.log('URL: ', request.url);
-  if (isLoggedIn && isNotExpired) {
+  if (isLoggedIn) {
     request.headers.Authorization = `Bearer ${account.token}`;
     const loader = useLoaderStore();
     loader.start();
@@ -42,14 +42,14 @@ axios.interceptors.response.use(
     const { response } = error;
     if (!response) {
       // network error
-      console.error(error);
+      console.error('AXIOS: ', error);
       return;
     }
 
     const accountService = useAuthStore();
     const originalConfig = error.config;
 
-    if (originalConfig.url !== '/signup' && error.response) {
+    if (originalConfig.url !== signup && error.response) {
       if ([401, 403].includes(response.status) && accountService.user) {
         if (response.status === 403) {
           accountService.logout();
@@ -59,6 +59,8 @@ axios.interceptors.response.use(
             console.log('Refresh: ', accountService.user);
             return axios(originalConfig);
           } catch (error) {
+            console.log('Refresh fault');
+            console.log(error);
             accountService.logout();
           }
         }
@@ -69,7 +71,7 @@ axios.interceptors.response.use(
       '[' + originalConfig.method + ' ' + originalConfig.url + '] error: ' + response.data?.message ||
       response.statusText;
     loader.fault(errorMessage);
-    return Promise.reject(errorMessage);
+    return Promise.reject('AXIOS:' + errorMessage);
   },
 );
 

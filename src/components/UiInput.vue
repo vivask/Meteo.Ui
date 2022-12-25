@@ -1,18 +1,17 @@
 <template>
   <q-input
-    ref="input"
     v-model="localModel"
     outlined
     dense
     lazy-rules
-    :rules="[() => _rule]"
+    :rules="[() => rules]"
     v-bind="$attrs"
-    @change="$emit('update:modelValue', localModel)"
+    @change="emit('update:modelValue', localModel)"
   />
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, computed } from 'vue';
 import { validateIP, validateHost, validateDomainName } from '@/helpers/utils.js';
 
 export default defineComponent({
@@ -34,23 +33,23 @@ export default defineComponent({
 
   emits: ['update:modelValue'],
 
-  setup(props) {
-    return {
-      localModel: ref(props.modelValue),
-    };
-  },
+  setup(props, { emit }) {
+    const localModel = ref(props.modelValue);
 
-  computed: {
-    _rule() {
-      let val = this.$refs['input']?.modelValue;
-      return this.rule === 'ip'
-        ? (val && val.length > 0 && validateIP(val)) || 'Invalid inputs'
-        : this.rule === 'name'
-        ? (val && val.length > 0 && validateDomainName(val)) || 'Invalid inputs'
-        : this.rule === 'host'
-        ? (val && val.length > 0 && validateHost(val)) || 'Invalid inputs'
-        : (val && val.length > 0) || 'Please type something';
-    },
+    const rules = computed(() =>
+      props.rule === 'ip'
+        ? (localModel.value && localModel.value.length > 0 && validateIP(localModel.value)) || 'Invalid inputs'
+        : props.rule === 'name'
+        ? (localModel.value && localModel.value.length > 0 && validateDomainName(localModel.value)) || 'Invalid inputs'
+        : props.rule === 'host'
+        ? (localModel.value && localModel.value.length > 0 && validateHost(localModel.value)) || 'Invalid inputs'
+        : (localModel.value && localModel.value.length > 0) || 'Please type something',
+    );
+    return {
+      localModel,
+      emit,
+      rules,
+    };
   },
 });
 </script>

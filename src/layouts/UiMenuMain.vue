@@ -12,7 +12,7 @@
         />
       </ui-menu-expansion-vue>
     </ui-menu-expansion-vue>
-    <ui-menu-expansion-vue v-if="show" :icon="menuController.icon" :title="menuController.title">
+    <ui-menu-expansion-vue v-if="isAuthenticated" :icon="menuController.icon" :title="menuController.title">
       <ui-menu-item-vue
         v-for="item in menuController.menu"
         :key="item.value"
@@ -21,7 +21,7 @@
         :title="item.title"
       />
     </ui-menu-expansion-vue>
-    <ui-menu-expansion-vue v-if="show" :icon="menuServices.icon" :title="menuServices.title">
+    <ui-menu-expansion-vue v-if="isAuthenticated" :icon="menuServices.icon" :title="menuServices.title">
       <ui-menu-expansion-vue v-for="expansion in menuServices.menu" :key="expansion.value" :label="expansion.label">
         <ui-menu-item-vue
           v-for="item in expansion.menu"
@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { defineComponent, computed, ref, watch } from 'vue';
+import { defineComponent, computed, ref, watch, toRefs } from 'vue';
 import { useMenuHome, useMenuPeripheral, useMenuController, useMenuServices } from '@/layouts/menuMain.js';
 import UiMenuItemVue from '@/layouts/UiMenuItem.vue';
 import UiMenuExpansionVue from '@/layouts/UiMenuExpansion.vue';
@@ -69,11 +69,10 @@ export default defineComponent({
 
   setup(props) {
     const localModel = ref(null);
-    const localDrawer = computed(() => props.drawer);
+    const { drawer } = toRefs(props);
     const authStore = useAuthStore();
-    const show = computed(() => authStore.loggedIn);
 
-    watch(localDrawer, () => {
+    watch(drawer, () => {
       localModel.value = !localModel.value;
     });
 
@@ -83,7 +82,7 @@ export default defineComponent({
       menuPeripheral: useMenuPeripheral,
       menuController: useMenuController,
       menuServices: useMenuServices,
-      show,
+      isAuthenticated: computed(() => authStore.loggedIn),
     };
   },
 });
