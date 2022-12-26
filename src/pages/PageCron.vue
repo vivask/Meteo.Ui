@@ -5,7 +5,7 @@
     :spinner="spinner"
     :buttonShow="buttonShow"
     buttonLabel="Refresh"
-    :buttonClick="getJobs"
+    :buttonClick="refresh"
   >
     <q-table hide-header :rows="rows" :columns="columns" row-key="name" :rows-per-page-options="[10, 50, 100, 0]">
       <template #body-cell-state="props">
@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed, onMounted, inject } from 'vue';
+import { defineComponent, ref, computed, onMounted, inject, onActivated } from 'vue';
 import { date } from 'quasar';
 import UiBoxVue from '@/components/UiBox.vue';
 import { useTableWrapper } from '@/composables/useTableWrapper.js';
@@ -46,14 +46,6 @@ export default defineComponent({
     UiBoxVue,
   },
 
-  beforeRouteEnter(to, from) {
-    if (from.path === '/schedule/jobs') {
-      return (vm) => {
-        vm.getJobs();
-      };
-    }
-  },
-
   setup() {
     const axios = inject('axios');
     const rows = ref([]);
@@ -63,9 +55,16 @@ export default defineComponent({
     const buttonShow = ref(true);
 
     onMounted(async () => {
-      rows.value = await wrapper.Get();
+      rows.value = await wrapper.Get(true);
       spinner.value = false;
     });
+
+    onActivated(async () => {
+      rows.value = await wrapper.Get(false);
+      spinner.value = false;
+    });
+
+    const refresh = async () => (rows.value = await wrapper.Get(true));
 
     return {
       spinner,
@@ -75,10 +74,7 @@ export default defineComponent({
       wrapper,
       boxCols,
       date,
-
-      async getJobs() {
-        rows.value = await wrapper.Get();
-      },
+      refresh,
     };
   },
 });

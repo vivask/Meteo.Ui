@@ -61,7 +61,6 @@ import { useTableWrapper } from '@/composables/useTableWrapper.js';
 import { useTableHandlers } from '@/composables/useTableHandlers';
 import FormSshHostVue from '@/forms/FormSshHost.vue';
 import { useUtils } from '@/composables/useUtils.js';
-import { useRelationApi } from '@/composables/useRelatioApi';
 
 const columns = [{ name: 'state' }, { name: 'icon' }, { name: 'host' }, { name: 'actions' }];
 
@@ -88,8 +87,12 @@ export default defineComponent({
 
     const { formatLongDate, isEmptyTime, activeIcon, activeColor } = useUtils();
 
-    onMounted(() => {
-      refresh();
+    onMounted(async () => {
+      rows.value = await wrapper.Get(true);
+    });
+
+    onActivated(async () => {
+      rows.value = await wrapper.Get(false);
     });
 
     return {
@@ -110,8 +113,6 @@ export default defineComponent({
       handleEdit,
       handleSubmit,
       handleDelete,
-
-      //onActivated,
     };
   },
 });

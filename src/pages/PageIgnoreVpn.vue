@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, inject, onMounted } from 'vue';
+import { defineComponent, ref, inject, onActivated, onMounted } from 'vue';
 import UiBoxVue from '@/components/UiBox.vue';
 import { useUtils } from '@/composables/useUtils.js';
 import { useTableWrapper } from '@/composables/useTableWrapper.js';
@@ -68,6 +68,10 @@ export default defineComponent({
     const { formatLongDate } = useUtils();
 
     onMounted(async () => {
+      rows.value = await wrapper.Get(true);
+    });
+
+    onActivated(async () => {
       rows.value = await wrapper.Get();
     });
 
@@ -81,17 +85,12 @@ export default defineComponent({
       boxCols,
       formatLongDate,
 
-      async getHosts() {
-        rows.value = await wrapper.Get();
-      },
-
       async handleRestore(row) {
         const ok = await confirm.show('Are you sure to restore this items?');
         if (ok) {
           const data = wrapper.Selected(row, selected.value);
           selected.value = [];
-          console.log(data);
-          rows.value = await wrapper.Restore(rows.value, data);
+          rows.value = await wrapper.Restore(data);
         }
       },
 

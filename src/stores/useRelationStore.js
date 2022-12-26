@@ -16,34 +16,37 @@ export const useRelationStore = defineStore('relation', () => {
     items,
 
     modify(from) {
-      for (let to of items.value[from]) {
-        console.log('from: ', items.value[from]);
-        Object.entries(to).forEach(({ key, val }) => {
-          console.log('to: ', key);
-          val = true;
+      for (let item of items.value[from]) {
+        Object.keys(item).forEach((key) => {
+          item[key] = true;
         });
       }
     },
 
     refresh(to) {
-      Object.keys(items.value).forEach((key) => {
-        Object.entries(key).forEach(({ key, val }) => {
-          if (to === key) {
-            val = false;
-          }
-        });
+      Object.values(items.value).forEach((dest) => {
+        for (let item of dest) {
+          Object.keys(item).forEach((key) => {
+            if (to === key) {
+              item[key] = false;
+            }
+          });
+        }
       });
     },
 
     modified(to) {
-      Object.keys(items.value).forEach((from) => {
-        Object.entries(from).forEach(({ key, val }) => {
-          if (to === key) {
-            return val;
-          }
-        });
+      let result = true;
+      Object.values(items.value).forEach((values) => {
+        for (let item of values) {
+          Object.keys(item).forEach((key) => {
+            if (to === key) {
+              result = item[key];
+            }
+          });
+        }
       });
-      return true;
+      return result;
     },
   };
 });

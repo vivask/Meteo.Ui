@@ -3,9 +3,9 @@ import { useRelationStore } from '@/stores/useRelationStore';
 const store = useRelationStore();
 
 export function useTableWrapper(api, axios, rows) {
-  const Get = async () => {
-    if (!store.modified(api)) {
-      return rows;
+  const Get = async (force) => {
+    if (!force && !store.modified(api)) {
+      return rows.value;
     } else {
       return await axios
         .get(api)
@@ -19,57 +19,61 @@ export function useTableWrapper(api, axios, rows) {
     }
   };
 
-  const Insert = async (array, target) => {
+  const Insert = async (target) => {
     return await axios
       .put(api, target)
       .then((resp) => {
         target.id = resp.data.data;
-        array.push(target);
-        return array;
+        rows.value.push(target);
+        store.modify(api);
+        return rows.value;
       })
       .catch(() => {
-        return array;
+        return rows.value;
       });
   };
 
-  const Update = async (array, target) => {
+  const Update = async (target) => {
     return await axios
       .post(api, target)
       .then(() => {
-        const idx = array.findIndex((item) => item.id === target.id);
-        array[idx] = target;
-        return array;
+        const idx = rows.value.findIndex((item) => item.id === target.id);
+        rows.value[idx] = target;
+        store.modify(api);
+        return rows.value;
       })
       .catch(() => {
-        return array;
+        return rows.value;
       });
   };
 
-  const Delete = async (array, target) => {
+  const Delete = async (target) => {
     const url = api + '/' + target.id;
     return axios
       .delete(url, target)
       .then(() => {
-        return _filter(array, target);
+        store.modify(api);
+        return _filter(target);
       })
       .catch(() => {
-        return array;
+        return rows.value;
       });
   };
 
-  const Ignore = async (array, target) => {
+  const Ignore = async (target) => {
     return axios
       .put(api, target)
       .then(() => {
-        return _filter(array, target);
+        store.modify(api);
+        return _filter(target);
       })
       .catch(() => {
-        return array;
+        return rows.value;
       });
   };
 
-  const Restore = async (array, target) => {
-    return await Ignore(array, target);
+  const Restore = async (target) => {
+    return await Ignore(target);
   };
 
   const Selected = (row, selected) => {
@@ -80,11 +84,11 @@ export function useTableWrapper(api, axios, rows) {
     return data;
   };
 
-  const _filter = (array, target) => {
+  const _filter = (target) => {
     if (target?.length > 0) {
-      return array.filter((item) => !target.includes(item));
+      return rows.value.filter((item) => !target.includes(item));
     } else {
-      return array.filter((item) => item.id !== target.id);
+      return rows.value.filter((item) => item.id !== target.id);
     }
   };
 

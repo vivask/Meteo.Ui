@@ -85,13 +85,13 @@ export default defineComponent({
     const spinner = ref(true);
     const form = ref(null);
     const task = ref({});
-    const boxCols = { xl: 5, lg: 5, md: 7, sm: 11, xs: 10 };
+    const boxCols = { xl: 6, lg: 6, md: 7, sm: 11, xs: 10 };
     const buttonShow = computed(() => rows.value.length === 0);
 
     const { handleAdd, handleEdit, handleSubmit, handleDelete } = useTableHandlers(form, rows, wrapper, {});
 
     onMounted(async () => {
-      rows.value = await wrapper.Get();
+      rows.value = await wrapper.Get(true);
     });
 
     return {

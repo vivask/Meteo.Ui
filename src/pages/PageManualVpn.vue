@@ -59,7 +59,7 @@ export default defineComponent({
     const spinner = ref(true);
     const list = ref([]);
     const host = ref({});
-    const boxCols = { xl: 5, lg: 5, md: 7, sm: 11, xs: 10 };
+    const boxCols = { xl: 6, lg: 6, md: 7, sm: 11, xs: 10 };
     const buttonShow = computed(() => rows.value.length === 0);
     const form = ref(null);
 

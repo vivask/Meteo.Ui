@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, inject, onMounted } from 'vue';
+import { defineComponent, ref, inject, onActivated, onMounted } from 'vue';
 import UiBoxVue from '@/components/UiBox.vue';
 import { useUtils } from '@/composables/useUtils.js';
 import { useTableWrapper } from '@/composables/useTableWrapper.js';
@@ -60,6 +60,10 @@ export default defineComponent({
     const { formatLongDate } = useUtils();
 
     onMounted(async () => {
+      rows.value = await wrapper.Get(true);
+    });
+
+    onActivated(async () => {
       rows.value = await wrapper.Get();
     });
 
@@ -78,7 +82,7 @@ export default defineComponent({
         if (ok) {
           const data = wrapper.Selected(row, selected.value);
           selected.value = [];
-          rows.value = await wrapper.Ignore(rows.value, data);
+          rows.value = await wrapper.Ignore(data);
         }
       },
 

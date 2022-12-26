@@ -64,7 +64,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed, onMounted, inject } from 'vue';
+import { defineComponent, ref, computed, onMounted, inject, onActivated } from 'vue';
 import UiBoxVue from '@/components/UiBox.vue';
 import { useTableWrapper } from '@/composables/useTableWrapper.js';
 import { useTableHandlers } from '@/composables/useTableHandlers';
@@ -81,14 +81,6 @@ export default defineComponent({
     FormJobVue,
   },
 
-  beforeRouteEnter(to, from) {
-    if (from.path === '/schedule/tasks') {
-      return (vm) => {
-        vm.getTasks();
-      };
-    }
-  },
-
   setup() {
     const axios = inject('axios');
     const rows = ref([]);
@@ -96,7 +88,7 @@ export default defineComponent({
     const spinner = ref(true);
     const form = ref(null);
     const task = ref({});
-    const boxCols = { xl: 4, lg: 4, md: 7, sm: 11, xs: 10 };
+    const boxCols = { xl: 5, lg: 5, md: 7, sm: 11, xs: 10 };
     const buttonShow = computed(() => rows.value.length === 0);
 
     const { handleAdd, handleEdit, handleDelete } = useTableHandlers(form, rows, wrapper, {
@@ -104,7 +96,12 @@ export default defineComponent({
     });
 
     onMounted(async () => {
-      rows.value = await wrapper.Get();
+      rows.value = await wrapper.Get(true);
+      spinner.value = false;
+    });
+
+    onActivated(async () => {
+      rows.value = await wrapper.Get(false);
       spinner.value = false;
     });
 
@@ -146,10 +143,6 @@ export default defineComponent({
       },
 
       handleDelete,
-
-      async getTasks() {
-        rows.value = await wrapper.Get();
-      },
 
       handleActivate: (row) => {
         if (row.active) {

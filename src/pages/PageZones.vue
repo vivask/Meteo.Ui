@@ -70,7 +70,7 @@ export default defineComponent({
     const { activeIcon, activeColor } = useUtils();
 
     onMounted(async () => {
-      rows.value = await wrapper.Get();
+      rows.value = await wrapper.Get(true);
     });
 
     return {
