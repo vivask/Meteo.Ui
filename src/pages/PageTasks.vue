@@ -80,11 +80,12 @@ export default defineComponent({
 
   setup() {
     const axios = inject('axios');
-    const wrapper = useTableWrapper('/schedule/tasks', axios);
+    const rows = ref([]);
+    const wrapper = useTableWrapper('/schedule/tasks', axios, rows);
     const spinner = ref(true);
     const form = ref(null);
-    const rows = ref([]);
     const task = ref({});
+    const boxCols = { xl: 5, lg: 5, md: 7, sm: 11, xs: 10 };
     const buttonShow = computed(() => rows.value.length === 0);
 
     const { handleAdd, handleEdit, handleSubmit, handleDelete } = useTableHandlers(form, rows, wrapper, {});
@@ -101,12 +102,7 @@ export default defineComponent({
       buttonShow,
       wrapper,
       form,
-
-      boxCols: {
-        large: 5,
-        medium: 7,
-        small: 5,
-      },
+      boxCols,
 
       handleAdd,
       handleEdit,

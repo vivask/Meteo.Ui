@@ -17,6 +17,7 @@
 
 <script>
 import { defineComponent, computed } from 'vue';
+import { Screen } from 'quasar';
 
 export default defineComponent({
   name: 'HomeLabel',
@@ -32,26 +33,11 @@ export default defineComponent({
       required: true,
     },
 
-    labelWidth: {
-      type: Number,
-      default: 120,
-    },
-
     value: [String, Number],
-
-    valueWidth: {
-      type: Number,
-      default: 50,
-    },
 
     unit: {
       type: String,
       required: true,
-    },
-
-    unitWidth: {
-      type: Number,
-      default: 50,
     },
 
     resolution: {
@@ -68,8 +54,14 @@ export default defineComponent({
   },
 
   setup(props) {
+    const labelWidth = computed(() => (Screen.gt.sm ? 120 : 100));
+    const valueWidth = computed(() => (Screen.gt.sm ? 50 : 30));
+    const unitWidth = computed(() => (Screen.gt.sm ? 50 : 30));
     return {
       data: computed(() => props.value),
+      labelWidth,
+      valueWidth,
+      unitWidth,
     };
   },
 });

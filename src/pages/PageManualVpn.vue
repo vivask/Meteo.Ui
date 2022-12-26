@@ -54,11 +54,12 @@ export default defineComponent({
 
   setup() {
     const axios = inject('axios');
-    const wrapper = useTableWrapper('/proxy/manualvpn', axios);
-    const spinner = ref(true);
     const rows = ref([]);
+    const wrapper = useTableWrapper('/proxy/manualvpn', axios, rows);
+    const spinner = ref(true);
     const list = ref([]);
     const host = ref({});
+    const boxCols = { xl: 5, lg: 5, md: 7, sm: 11, xs: 10 };
     const buttonShow = computed(() => rows.value.length === 0);
     const form = ref(null);
 
@@ -82,12 +83,7 @@ export default defineComponent({
       host,
       buttonShow,
       form,
-
-      boxCols: {
-        large: 5,
-        medium: 7,
-        small: 5,
-      },
+      boxCols,
 
       handleAdd,
       handleEdit,

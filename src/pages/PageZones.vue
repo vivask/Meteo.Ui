@@ -36,6 +36,7 @@ import UiBoxVue from '@/components/UiBox.vue';
 import FormZoneVue from '@/forms/FormZone.vue';
 import { useTableWrapper } from '@/composables/useTableWrapper.js';
 import { useTableHandlers } from '@/composables/useTableHandlers';
+import { useUtils } from '@/composables/useUtils.js';
 
 const columns = [
   { name: 'state' },
@@ -56,14 +57,17 @@ export default defineComponent({
 
   setup() {
     const axios = inject('axios');
-    const wrapper = useTableWrapper('/proxy/zones', axios);
+    const rows = ref([]);
+    const wrapper = useTableWrapper('/proxy/zones', axios, rows);
     const spinner = ref(true);
     const form = ref(null);
-    const rows = ref([]);
     const zone = ref({});
+    const boxCols = { xl: 6, lg: 6, md: 7, sm: 11, xs: 10 };
     const buttonShow = computed(() => rows.value.length === 0);
 
     const { handleAdd, handleEdit, handleSubmit, handleDelete } = useTableHandlers(form, rows, wrapper, {});
+
+    const { activeIcon, activeColor } = useUtils();
 
     onMounted(async () => {
       rows.value = await wrapper.Get();
@@ -77,16 +81,10 @@ export default defineComponent({
       buttonShow,
       wrapper,
       form,
+      boxCols,
 
-      boxCols: {
-        large: 5,
-        medium: 7,
-        small: 5,
-      },
-
-      activeIcon: (row) => (row.active ? 'task_alt' : 'highlight_off'),
-
-      activeColor: (row) => (row.active ? 'positive' : 'grey'),
+      activeIcon,
+      activeColor,
 
       handleAdd,
       handleEdit,

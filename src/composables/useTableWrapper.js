@@ -1,13 +1,22 @@
-export function useTableWrapper(api, axios) {
+import { useRelationStore } from '@/stores/useRelationStore';
+
+const store = useRelationStore();
+
+export function useTableWrapper(api, axios, rows) {
   const Get = async () => {
-    return await axios
-      .get(api)
-      .then((response) => {
-        return response.data.data;
-      })
-      .catch(() => {
-        return [];
-      });
+    if (!store.modified(api)) {
+      return rows;
+    } else {
+      return await axios
+        .get(api)
+        .then((response) => {
+          store.refresh(api);
+          return response.data.data;
+        })
+        .catch(() => {
+          return [];
+        });
+    }
   };
 
   const Insert = async (array, target) => {

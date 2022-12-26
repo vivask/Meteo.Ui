@@ -1,13 +1,13 @@
 import { defineStore } from 'pinia';
 import { router } from '@/router';
 import { fetchWrapper } from '@/helpers/fetchWrapper.js';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
 export const useAuthStore = defineStore('auth', () => {
   const storedUser = JSON.parse(localStorage.getItem('user'));
-  const initUser = storedUser?.value && new Date(storedUser.value.expire) < Date.now() ? storedUser : null;
+  const initUser = storedUser?.value && new Date(storedUser.value.expire) > Date.now() ? storedUser : null;
   const user = ref(initUser);
   const returnUrl = ref(null);
   const refresh = ref(false);
@@ -18,6 +18,8 @@ export const useAuthStore = defineStore('auth', () => {
     returnUrl,
     refresh,
     loggedIn,
+    initUser,
+    storedUser,
 
     async login(username, password) {
       const _user = await fetchWrapper.post(`${baseUrl}/login`, { username, password });

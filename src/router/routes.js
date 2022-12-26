@@ -80,6 +80,34 @@ const routes = [
           requiresAuth: true,
         },
       },
+      {
+        path: '/schedule/cron',
+        component: () => import('@/pages/PageCron.vue'),
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        path: '/secure/sshkeys',
+        component: () => import('@/pages/PageSshKeys.vue'),
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        path: '/secure/sshhosts',
+        component: () => import('@/pages/PageSshHosts.vue'),
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        path: '/database/tables',
+        component: () => import('@/pages/PageTables.vue'),
+        meta: {
+          requiresAuth: true,
+        },
+      },
     ],
   },
 

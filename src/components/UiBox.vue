@@ -13,7 +13,9 @@
             size="md"
             :label="buttonLabel"
             @click="buttonClick"
-          />
+          >
+            <q-tooltip v-if="showTooltiip">{{ tooltip }}</q-tooltip>
+          </q-btn>
         </q-item>
         <slot />
       </div>
@@ -74,6 +76,11 @@ export default defineComponent({
       type: Function,
       default: () => {},
     },
+
+    tooltip: {
+      type: String,
+      default: '',
+    },
   },
 
   setup(props) {
@@ -82,6 +89,7 @@ export default defineComponent({
     const loading = computed(() => store.loading);
     const error = computed(() => store.error);
     const message = computed(() => store.message);
+    const showTooltiip = computed(() => !!props.tooltip && props.tooltip.length > 0);
 
     const showError = (message) => {
       Notify.create({
@@ -100,7 +108,8 @@ export default defineComponent({
       loading,
       error,
       message,
-      cols: computed(() => `col-${props.columns[Screen.gt.md ? 'large' : Screen.gt.sm ? 'medium' : 'small']}`),
+      showTooltiip,
+      cols: computed(() => `col-${props.columns[Screen.name]}`),
     };
   },
 });

@@ -1,48 +1,52 @@
 <template>
   <div class="q-pa-md">
-    <div class="row justify-center">
+    <div class="row" :class="$q.screen.gt.sm ? 'justify-center' : 'justify-left'">
       <div class="q-ml-sm square rounded-borders shadow-8" :class="cols">
         <HomeBme280Vue
-          :available="alive.bme280"
-          :temperature="data.bmx280_tempr"
-          :pressure="data.bmx280_press"
-          :humidity="data.bmx280_hum"
-          :alarm="data.max_bmx280_tempr_alarm || data.min_bmx280_tempr_alarm"
+          :available="sensorAlive.bme280"
+          :temperature="sendorData.bmx280_tempr"
+          :pressure="sendorData.bmx280_press"
+          :humidity="sendorData.bmx280_hum"
+          :alarm="sendorData.max_bmx280_tempr_alarm || sendorData.min_bmx280_tempr_alarm"
         />
       </div>
       <div v-if="$q.screen.name == 'xs'" class="flex-break"></div>
       <div class="q-ml-sm square rounded-borders shadow-8" :class="cols">
         <HomeMics6814Vue
-          :available="alive.mics6814"
-          :nh3="data.mics6814_nh3"
-          :alarm-nh3="data.max_6814_nh3_alarm"
-          :no2="data.mics6814_no2"
-          :alarm-no2="data.max_6814_no2_alarm"
-          :co="data.mics6814_co"
-          :alarm-co="data.max_6814_co_alarm"
+          :available="sensorAlive.mics6814"
+          :nh3="sendorData.mics6814_nh3"
+          :alarm-nh3="sendorData.max_6814_nh3_alarm"
+          :no2="sendorData.mics6814_no2"
+          :alarm-no2="sendorData.max_6814_no2_alarm"
+          :co="sendorData.mics6814_co"
+          :alarm-co="sendorData.max_6814_co_alarm"
         />
       </div>
       <div v-if="$q.screen.name == 'xs' || $q.screen.name == 'sm'" class="flex-break" />
       <div class="q-ml-sm square rounded-borders shadow-8" :class="cols">
         <HomeRadsensVue
-          :available="alive.radsens"
-          :static="data.radsens_static"
-          :static-alarm="data.max_rad_stat_alarm"
-          :dynamic="data.radsens_dynamic"
-          :dynamic-alarm="data.max_rad_dyn_alarm"
+          :available="sensorAlive.radsens"
+          :static="sendorData.radsens_static"
+          :static-alarm="sendorData.max_rad_stat_alarm"
+          :dynamic="sendorData.radsens_dynamic"
+          :dynamic-alarm="sendorData.max_rad_dyn_alarm"
         />
       </div>
-      <div v-if="$q.screen.name == 'xs' || $q.screen.name == 'xl'" class="flex-break" />
+      <div v-if="$q.screen.name == 'xs'" class="flex-break" />
       <div class="q-ml-sm square rounded-borders shadow-8" :class="cols">
         <HomeDs18b20Vue
-          :available="alive.ds18b20"
-          :temperature="data.ds18b20_tempr"
-          :alarm="data.max_ds18b20_alarm || data.min_ds18b20_alarm"
+          :available="sensorAlive.ds18b20"
+          :temperature="sendorData.ds18b20_tempr"
+          :alarm="sendorData.max_ds18b20_alarm || sendorData.min_ds18b20_alarm"
         />
       </div>
       <div v-if="$q.screen.name == 'xs' || $q.screen.name == 'sm'" class="flex-break" />
       <div class="q-ml-sm square rounded-borders shadow-8" :class="cols">
-        <HomeZe08ch2oVue :available="alive.ze08ch2o" :ch2o="data.ze08_ch2o" :alarm="data.max_ch2o_alarm" />
+        <HomeZe08ch2oVue
+          :available="sensorAlive.ze08ch2o"
+          :ch2o="sendorData.ze08_ch2o"
+          :alarm="sendorData.max_ch2o_alarm"
+        />
       </div>
       <div v-if="$q.screen.name == 'xs'" class="flex-break"></div>
       <div class="q-ml-sm" :class="cols"></div>
@@ -51,13 +55,13 @@
 </template>
 
 <script>
-import { defineComponent, computed, onMounted, onBeforeUnmount } from 'vue';
+import { defineComponent, computed, onActivated, onDeactivated } from 'vue';
 import HomeBme280Vue from '@/components/HomeBme280.vue';
 import HomeMics6814Vue from '@/components/HomeMics6814.vue';
 import HomeRadsensVue from '@/components/HomeRadsens.vue';
 import HomeDs18b20Vue from '@/components/HomeDs18b20.vue';
 import HomeZe08ch2oVue from '@/components/HomeZe08ch2o.vue';
-import { Screen } from 'quasar';
+import { useQuasar } from 'quasar';
 import { useEsp32Store } from '@/stores/useEsp32Store.js';
 
 export default defineComponent({
@@ -71,23 +75,28 @@ export default defineComponent({
   },
 
   setup() {
-    const store = useEsp32Store();
     let timer;
+    const $q = useQuasar();
+    const store = useEsp32Store();
+    const columns = { xl: 3, lg: 3, md: 4, sm: 11, xs: 10 };
+    const cols = computed(() => `col-${columns[$q.screen.name]}`);
+    const sendorData = computed(() => store.data);
+    const sensorAlive = computed(() => store.alive);
 
-    const columns = { large: 3, medium: 4, small: 7 };
-
-    onMounted(() => {
+    onActivated(() => {
       timer = setInterval(() => {
         store.esp32Data();
       }, 1000);
     });
 
-    onBeforeUnmount(() => clearTimeout(timer));
+    onDeactivated(() => {
+      clearTimeout(timer);
+    });
 
     return {
-      data: computed(() => store.data),
-      alive: computed(() => store.alive),
-      cols: computed(() => `col-${columns[Screen.gt.md ? 'large' : Screen.gt.sm ? 'medium' : 'small']}`),
+      sendorData,
+      sensorAlive,
+      cols,
     };
   },
 });
@@ -99,10 +108,9 @@ export default defineComponent({
   border: 1px solid rgba(86, 61, 124, .2)
 
 .row > div
-  //border: 1px solid rgba(86,61,124,.2)
+  margin-top: 10px
 
 .flex-break
   flex: 1 0 100% !important
-  margin-top: 10px
   height: 0 !important
 </style>

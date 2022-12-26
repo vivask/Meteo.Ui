@@ -38,6 +38,7 @@ export default defineComponent({
     const main = ref({});
     const backup = ref({});
     const spinner = ref(true);
+    const boxCols = { xl: 3, lg: 3, md: 4, sm: 11, xs: 10 };
 
     const toggle = (active, start, stop) => {
       if (active) {
@@ -64,12 +65,7 @@ export default defineComponent({
       spinner,
       main,
       backup,
-
-      boxCols: {
-        large: 3,
-        medium: 3,
-        small: 3,
-      },
+      boxCols,
 
       toggleActiveMain() {
         toggle(main.value.active, '/proxy/main/server/start', '/proxy/main/server/stop');

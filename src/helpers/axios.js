@@ -20,6 +20,7 @@ axios.interceptors.request.use((request) => {
 
   //console.log('JWT: ', account);
   //console.log('URL: ', request.url);
+  //console.log('LoggedIn: ', isLoggedIn);
   if (isLoggedIn) {
     request.headers.Authorization = `Bearer ${account.token}`;
     const loader = useLoaderStore();

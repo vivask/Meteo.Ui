@@ -91,11 +91,12 @@ export default defineComponent({
 
   setup() {
     const axios = inject('axios');
-    const wrapper = useTableWrapper('/schedule/jobs', axios);
+    const rows = ref([]);
+    const wrapper = useTableWrapper('/schedule/jobs', axios, rows);
     const spinner = ref(true);
     const form = ref(null);
-    const rows = ref([]);
     const task = ref({});
+    const boxCols = { xl: 4, lg: 4, md: 7, sm: 11, xs: 10 };
     const buttonShow = computed(() => rows.value.length === 0);
 
     const { handleAdd, handleEdit, handleDelete } = useTableHandlers(form, rows, wrapper, {
@@ -115,12 +116,7 @@ export default defineComponent({
       buttonShow,
       wrapper,
       form,
-
-      boxCols: {
-        large: 4,
-        medium: 7,
-        small: 4,
-      },
+      boxCols,
 
       activeIcon: (row) => (row.active ? 'alarm' : 'alarm_off'),
 
