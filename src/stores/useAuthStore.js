@@ -1,17 +1,21 @@
 import { defineStore } from 'pinia';
 import { router } from '@/router';
 import { fetchWrapper } from '@/helpers/fetchWrapper.js';
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
 export const useAuthStore = defineStore('auth', () => {
   const storedUser = JSON.parse(localStorage.getItem('user'));
-  const initUser = storedUser?.value && new Date(storedUser.value.expire) > Date.now() ? storedUser : null;
+  const initUser = storedUser && new Date(storedUser.expire) > Date.now() ? storedUser : null;
   const user = ref(initUser);
   const returnUrl = ref(null);
   const refresh = ref(false);
   const loggedIn = computed(() => !!user.value);
+
+  //console.log('storedUser', storedUser);
+  //console.log('initUser', initUser);
+  //console.log('user', user);
 
   return {
     user,
@@ -30,7 +34,7 @@ export const useAuthStore = defineStore('auth', () => {
       returnUrl.value = router.currentRoute.value.query.next;
 
       // store user details and jwt in local storage to keep user logged in between page refreshes
-      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('user', JSON.stringify(user.value));
 
       // redirect to previous url or default to home page
       router.push(returnUrl.value || '/');
@@ -51,7 +55,7 @@ export const useAuthStore = defineStore('auth', () => {
       refresh.value = true;
 
       // store user details and jwt in local storage to keep user logged in between page refreshes
-      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('user', JSON.stringify(user.value));
     },
   };
 });
