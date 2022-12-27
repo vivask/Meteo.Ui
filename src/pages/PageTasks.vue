@@ -51,7 +51,7 @@
     </q-table>
   </ui-box-vue>
 
-  <form-task-vue ref="form" @submit="handleSubmit" />
+  <form-task-vue v-if="visible" ref="form" @submit="handleSubmit" @cancel="handleCancel" />
 </template>
 
 <script>
@@ -87,8 +87,15 @@ export default defineComponent({
     const task = ref({});
     const boxCols = { xl: 6, lg: 6, md: 7, sm: 11, xs: 10 };
     const buttonShow = computed(() => rows.value.length === 0);
+    const visible = ref(false);
 
-    const { handleAdd, handleEdit, handleSubmit, handleDelete } = useTableHandlers(form, rows, wrapper, {});
+    const { handleAdd, handleEdit, handleSubmit, handleDelete, handleCancel } = useTableHandlers(
+      visible,
+      form,
+      rows,
+      wrapper,
+      {},
+    );
 
     onMounted(async () => {
       rows.value = await wrapper.Get(true);
@@ -103,11 +110,13 @@ export default defineComponent({
       wrapper,
       form,
       boxCols,
+      visible,
 
       handleAdd,
       handleEdit,
       handleSubmit,
       handleDelete,
+      handleCancel,
     };
   },
 });

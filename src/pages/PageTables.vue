@@ -60,7 +60,7 @@
     </q-table>
   </ui-box-vue>
 
-  <form-table-vue ref="form" @submit="handleSubmit" />
+  <form-table-vue v-if="visible" ref="form" @submit="handleSubmit" @cancel="handleCancel" />
 </template>
 
 <script>
@@ -98,8 +98,9 @@ export default defineComponent({
     const buttonShow = computed(() => rows.value.length === 0);
     const confirm = useConfirmDialog();
     const selected = ref([]);
+    const visible = ref(false);
 
-    const { handleAdd, handleEdit, handleSubmit } = useTableHandlers(form, rows, wrapper, {});
+    const { handleAdd, handleEdit, handleSubmit, handleCancel } = useTableHandlers(visible, form, rows, wrapper, {});
 
     onMounted(async () => {
       rows.value = await wrapper.Get();
@@ -115,10 +116,12 @@ export default defineComponent({
       boxCols,
       confirm,
       selected,
+      visible,
 
       handleAdd,
       handleEdit,
       handleSubmit,
+      handleCancel,
 
       async handleDelete(row) {
         const ok = await confirm.show('Are you sure to delete this items?');

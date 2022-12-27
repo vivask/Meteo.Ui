@@ -60,7 +60,7 @@
     </q-table>
   </ui-box-vue>
 
-  <form-job-vue ref="form" @submit="handleSubmit" />
+  <form-job-vue v-if="visible" ref="form" @submit="handleSubmit" @cancel="handleCancel" />
 </template>
 
 <script>
@@ -90,8 +90,9 @@ export default defineComponent({
     const task = ref({});
     const boxCols = { xl: 5, lg: 5, md: 7, sm: 11, xs: 10 };
     const buttonShow = computed(() => rows.value.length === 0);
+    const visible = ref(false);
 
-    const { handleAdd, handleEdit, handleDelete } = useTableHandlers(form, rows, wrapper, {
+    const { handleAdd, handleEdit, handleDelete, handleCancel } = useTableHandlers(visible, form, rows, wrapper, {
       verbose: false,
     });
 
@@ -114,6 +115,7 @@ export default defineComponent({
       wrapper,
       form,
       boxCols,
+      visible,
 
       activeIcon: (row) => (row.active ? 'alarm' : 'alarm_off'),
 
@@ -143,6 +145,7 @@ export default defineComponent({
       },
 
       handleDelete,
+      handleCancel,
 
       handleActivate: (row) => {
         if (row.active) {

@@ -48,7 +48,7 @@
     </q-table>
   </ui-box-vue>
 
-  <form-ssh-key-vue ref="form" @submit="handleSubmit" />
+  <form-ssh-key-vue v-if="visible" ref="form" @submit="handleSubmit" @cancel="handleCancel" />
 </template>
 
 <script>
@@ -77,8 +77,9 @@ export default defineComponent({
     const form = ref(null);
     const boxCols = { xl: 5, lg: 5, md: 7, sm: 11, xs: 10 };
     const buttonShow = computed(() => rows.value.length === 0);
+    const visible = ref(false);
 
-    const { handleAdd, handleSubmit, handleDelete } = useTableHandlers(form, rows, wrapper, {});
+    const { handleAdd, handleSubmit, handleDelete, handleCancel } = useTableHandlers(visible, form, rows, wrapper, {});
 
     const { formatLongDate, isEmptyTime, activeIcon, activeColor } = useUtils();
 
@@ -94,6 +95,7 @@ export default defineComponent({
       wrapper,
       form,
       boxCols,
+      visible,
 
       formatLongDate,
       isEmptyTime,
@@ -103,6 +105,7 @@ export default defineComponent({
       handleAdd,
       handleSubmit,
       handleDelete,
+      handleCancel,
     };
   },
 });

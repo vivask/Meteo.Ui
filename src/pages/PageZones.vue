@@ -27,7 +27,7 @@
     </q-table>
   </ui-box-vue>
 
-  <form-zone-vue ref="form" @submit="handleSubmit" />
+  <form-zone-vue v-if="visible" ref="form" @submit="handleSubmit" @cancel="handleCancel" />
 </template>
 
 <script>
@@ -64,8 +64,15 @@ export default defineComponent({
     const zone = ref({});
     const boxCols = { xl: 6, lg: 6, md: 7, sm: 11, xs: 10 };
     const buttonShow = computed(() => rows.value.length === 0);
+    const visible = ref(false);
 
-    const { handleAdd, handleEdit, handleSubmit, handleDelete } = useTableHandlers(form, rows, wrapper, {});
+    const { handleAdd, handleEdit, handleSubmit, handleDelete, handleCancel } = useTableHandlers(
+      visible,
+      form,
+      rows,
+      wrapper,
+      {},
+    );
 
     const { activeIcon, activeColor } = useUtils();
 
@@ -82,6 +89,7 @@ export default defineComponent({
       wrapper,
       form,
       boxCols,
+      visible,
 
       activeIcon,
       activeColor,
@@ -90,6 +98,7 @@ export default defineComponent({
       handleEdit,
       handleSubmit,
       handleDelete,
+      handleCancel,
     };
   },
 });

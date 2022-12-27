@@ -93,7 +93,6 @@ export default defineComponent({
 
     const showError = (message) => {
       Notify.create({
-        spinner: true,
         timeout: import.meta.env.ERROR_TIMEOUT,
         type: 'negative',
         message: message,

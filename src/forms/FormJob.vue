@@ -27,7 +27,7 @@
           />
           <div class="row">
             <div v-if="showValue" class="wd-70">
-              <q-input v-model.number="localProp.value" type="number" outlined dense class="mr-5" />
+              <q-input ref="periodValue" v-model.number="localProp.value" type="number" outlined dense class="mr-5" />
             </div>
             <div :class="periodState">
               <q-select
@@ -146,7 +146,7 @@
 </template>
 
 <script>
-import { defineComponent, computed, ref, watch, onMounted, inject, toRefs } from 'vue';
+import { defineComponent, computed, ref, watch, onMounted, inject, nextTick } from 'vue';
 import UiInputVue from '@/components/UiInput.vue';
 import { useSubmitForm } from '@/composables/useSubmitForm';
 import { useConfirmDialog } from '@/composables/useConfirmDialog.js';
@@ -197,12 +197,19 @@ export default defineComponent({
     const executors = ref([]);
     const tasks = ref([]);
     const periods = ref([]);
+    const periodValue = ref(null);
+    let currentPeriod = null;
 
     watch(
       localProp,
-      (newVal) => {
+      async (newVal) => {
         showValue.value = newVal?.period ? newVal.period.id !== 'once' : false;
         paramsDisabled.value = !newVal?.task;
+        await nextTick();
+        if (newVal?.period && periodValue?.value && newVal.period.id !== currentPeriod) {
+          periodValue.value.focus();
+          currentPeriod = newVal.period.id;
+        }
       },
       { deep: true },
     );
@@ -233,6 +240,7 @@ export default defineComponent({
       executors,
       tasks,
       periods,
+      periodValue,
       showBtnAddParam: computed(() =>
         showParams.value ? (localProp.value?.params ? localProp.value.params.length === 0 : true) : false,
       ),

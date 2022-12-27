@@ -102,6 +102,27 @@ const routes = [
         },
       },
       {
+        path: '/secure/gitusers',
+        component: () => import('@/pages/PageGitUsers.vue'),
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        path: '/servers/main',
+        component: () => import('@/pages/PageServerMain.vue'),
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        path: '/servers/backup',
+        component: () => import('@/pages/PageServerBackup.vue'),
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
         path: '/database/tables',
         component: () => import('@/pages/PageTables.vue'),
         meta: {

@@ -36,6 +36,7 @@
 <script>
 import { defineComponent, ref } from 'vue';
 import { useAuthStore } from '@/stores/useAuthStore.js';
+import { Notify } from 'quasar';
 
 const login = {
   username: null,
@@ -50,7 +51,13 @@ export default defineComponent({
       login: ref(login),
       onSubmit() {
         const authStore = useAuthStore();
-        return authStore.login(login.username, login.password).catch((error) => console.log(error));
+        return authStore.login(login.username, login.password).catch((error) =>
+          Notify.create({
+            timeout: import.meta.env.ERROR_TIMEOUT,
+            type: 'negative',
+            message: error,
+          }),
+        );
       },
     };
   },

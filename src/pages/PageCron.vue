@@ -3,7 +3,7 @@
     :columns="boxCols"
     header="List of cron jobs"
     :spinner="spinner"
-    :buttonShow="buttonShow"
+    :buttonShow="true"
     buttonLabel="Refresh"
     :buttonClick="refresh"
   >
@@ -52,7 +52,6 @@ export default defineComponent({
     const wrapper = useTableWrapper('/schedule/cron', axios, rows);
     const spinner = ref(true);
     const boxCols = { xl: 5, lg: 5, md: 7, sm: 11, xs: 10 };
-    const buttonShow = ref(true);
 
     onMounted(async () => {
       rows.value = await wrapper.Get(true);
@@ -70,7 +69,6 @@ export default defineComponent({
       spinner,
       columns,
       rows,
-      buttonShow,
       wrapper,
       boxCols,
       date,

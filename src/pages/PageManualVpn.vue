@@ -22,7 +22,7 @@
     </q-table>
   </ui-box-vue>
 
-  <form-vpn-host-vue ref="form" :list="list" @submit="handleSubmit" />
+  <form-vpn-host-vue v-if="visible" ref="form" :list="list" @submit="handleSubmit" @cancel="handleCancel" />
 </template>
 
 <script>
@@ -62,10 +62,17 @@ export default defineComponent({
     const boxCols = { xl: 6, lg: 6, md: 7, sm: 11, xs: 10 };
     const buttonShow = computed(() => rows.value.length === 0);
     const form = ref(null);
+    const visible = ref(false);
 
-    const { handleAdd, handleEdit, handleSubmit, handleDelete } = useTableHandlers(form, rows, wrapper, {
-      list: { id: null },
-    });
+    const { handleAdd, handleEdit, handleSubmit, handleDelete, handleCancel } = useTableHandlers(
+      visible,
+      form,
+      rows,
+      wrapper,
+      {
+        list: { id: null },
+      },
+    );
 
     onMounted(async () => {
       axios.get('/proxy/vpnlists').then(async (response) => {
@@ -84,11 +91,13 @@ export default defineComponent({
       buttonShow,
       form,
       boxCols,
+      visible,
 
       handleAdd,
       handleEdit,
       handleSubmit,
       handleDelete,
+      handleCancel,
     };
   },
 

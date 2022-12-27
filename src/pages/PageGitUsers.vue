@@ -1,56 +1,53 @@
 <template>
   <ui-box-vue
     :columns="boxCols"
-    header="SSH hosts management"
+    header="Git users management"
     :spinner="spinner"
     :buttonShow="buttonShow"
     buttonLabel="Add"
     :buttonClick="handleAdd"
-    tooltip="Add new ssh host"
+    tooltip="Add new git user"
   >
-    <q-table hide-header :rows="rows" :columns="columns" row-key="host" :rows-per-page-options="[10, 50, 100, 0]">
+    <q-table hide-header :rows="rows" :columns="columns" row-key="name" :rows-per-page-options="[10, 50, 100, 0]">
       <template #body-cell-state="props">
         <q-td :props="props" class="wd-20">
-          <q-icon :name="activeIcon(props.row.activity)" size="1.2rem" :color="activeColor(props.row.activity)" />
+          <q-icon :name="activeIcon(props.row)" size="1.2rem" :color="activeColor(props.row)" />
         </q-td>
       </template>
       <template #body-cell-icon="props">
         <q-td :props="props" class="wd-80">
-          <q-icon name="computer" size="md" />
+          <q-icon name="mdi-account" size="md" />
         </q-td>
       </template>
-      <template #body-cell-host="props">
+      <template #body-cell-user="props">
         <q-td :props="props" class="wd-100">
           <div class="text-subtitle1 text-bold text-left text-primary">
-            {{ props.row.host }}
+            {{ props.row.username }}
           </div>
           <div class="text-subtitle2 text-left">Key: {{ props.row.ssh_key.owner }}</div>
-          <div class="text-subtitle2 text-left">
-            {{ props.row.short_finger }}
-          </div>
           <div class="text-meta text-left">Created {{ formatLongDate(props.row.created) }}</div>
-          <div v-if="!isEmptyTime(props.row.used)" class="text-meta text-left">
+          <div v-if="isEmptyTime(props.row.used)" class="text-meta text-left">
             Last used {{ formatLongDate(props.row.used) }}
           </div>
         </q-td>
       </template>
       <template #body-cell-actions="props">
         <q-td :props="props">
-          <q-btn class="q-ml-xs" dense round color="primary" size="md" icon="add" @click="handleAdd()">
-            <q-tooltip> Add new ssh host </q-tooltip>
+          <q-btn dense round color="primary" size="md" icon="add" @click="handleAdd()">
+            <q-tooltip>Add new git user</q-tooltip>
           </q-btn>
           <q-btn class="q-ml-xs" dense round color="positive" size="md" icon="mode_edit" @click="handleEdit(props.row)">
-            <q-tooltip> Edit ssh host </q-tooltip>
+            <q-tooltip>Edit git user</q-tooltip>
           </q-btn>
           <q-btn class="q-ml-xs" dense round color="negative" size="md" icon="delete" @click="handleDelete(props.row)">
-            <q-tooltip> Delete ssh host </q-tooltip>
+            <q-tooltip>Delete git user</q-tooltip>
           </q-btn>
         </q-td>
       </template>
     </q-table>
   </ui-box-vue>
 
-  <form-ssh-host-vue v-if="visible" ref="form" @submit="handleSubmit" @cancel="handleCancel" />
+  <form-git-user-vue v-if="visible" ref="form" @submit="handleSubmit" @cancel="handleCancel" />
 </template>
 
 <script>
@@ -59,23 +56,23 @@ import { defineComponent, ref, computed, onMounted, inject, onActivated } from '
 import UiBoxVue from '@/components/UiBox.vue';
 import { useTableWrapper } from '@/composables/useTableWrapper.js';
 import { useTableHandlers } from '@/composables/useTableHandlers';
-import FormSshHostVue from '@/forms/FormSshHost.vue';
+import FormGitUserVue from '@/forms/FormGitUser.vue';
 import { useUtils } from '@/composables/useUtils.js';
 
-const columns = [{ name: 'state' }, { name: 'icon' }, { name: 'host' }, { name: 'actions' }];
+const columns = [{ name: 'state' }, { name: 'icon' }, { name: 'user' }, { name: 'actions' }];
 
 export default defineComponent({
   name: 'PageSshHosts',
 
   components: {
     UiBoxVue,
-    FormSshHostVue,
+    FormGitUserVue,
   },
 
   setup() {
     const axios = inject('axios');
     const rows = ref([]);
-    const wrapper = useTableWrapper('/sshclient/sshhosts', axios, rows);
+    const wrapper = useTableWrapper('/sshclient/gitusers', axios, rows);
     const spinner = ref(true);
     const form = ref(null);
     const boxCols = { xl: 5, lg: 5, md: 7, sm: 11, xs: 10 };
