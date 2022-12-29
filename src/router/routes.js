@@ -32,6 +32,27 @@ const routes = [
         },
       },
       {
+        path: '/esp32/settings',
+        component: () => import('@/pages/PageEsp32Setting.vue'),
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        path: '/esp32/alarm',
+        component: () => import('@/pages/PageEsp32Alarm.vue'),
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        path: '/esp32/journal',
+        component: () => import('@/pages/PageEsp32Logging.vue'),
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
         path: '/proxy/servers',
         component: () => import('@/pages/PageProxy.vue'),
         meta: {
@@ -130,8 +151,22 @@ const routes = [
         },
       },
       {
+        path: '/radius/accounting',
+        component: () => import('@/pages/PageAccounting.vue'),
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
         path: '/database/tables',
         component: () => import('@/pages/PageTables.vue'),
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        path: '/radius/verified',
+        component: () => import('@/pages/PageVerified.vue'),
         meta: {
           requiresAuth: true,
         },

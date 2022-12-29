@@ -23,38 +23,38 @@
       </template>
       <template #body-cell-actions="props">
         <q-td :props="props">
-          <q-btn dense round color="primary" size="md" icon="add" @click="handleAdd()">
-            <q-tooltip>Add table name</q-tooltip>
-          </q-btn>
-          <q-btn class="q-ml-xs" dense round color="positive" size="md" icon="mode_edit" @click="handleEdit(props.row)">
-            <q-tooltip>Edit table name</q-tooltip>
-          </q-btn>
-          <q-btn class="q-ml-xs" dense round color="negative" size="md" icon="delete" @click="handleDelete(props.row)">
-            <q-tooltip>Delete table name</q-tooltip>
-          </q-btn>
-          <q-btn
-            class="q-ml-xs"
-            dense
+          <ui-round-btn-vue color="primary" icon="add" tooltip="Add table name" @click="handleAdd()" />
+          <ui-round-btn-vue
+            color="positive"
+            icon="mode_edit"
+            tooltip="Edit table name"
+            @click="handleEdit(props.row)"
+          />
+          <ui-round-btn-vue
+            color="negative"
+            icon="delete"
+            tooltip="Delete table name"
+            @click="handleDelete(props.row)"
+          />
+          <ui-round-btn-vue
+            color="negative"
+            icon="mdi-table-remove"
+            tooltip="Drop table"
+            @click="handleDdrop(props.row)"
+          />
+          <ui-round-btn-vue
             :disable="!props.row.import"
-            round
             color="warning"
-            size="md"
             icon="mdi-table-arrow-left"
+            tooltip="Import table content from csv"
             @click="handleImport(props.row)"
-          >
-            <q-tooltip>Import table content from csv</q-tooltip>
-          </q-btn>
-          <q-btn
-            class="q-ml-xs"
-            dense
-            round
+          />
+          <ui-round-btn-vue
             color="secondary"
-            size="md"
             icon="mdi-content-save"
+            tooltip="Save table content to csv"
             @click="handleSave(props.row)"
-          >
-            <q-tooltip>Save table content to csv</q-tooltip>
-          </q-btn>
+          />
         </q-td>
       </template>
     </q-table>
@@ -70,21 +70,21 @@ import { useTableWrapper } from '@/composables/useTableWrapper.js';
 import { useTableHandlers } from '@/composables/useTableHandlers';
 import FormTableVue from '@/forms/FormTable.vue';
 import { useConfirmDialog } from '@/composables/useConfirmDialog.js';
+import UiRoundBtnVue from '@/components/UiRoundBtn.vue';
 
 const columns = [
-  { name: 'state' },
-  { name: 'address', align: 'left', field: 'address', sortable: true },
-  { name: 'name', align: 'left', field: 'name' },
-  { name: 'mac', align: 'left', field: 'mac' },
-  { name: 'note', align: 'left', field: 'note' },
+  { name: 'state', align: 'left', classes: 'wd-50' },
+  { name: 'name', align: 'left', field: 'name', classes: 'wd-100', sortable: true },
+  { name: 'note', align: 'left', field: 'note', classes: 'wd-100', sortable: true },
   { name: 'actions' },
 ];
 
 export default defineComponent({
-  name: 'PageZones',
+  name: 'PageTables',
 
   components: {
     UiBoxVue,
+    UiRoundBtnVue,
     FormTableVue,
   },
 
@@ -128,7 +128,7 @@ export default defineComponent({
         if (ok) {
           const data = wrapper.Selected(row, selected.value);
           selected.value = [];
-          axios.delete('/database/tables', data);
+          axios.post('/database/tables/delete', data);
         }
       },
 
@@ -149,15 +149,24 @@ export default defineComponent({
           axios.put('/database/save', data);
         }
       },
+
+      async handleDdrop(row) {
+        const ok = await confirm.show('Are you sure to drop this tables?');
+        if (ok) {
+          const data = wrapper.Selected(row, selected.value);
+          selected.value = [];
+          axios.post('/database/tables/drop', data);
+        }
+      },
     };
   },
 });
 </script>
 
 <style lang="sass" scoped>
-.wd-30
-  width: 30px
-  max-width: 30px
+.wd-50
+  width: 50px
+  max-width: 50px
 .wd-100
   width: 100px
   max-width: 100px

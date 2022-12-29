@@ -39,7 +39,7 @@ import { useTableWrapper } from '@/composables/useTableWrapper.js';
 import { useConfirmDialog } from '@/composables/useConfirmDialog.js';
 
 export default defineComponent({
-  name: 'PageAutoVpn',
+  name: 'PageIgnoreVpn',
 
   components: {
     UiBoxVue,

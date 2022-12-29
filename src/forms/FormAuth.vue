@@ -2,9 +2,9 @@
   <q-dialog ref="popup" transition-show="rotate" transition-hide="rotate" persistent>
     <q-card style="min-width: 350px">
       <q-card-section>
-        <q-form class="q-gutter-md" @submit.prevent="onSubmit">
-          <ui-input-vue v-model="localProp.username" hint="User Name *" />
-          <ui-password-input-vue v-model="localProp.value" hint="Password *" />
+        <q-form class="q-gutter-md" autocomplete="off" @submit.prevent="onSubmit">
+          <ui-input-vue v-model="localProp.username" hint="User Name *" autocomplete="off" />
+          <ui-password-input-vue v-model="localProp.value" hint="Password *" autocomplete="off" />
           <ui-password-input-vue ref="input" v-model="confirm" hint="Confirm password *" />
           <q-card-actions align="left" class="text-primary">
             <q-btn label="Submit" type="submit" color="primary" />

@@ -221,7 +221,7 @@ export const useMenuServices = {
         {
           icon: 'mdi-table-account',
           title: 'Accounting',
-          value: 'account',
+          value: 'accounting',
         },
         {
           icon: 'verified_user',

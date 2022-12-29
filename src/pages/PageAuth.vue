@@ -16,24 +16,8 @@
       <template #body-cell-actions="props">
         <q-td :props="props">
           <q-btn dense round color="primary" size="md" icon="add" @click="handleAdd()" />
-          <q-btn
-            class="q-ml-xs"
-            dense
-            round
-            color="positive"
-            size="md"
-            icon="mode_edit"
-            @click="handleEdit(props.row)"
-          />
-          <q-btn
-            class="q-ml-xs"
-            dense
-            round
-            color="negative"
-            size="md"
-            icon="delete"
-            @click="handleDelete(props.row)"
-          />
+          <ui-round-btn-vue color="positive" icon="mode_edit" tooltip="Create user" @click="handleEdit(props.row)" />
+          <ui-round-btn-vue color="negative" icon="delete" tooltip="Delete user" @click="handleDelete(props.row)" />
         </q-td>
       </template>
     </q-table>
@@ -48,6 +32,7 @@ import UiBoxVue from '@/components/UiBox.vue';
 import FormAuthVue from '@/forms/FormAuth.vue';
 import { useTableWrapper } from '@/composables/useTableWrapper.js';
 import { useTableHandlers } from '@/composables/useTableHandlers';
+import UiRoundBtnVue from '@/components/UiRoundBtn.vue';
 
 const columns = [
   { name: 'state' },
@@ -58,17 +43,18 @@ const columns = [
 ];
 
 export default defineComponent({
-  name: 'PageZones',
+  name: 'PageAuth',
 
   components: {
     UiBoxVue,
     FormAuthVue,
+    UiRoundBtnVue,
   },
 
   setup() {
     const axios = inject('axios');
     const rows = ref([]);
-    const wrapper = useTableWrapper('/radius/users', axios, rows);
+    const wrapper = useTableWrapper('/radius/auth', axios, rows);
     const spinner = ref(true);
     const form = ref(null);
     const boxCols = { xl: 6, lg: 6, md: 7, sm: 11, xs: 10 };

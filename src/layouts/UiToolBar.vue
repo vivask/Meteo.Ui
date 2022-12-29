@@ -1,26 +1,32 @@
 <template>
   <q-header elevated>
     <q-toolbar>
-      <q-btn flat dense round icon="mdi-menu" class="q-mr-sm" @click="localModel = !localModel" />
+      <q-btn flat dense round size="md" icon="mdi-menu" class="q-mr-sm" @click="localModel = !localModel" />
 
       <q-toolbar-title> Meteo </q-toolbar-title>
 
-      <q-btn v-if="!isLoged" stretch flat to="/login">Login</q-btn>
-      <q-btn v-else stretch flat @click="logout">Logout</q-btn>
+      <q-btn v-if="!isLoged" flat dense size="md" round icon="mdi-login" to="/login"></q-btn>
+      <q-btn v-else flat dense size="md" round icon="mdi-logout" @click="logout"></q-btn>
 
       <span v-for="filter in filters" :key="filter.value">
-        <UiMenuFilterVue v-if="filter.show" v-model="filter.range" :icon="filter.icon" :options="filter.options" />
+        <ui-menu-filter-vue v-if="filter.show" v-model="filter.value" :icon="filter.icon" :options="filter.options" />
       </span>
     </q-toolbar>
   </q-header>
 </template>
 
 <script>
-import { defineComponent, toRefs, computed } from 'vue';
+import { defineComponent, toRefs, computed, ref, watch } from 'vue';
 import { useMenuFilters } from '@/layouts/menuFilters.js';
 import UiMenuFilterVue from '@/layouts/UiMenuFilter.vue';
 import { useAuthStore } from '@/stores/useAuthStore.js';
+import { useLayoutStore } from '@/stores/useLayoutStore.js';
 import { useModelProxy } from '@/composables/useModelProxy.js';
+import { useRouter } from 'vue-router';
+
+const PERIOD = 0;
+const RANGE = 1;
+const USERS = 2;
 
 export default defineComponent({
   name: 'UiToolBar',
@@ -39,15 +45,40 @@ export default defineComponent({
   emits: ['update:modelValue'],
 
   setup(props, { emit }) {
+    const router = useRouter();
+    const filters = ref(useMenuFilters);
     const { modelValue } = toRefs(props);
     const { modelProxy } = useModelProxy(modelValue, emit);
     const authStore = useAuthStore();
+    const layoutStore = useLayoutStore();
     const isLoged = computed(() => authStore.loggedIn);
+    const currentRoute = computed(() => router.currentRoute.value.path);
+
+    watch(
+      filters,
+      (newVal) => {
+        layoutStore.periodChange(newVal[PERIOD].value);
+        layoutStore.rangeChange(newVal[RANGE].value);
+        layoutStore.usersChange(newVal[USERS].value);
+      },
+      { immediate: true, deep: true },
+    );
+
+    watch(
+      currentRoute,
+      (newVal) => {
+        filters.value[PERIOD].show = filters.value[PERIOD].routes.includes(newVal);
+        filters.value[RANGE].show = filters.value[RANGE].routes.includes(newVal);
+        filters.value[USERS].show = filters.value[USERS].routes.includes(newVal);
+      },
+      { immediate: true },
+    );
 
     return {
-      filters: useMenuFilters,
+      filters,
       localModel: modelProxy,
       isLoged,
+      currentRoute,
 
       logout() {
         authStore.logout();

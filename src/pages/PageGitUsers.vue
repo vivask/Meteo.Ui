@@ -62,7 +62,7 @@ import { useUtils } from '@/composables/useUtils.js';
 const columns = [{ name: 'state' }, { name: 'icon' }, { name: 'user' }, { name: 'actions' }];
 
 export default defineComponent({
-  name: 'PageSshHosts',
+  name: 'PageGitUsers',
 
   components: {
     UiBoxVue,

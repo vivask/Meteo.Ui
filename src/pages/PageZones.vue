@@ -15,13 +15,9 @@
       </template>
       <template #body-cell-actions="props">
         <q-td :props="props">
-          <q-btn dense round color="primary" size="md" icon="add" @click="handleAdd" />
-          <q-btn class="q-ml-xs" dense round color="positive" size="md" icon="mode_edit" @click="handleEdit(props.row)">
-            <q-tooltip>Create zone</q-tooltip>
-          </q-btn>
-          <q-btn class="q-ml-xs" dense round color="negative" size="md" icon="delete" @click="handleDelete(props.row)">
-            <q-tooltip>Delete zone</q-tooltip>
-          </q-btn>
+          <ui-round-btn-vue color="primary" icon="add" tooltip="Create zone" @click="handleAdd" />
+          <ui-round-btn-vue color="positive" icon="mode_edit" tooltip="Edit zone" @click="handleEdit(props.row)" />
+          <ui-round-btn-vue color="negative" icon="delete" tooltip="Delete zone" @click="handleDelete(props.row)" />
         </q-td>
       </template>
     </q-table>
@@ -37,6 +33,7 @@ import FormZoneVue from '@/forms/FormZone.vue';
 import { useTableWrapper } from '@/composables/useTableWrapper.js';
 import { useTableHandlers } from '@/composables/useTableHandlers';
 import { useUtils } from '@/composables/useUtils.js';
+import UiRoundBtnVue from '@/components/UiRoundBtn.vue';
 
 const columns = [
   { name: 'state' },
@@ -53,6 +50,7 @@ export default defineComponent({
   components: {
     UiBoxVue,
     FormZoneVue,
+    UiRoundBtnVue,
   },
 
   setup() {

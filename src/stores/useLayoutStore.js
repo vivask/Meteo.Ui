@@ -3,6 +3,9 @@ import { computed, ref } from 'vue';
 
 export const useLayoutStore = defineStore('layout', () => {
   const items = ref({});
+  const periodFilter = ref(null);
+  const rangeFilter = ref(null);
+  const usersFilter = ref(null);
 
   const aciveItem = computed(() => {
     for (let [key, value] of Object.entries(items.value)) {
@@ -14,6 +17,9 @@ export const useLayoutStore = defineStore('layout', () => {
   return {
     items,
     aciveItem,
+    periodFilter,
+    rangeFilter,
+    usersFilter,
 
     setItems(item) {
       Object.keys(items.value).forEach((key) => (items.value[key] = false));
@@ -23,6 +29,18 @@ export const useLayoutStore = defineStore('layout', () => {
     isActive(item) {
       const itemExist = Object.keys(items.value).some((key) => key === item);
       return itemExist && items.value[item];
+    },
+
+    periodChange(value) {
+      periodFilter.value = value;
+    },
+
+    rangeChange(value) {
+      rangeFilter.value = value;
+    },
+
+    usersChange(value) {
+      usersFilter.value = value;
     },
   };
 });
