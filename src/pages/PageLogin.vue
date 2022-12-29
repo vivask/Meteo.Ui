@@ -17,8 +17,8 @@
         </q-card-section>
         <q-card-section>
           <q-form class="q-gutter-md" @submit="onSubmit">
-            <q-input v-model="login.username" label="Username"> </q-input>
-            <q-input v-model="login.password" label="Password" type="password"> </q-input>
+            <ui-input-vue v-model="login.username" label="Username" />
+            <ui-password-input-vue v-model="login.password" label="Password" />
             <div>
               <q-btn class="full-width" color="primary" label="Login" type="submit" rounded></q-btn>
               <div class="text-center q-mt-sm q-gutter-lg">
@@ -37,21 +37,26 @@
 import { defineComponent, ref } from 'vue';
 import { useAuthStore } from '@/stores/useAuthStore.js';
 import { Notify } from 'quasar';
-
-const login = {
-  username: null,
-  password: null,
-};
+import UiPasswordInputVue from '@/components/UiPasswordInput.vue';
+import UiInputVue from '@/components/UiInput.vue';
 
 export default defineComponent({
   name: 'PageLogin',
 
+  components: {
+    UiPasswordInputVue,
+    UiInputVue,
+  },
+
   setup() {
+    const login = ref({});
+
     return {
-      login: ref(login),
+      login,
+
       onSubmit() {
         const authStore = useAuthStore();
-        return authStore.login(login.username, login.password).catch((error) =>
+        return authStore.login(login.value.username, login.value.password).catch((error) =>
           Notify.create({
             timeout: import.meta.env.ERROR_TIMEOUT,
             type: 'negative',
@@ -63,5 +68,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style lang="sass" scoped></style>

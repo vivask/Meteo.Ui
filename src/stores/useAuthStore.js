@@ -25,6 +25,12 @@ export const useAuthStore = defineStore('auth', () => {
     initUser,
     storedUser,
 
+    async signup(payload) {
+      const resp = await fetchWrapper.put(`${baseUrl}/signup`, payload);
+
+      router.push('/login');
+    },
+
     async login(username, password) {
       const _user = await fetchWrapper.post(`${baseUrl}/login`, { username, password });
 

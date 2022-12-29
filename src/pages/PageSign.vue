@@ -21,11 +21,11 @@
           </div>
         </q-card-section>
         <q-card-section>
-          <q-form class="q-gutter-md" @submit="onSubmit()">
-            <q-input v-model="signup.username" label="Username *"> </q-input>
-            <q-input v-model="signup.email" label="Email *"> </q-input>
-            <q-input v-model="signup.password" label="Password *" type="password"> </q-input>
-            <q-input v-model="signup.confirm" label="Confirm password *" type="password"> </q-input>
+          <q-form class="q-gutter-md" @submit.prevent="handelSubmit">
+            <ui-input-vue v-model="signup.username" label="Username *" />
+            <ui-input-vue v-model="signup.email" label="Email *" />
+            <ui-password-input-vue ref="passwordInput" v-model="signup.password" label="Password *" />
+            <ui-password-input-vue ref="confirmInput" v-model="confirm" label="Confirm password *" />
             <div>
               <q-btn class="full-width" color="primary" label="Signup" type="submit" rounded></q-btn>
               <div class="text-center q-mt-sm q-gutter-lg">
@@ -41,32 +41,53 @@
 
 <script>
 import { defineComponent, ref } from 'vue';
-import { Screen } from 'quasar';
-
-const signup = {
-  username: null,
-  email: null,
-  password: null,
-  confirm: null,
-};
+import { Screen, Notify } from 'quasar';
+import { useAuthStore } from '@/stores/useAuthStore.js';
+import UiInputVue from '@/components/UiInput.vue';
+import UiPasswordInputVue from '@/components/UiPasswordInput.vue';
 
 export default defineComponent({
   name: 'PageSign',
 
+  components: {
+    UiInputVue,
+    UiPasswordInputVue,
+  },
+
   setup() {
+    const store = useAuthStore();
+    const signup = ref({});
+    const confirm = ref(null);
+    const confirmInput = ref(null);
+    const passwordInput = ref(null);
+
     return {
-      signup: ref(signup),
+      signup,
       Screen,
+      confirm,
+      confirmInput,
+      passwordInput,
+
+      handelSubmit() {
+        if (signup.value.password != signup.value.confirm) {
+          Notify.create({
+            timeout: import.meta.env.ERROR_TIMEOUT,
+            type: 'negative',
+            message: 'Passwords do not match!',
+          });
+          confirmInput.value.focus();
+        } else if (signup.value.password.length < 6) {
+          Notify.create({
+            timeout: import.meta.env.ERROR_TIMEOUT,
+            type: 'negative',
+            message: 'Password must be 6 or more characters.',
+          });
+          passwordInput.value.focus();
+        } else {
+          store.signup(signup);
+        }
+      },
     };
   },
 });
 </script>
-
-<style lang="sass" scoped>
-.wave
-  position: fixed
-  height: 100%
-  left: 0
-  bottom: 0
-  z-index: -1
-</style>

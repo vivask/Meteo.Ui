@@ -13,6 +13,12 @@ export function useSubmitForm(popup, emit) {
     popup.value.show();
   };
 
+  const showAccaountForm = (prop) => {
+    isUpdate.value = !!prop?.id;
+    localProp.value = deepClone(prop);
+    popup.value.show();
+  };
+
   const handleSubmit = () => {
     popup.value.hide();
     emit('submit', { data: deepClone(localProp.value), update: isUpdate.value });

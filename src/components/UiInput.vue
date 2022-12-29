@@ -7,7 +7,9 @@
     :rules="[() => rules]"
     v-bind="$attrs"
     @change="emit('update:modelValue', localModel)"
-  />
+  >
+    <slot />
+  </q-input>
 </template>
 
 <script>

@@ -123,6 +123,13 @@ const routes = [
         },
       },
       {
+        path: '/radius/auth',
+        component: () => import('@/pages/PageAuth.vue'),
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
         path: '/database/tables',
         component: () => import('@/pages/PageTables.vue'),
         meta: {
