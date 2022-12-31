@@ -1,5 +1,9 @@
 <template>
   <ui-box-vue :columns="boxCols" header="ESP32 Management" :spinner="spinner">
+    <template #header>
+      <q-badge v-if="!disable" color="grey-1"> Core0: {{ core_0_load }}% </q-badge>
+      <q-badge v-if="!disable" color="grey-1"> Core1: {{ core_1_load }}% </q-badge>
+    </template>
     <q-markup-table>
       <tbody>
         <tr>
@@ -92,6 +96,8 @@ export default defineComponent({
     const boxCols = { xl: 6, lg: 6, md: 7, sm: 11, xs: 10 };
     const file = ref(null);
     const disable = computed(() => !store.status.alive);
+    const core_0_load = computed(() => store.status.cpu0_load);
+    const core_1_load = computed(() => store.status.cpu1_load);
 
     onActivated(() => {
       timer = setInterval(() => {
@@ -108,6 +114,8 @@ export default defineComponent({
       boxCols,
       file,
       disable,
+      core_0_load,
+      core_1_load,
 
       async handelFirmware() {
         if (!(file?.value && file.value.name.length > 0)) {

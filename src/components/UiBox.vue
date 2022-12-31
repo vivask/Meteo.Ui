@@ -16,6 +16,9 @@
           >
             <q-tooltip v-if="showTooltiip">{{ tooltip }}</q-tooltip>
           </q-btn>
+          <div class="mt-5">
+            <slot name="header" />
+          </div>
         </q-item>
         <slot />
       </div>

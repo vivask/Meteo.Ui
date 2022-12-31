@@ -26,7 +26,7 @@ export default defineComponent({
     label: String,
   },
 
-  setup() {
+  setup(props) {
     const model = ref(false);
     const instance = getCurrentInstance();
     const hasParentMenu = computed(() => instance.parent.type.name !== 'QDrawer');
@@ -35,7 +35,7 @@ export default defineComponent({
       model,
       hasParentMenu,
 
-      open() {
+      /*open() {
         model.value = true;
         if (hasParentMenu.value) {
           const parent = instance.parent.parent.parent.parent.parent;
@@ -43,7 +43,7 @@ export default defineComponent({
             parent.ctx.open();
           }
         }
-      },
+      },*/
     };
   },
 });

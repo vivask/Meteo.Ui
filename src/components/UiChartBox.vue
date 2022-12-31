@@ -9,20 +9,18 @@
 </template>
 
 <script>
-import { defineComponent, computed } from "vue";
-import { useQuasar } from "quasar";
+import { defineComponent, computed } from 'vue';
+import { Screen } from 'quasar';
 
 export default defineComponent({
-  name: "UiChartBox",
+  name: 'UiChartBox',
 
   setup() {
-    const $q = useQuasar();
+    const columns = { xl: 8, lg: 8, md: 4, sm: 5, xs: 10 };
+    const cols = computed(() => `col-${columns[Screen.name]}`);
 
     return {
-      cols: computed(
-        () =>
-          `col-${$q.screen.name == "sm" ? 8 : $q.screen.name == "xs" ? 11 : 5}`
-      ),
+      cols,
     };
   },
 });

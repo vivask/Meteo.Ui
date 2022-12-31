@@ -158,6 +158,13 @@ const routes = [
         },
       },
       {
+        path: '/radius/verified',
+        component: () => import('@/pages/PageVerified.vue'),
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
         path: '/database/tables',
         component: () => import('@/pages/PageTables.vue'),
         meta: {
@@ -165,8 +172,8 @@ const routes = [
         },
       },
       {
-        path: '/radius/verified',
-        component: () => import('@/pages/PageVerified.vue'),
+        path: '/database/sync',
+        component: () => import('@/pages/PageTableSync.vue'),
         meta: {
           requiresAuth: true,
         },

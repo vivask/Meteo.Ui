@@ -47,7 +47,9 @@ export default defineComponent({
     },
   },
 
-  setup(props) {
+  emits: ['active'],
+
+  setup(props, { emit }) {
     const store = useLayoutStore();
     const instance = getCurrentInstance();
     const hasParentMenu = computed(() => instance.parent.type.name !== 'QDrawer');
@@ -64,10 +66,10 @@ export default defineComponent({
       active,
       (newVal) => {
         if (newVal && hasParentMenu.value) {
-          const parent = instance.parent.parent.parent.parent.parent;
-          if (parent.type.name === 'UiMenuExpansion') {
+          //const parent = instance.parent.parent.parent.parent.parent;
+          /*if (parent.type.name === 'UiMenuExpansion') {
             parent.ctx.open();
-          }
+          }*/
         }
       },
       { immediate: true },

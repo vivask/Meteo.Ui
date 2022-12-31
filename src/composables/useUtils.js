@@ -1,7 +1,7 @@
 import { date } from 'quasar';
 
 export function useUtils() {
-  const formatLongDate = (time) => (isEmptyTime(time) ? '--' : date.formatDate(time, 'MMM DD, YYYY HH:mm:ss'));
+  const formatLongDate = (time) => (isEmptyTime(time) ? 'NaN' : date.formatDate(time, 'MMM DD, YYYY HH:mm:ss'));
   const shortDate = (time) => date.formatDate(time, 'YYYY-MM-DD');
   const shortTime = (time) => date.formatDate(time, 'HH:mm:ss');
 
