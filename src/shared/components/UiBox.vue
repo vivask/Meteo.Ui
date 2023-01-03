@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!(spinner && loading)" class="q-pa-md">
+  <div class="q-pa-md">
     <div class="row justify-center items-start crisper">
       <div class="square rounded-borders" :class="cols">
         <q-item :class="{ 'bottom-line': line }">
@@ -24,25 +24,14 @@
       </div>
     </div>
   </div>
-  <ui-container-vue v-if="loading && spinner && !error">
-    <ui-spinner-vue></ui-spinner-vue>
-  </ui-container-vue>
 </template>
 
 <script>
 import { defineComponent, computed, watch } from 'vue';
-import { useLoaderStore } from '@/stores/useLoaderStore.js';
-import UiContainerVue from '@/components/UiContainer.vue';
-import UiSpinnerVue from '@/components/UiSpinner.vue';
 import { Notify, Screen } from 'quasar';
 
 export default defineComponent({
   name: 'UiBox',
-
-  components: {
-    UiContainerVue,
-    UiSpinnerVue,
-  },
 
   props: {
     columns: {
@@ -53,11 +42,6 @@ export default defineComponent({
     header: {
       type: String,
       required: true,
-    },
-
-    spinner: {
-      type: Boolean,
-      default: true,
     },
 
     line: {
@@ -87,29 +71,9 @@ export default defineComponent({
   },
 
   setup(props) {
-    const store = useLoaderStore();
-
-    const loading = computed(() => store.loading);
-    const error = computed(() => store.error);
-    const message = computed(() => store.message);
     const showTooltiip = computed(() => !!props.tooltip && props.tooltip.length > 0);
 
-    const showError = (message) => {
-      Notify.create({
-        timeout: import.meta.env.ERROR_TIMEOUT,
-        type: 'negative',
-        message: message,
-      });
-    };
-
-    watch(error, () => {
-      showError(message);
-    });
-
     return {
-      loading,
-      error,
-      message,
       showTooltiip,
       cols: computed(() => `col-${props.columns[Screen.name]}`),
     };

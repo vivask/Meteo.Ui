@@ -43,7 +43,7 @@
 <script>
 import { defineComponent, ref, watch, toRefs } from 'vue';
 export default defineComponent({
-  name: 'UiProxy',
+  name: 'ProxyServer',
 
   props: {
     modelValue: {

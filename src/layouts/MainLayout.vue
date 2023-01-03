@@ -13,14 +13,11 @@
 
     <q-page-container>
       <router-view v-slot="{ Component }">
-        <template v-if="Component">
+        <template v-if="Component && !(spinner && loading)">
           <keep-alive :max="3" :exclude="['autovpn', 'ignorevpn']">
             <component :is="Component" />
           </keep-alive>
         </template>
-        <ui-container-vue v-else>
-          <ui-spinner-vue />
-        </ui-container-vue>
       </router-view>
     </q-page-container>
   </q-layout>
@@ -34,7 +31,7 @@ import UiMenuMainVue from '@/layouts/components/UiMenuMain.vue';
 import UiContainerVue from '@/shared/components/UiContainer.vue';
 import UiSpinnerVue from '@/shared/components/UiSpinner.vue';
 import { useLoaderStore } from '../shared/stores/useLoaderStore';
-import { useQuasar, Notify } from 'quasar';
+import { useQuasar, Notify, Loading, QSpinnerGears } from 'quasar';
 
 export default defineComponent({
   name: 'MainLayout',
@@ -52,6 +49,8 @@ export default defineComponent({
     const loader = useLoaderStore();
     const error = computed(() => loader.error);
     const message = computed(() => loader.message);
+    const loading = computed(() => loader.loading);
+    const spinner = computed(() => loader.spinner);
 
     const showError = (message) => {
       Notify.create({
@@ -67,11 +66,22 @@ export default defineComponent({
       showError(message);
     });
 
+    watch(loading, (value) => {
+      if (spinner.value && value) {
+        Loading.show();
+      } else {
+        Loading.hide();
+      }
+    });
+
     return {
       drawer,
       useAjaxFilter,
       isAuthenticated: ref(true),
       isActivePeripheral: ref(false),
+      loading,
+      spinner,
+      error,
 
       ajaxFilterFn(url) {
         return !useAjaxFilter.includes(url);

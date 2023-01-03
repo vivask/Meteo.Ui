@@ -4,6 +4,7 @@ export const proxyRoutes = [
     component: () => import('@/proxy/pages/PageProxy.vue'),
     meta: {
       requiresAuth: true,
+      spinner: true,
     },
   },
   {
@@ -11,13 +12,15 @@ export const proxyRoutes = [
     component: () => import('@/proxy/pages/PageZones.vue'),
     meta: {
       requiresAuth: true,
+      spinner: true,
     },
   },
-  {
+  /*{
     path: '/proxy/manualvpn',
     component: () => import('@/proxy/pages/PageManualVpn.vue'),
     meta: {
       requiresAuth: true,
+      spinner: true,
     },
   },
   {
@@ -25,6 +28,7 @@ export const proxyRoutes = [
     component: () => import('@/proxy/pages/PageAutoVpn.vue'),
     meta: {
       requiresAuth: true,
+      spinner: true,
     },
   },
   {
@@ -32,6 +36,7 @@ export const proxyRoutes = [
     component: () => import('@/proxy/pages/PageIgnoreVpn.vue'),
     meta: {
       requiresAuth: true,
+      spinner: true,
     },
-  },
+  },*/
 ];

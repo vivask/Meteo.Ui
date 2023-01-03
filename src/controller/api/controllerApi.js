@@ -1,4 +1,5 @@
 import { webClient } from './webClient';
+import { jwtClient } from '../../shared/api/jwtClient';
 import { date } from 'quasar';
 
 const MAX_DATA_UPDATE_PERIOD_S = 12;
@@ -11,7 +12,7 @@ const duration = (time) => date.formatDate(new Date(), 'X') - date.formatDate(ti
  */
 export async function getEsp32State() {
   const empty = { alive: false };
-  return webClient
+  return jwtClient
     .get('/esp32/status')
     .then(({ success, result }) => {
       return !success

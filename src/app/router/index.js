@@ -1,9 +1,11 @@
 import { createRouter, createMemoryHistory, createWebHistory, createWebHashHistory } from 'vue-router';
+import { useAuthStore } from '@/shared/stores/useAuthStore.js';
+import { useLayoutStore } from '@/shared/stores/useLayoutStore.js';
+import { useLoaderStore } from '../../shared/stores/useLoaderStore';
 import { layoutsRoutes } from '@/layouts/router/layoutsRoutes.js';
 import { homeRoutes } from '@/controller/router/homeRoutes.js';
 import { authRoutes } from '../../auth/router/authRoutes';
-//import { useAuthStore } from '@/stores/useAuthStore.js';
-//import { useLayoutStore } from '@/stores/useLayoutStore.js';
+import { proxyRoutes } from '../../proxy/router/proxyRoutes';
 
 const createHistory = import.meta.env.SERVER
   ? createMemoryHistory(import.meta.env.BASE_URL)
@@ -16,7 +18,7 @@ export const router = createRouter({
   routes: [],
 });
 
-const layoutsChildren = [homeRoutes, authRoutes];
+const layoutsChildren = [homeRoutes, authRoutes, proxyRoutes];
 
 for (const children of layoutsChildren) {
   for (const route of children) {
@@ -32,7 +34,11 @@ for (const routes of modulesRoutes) {
   }
 }
 
-/*router.beforeEach(async (to) => {
+router.beforeEach(async (to) => {
+  const spinner = to.matched.some((record) => record.meta.spinner);
+  const loader = useLoaderStore();
+  loader.useSpinner(spinner);
+
   // redirect to login page if not logged in and trying to access a restricted page
   const authRequired = to.matched.some((record) => record.meta.requiresAuth);
   const auth = useAuthStore();
@@ -47,4 +53,4 @@ router.afterEach((to) => {
   const layout = useLayoutStore();
   const prefix = import.meta.env.VITE_ROUTER_MODE === 'hash' ? '#' : '';
   layout.setItems(prefix + to.path);
-});*/
+});

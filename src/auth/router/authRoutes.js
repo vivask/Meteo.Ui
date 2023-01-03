@@ -5,6 +5,7 @@ export const authRoutes = [
     component: () => import('@/auth/pages/PageLogin.vue'),
     meta: {
       requiresAuth: false,
+      spinner: false,
     },
   },
   {
@@ -13,6 +14,7 @@ export const authRoutes = [
     component: () => import('@/auth/pages/PageSign.vue'),
     meta: {
       requiresAuth: false,
+      spinner: false,
     },
   },
 ];
