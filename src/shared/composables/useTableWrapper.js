@@ -12,10 +12,13 @@ export function useTableWrapper(api, rows) {
       return await jwtClient
         .get(api)
         .then(({ success, result }) => {
-          console.log(result);
-          store.refresh(api);
-          useLoaderStore().useSpinner(false);
-          return result;
+          if (!success) {
+            return [];
+          } else {
+            console.log(result);
+            store.refresh(api);
+            return result;
+          }
         })
         .catch(() => {
           return [];

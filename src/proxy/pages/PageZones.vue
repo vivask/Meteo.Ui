@@ -83,7 +83,6 @@ export default defineComponent({
       form,
       boxCols,
       visible,
-      wrapper,
 
       activeIcon,
       activeColor,
