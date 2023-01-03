@@ -27,13 +27,14 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue';
-import { useAjaxFilter } from '@/layouts/ajaxFilter.js';
-import UiToolBarVue from '@/layouts/UiToolBar.vue';
-import UiMenuMainVue from '@/layouts/UiMenuMain.vue';
-import UiContainerVue from '@/components/UiContainer.vue';
-import UiSpinnerVue from '@/components/UiSpinner.vue';
-import { useQuasar } from 'quasar';
+import { defineComponent, ref, computed, watch } from 'vue';
+import { useAjaxFilter } from '@/layouts/helpers/ajaxFilter.js';
+import UiToolBarVue from '@/layouts/components/UiToolBar.vue';
+import UiMenuMainVue from '@/layouts/components/UiMenuMain.vue';
+import UiContainerVue from '@/shared/components/UiContainer.vue';
+import UiSpinnerVue from '@/shared/components/UiSpinner.vue';
+import { useLoaderStore } from '../shared/stores/useLoaderStore';
+import { useQuasar, Notify } from 'quasar';
 
 export default defineComponent({
   name: 'MainLayout',
@@ -48,8 +49,23 @@ export default defineComponent({
   setup() {
     const $q = useQuasar();
     const drawer = ref(false);
+    const loader = useLoaderStore();
+    const error = computed(() => loader.error);
+    const message = computed(() => loader.message);
+
+    const showError = (message) => {
+      Notify.create({
+        timeout: import.meta.env.ERROR_TIMEOUT,
+        type: 'negative',
+        message: message,
+      });
+    };
 
     //$q.dark.set(true);
+
+    watch(error, () => {
+      showError(message);
+    });
 
     return {
       drawer,

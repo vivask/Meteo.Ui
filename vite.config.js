@@ -13,7 +13,7 @@ export default defineConfig({
     }),
 
     quasar({
-      sassVariables: 'src/assets/css/quasar-variables.sass',
+      sassVariables: 'src/shared/assets/css/quasar-variables.sass',
     }),
 
     splitVendorChunkPlugin(),
@@ -22,13 +22,26 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+      https: 'agent-base',
     },
   },
 
   server: {
     proxy: {
       '/api/v1': {
-        target: 'https://192.168.1.3',
+        target: 'https://192.168.1.9',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/api/v1/esp32': {
+        target: {
+          host: '192.168.1.9',
+          port: 17000,
+          protocol: 'https',
+          ca: '/home/w/Projects/Meteo/Backend/certs/ca.crt',
+          cert: '/home/w/Projects/Meteo/Backend/certs/client.crt',
+          key: '/home/w/Projects/Meteo/Backend/certs/client.key',
+        },
         changeOrigin: true,
         secure: false,
       },
