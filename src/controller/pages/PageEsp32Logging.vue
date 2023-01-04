@@ -1,12 +1,5 @@
 <template>
-  <ui-box-vue
-    :columns="boxCols"
-    header="Message log"
-    :spinner="spinner"
-    :buttonShow="true"
-    buttonLabel="Clear"
-    :buttonClick="handleClear"
-  >
+  <ui-box-vue :columns="boxCols" header="Message log" :buttonShow="true" buttonLabel="Clear" :buttonClick="handleClear">
     <q-table dense :rows="rows" :columns="columns" row-key="date" :rows-per-page-options="[10, 50, 100, 0]">
       <template #body-cell-date="props">
         <q-td :props="props" class="wd-80" :class="logColor(props.row.type)">
@@ -28,9 +21,11 @@
 </template>
 
 <script>
-import { defineComponent, ref, inject, onMounted, watch, computed } from 'vue';
-import UiBoxVue from '@/components/UiBox.vue';
-import { useUtils } from '@/composables/useUtils.js';
+import { defineComponent, ref, onMounted } from 'vue';
+import UiBoxVue from '@/shared/components/UiBox.vue';
+import { useConfirmDialog } from '@/shared/composables/useConfirmDialog.js';
+import { useUtils } from '@/shared/composables/useUtils.js';
+import { getLogging, clearLogging } from '../api/loggingApi';
 
 const columns = [
   {
@@ -58,23 +53,16 @@ export default defineComponent({
   },
 
   setup() {
-    const axios = inject('axios');
     const rows = ref([]);
-    const spinner = ref(true);
     const boxCols = { xl: 9, lg: 9, md: 7, sm: 11, xs: 10 };
     const { shortDate, shortTime } = useUtils();
+    const confirm = useConfirmDialog();
 
-    const refresh = () => {
-      axios.get('/esp32/logging').then((resp) => {
-        rows.value = resp.data.data;
-        spinner.value = false;
-      });
-    };
+    const refresh = async () => (rows.value = await getLogging());
 
     onMounted(() => refresh());
 
     return {
-      spinner,
       columns,
       rows,
       confirm,
@@ -83,10 +71,11 @@ export default defineComponent({
       shortDate,
       shortTime,
 
-      handleClear() {
-        axios.put('/esp32/logging').then(() => {
-          refresh();
-        });
+      async handleClear() {
+        const ok = await confirm.show('Are you sure you want to clear logging?');
+        if (ok) {
+          clearLogging(rows);
+        }
       },
 
       logColor(msgType) {

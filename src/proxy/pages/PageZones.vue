@@ -6,7 +6,7 @@
     buttonLabel="Add"
     :buttonClick="handleAdd"
   >
-    <q-table hide-header :rows="rows" :columns="columns" row-key="name" :rows-per-page-options="[10, 50, 100, 0]">
+    <q-table :rows="rows" :columns="columns" row-key="name" :rows-per-page-options="[0, 10, 50, 100]">
       <template #body-cell-state="props">
         <q-td :props="props" class="wd-30">
           <q-icon :name="activeIcon(props.row)" size="1.2rem" :color="activeColor(props.row)" />
@@ -29,17 +29,17 @@
 import { defineComponent, ref, computed, onMounted } from 'vue';
 import UiBoxVue from '@/shared/components/UiBox.vue';
 import FormZoneVue from '../forms/FormZone.vue';
-import { zonesApi } from '../api/zonesApi';
+import { createWrapper } from '../api/zonesApi';
 import { useTableHandlers } from '@/shared/composables/useTableHandlers';
 import { useUtils } from '@/shared/composables/useUtils.js';
 import UiRoundBtnVue from '@/shared/components/UiRoundBtn.vue';
 
 const columns = [
   { name: 'state' },
-  { name: 'address', align: 'left', field: 'address', sortable: true },
-  { name: 'name', align: 'left', field: 'name' },
-  { name: 'mac', align: 'left', field: 'mac' },
-  { name: 'note', align: 'left', field: 'note' },
+  { name: 'address', label: 'IP address', align: 'left', field: 'address', sortable: true },
+  { name: 'name', label: 'Name', align: 'left', field: 'name' },
+  { name: 'mac', label: 'MAC address', align: 'left', field: 'mac' },
+  { name: 'note', label: 'Note', align: 'left', field: 'note' },
   { name: 'actions' },
 ];
 
@@ -54,10 +54,10 @@ export default defineComponent({
 
   setup() {
     const rows = ref([]);
-    const wrapper = zonesApi(rows);
+    const wrapper = createWrapper(rows);
     const form = ref(null);
     const zone = ref({});
-    const boxCols = { xl: 6, lg: 6, md: 7, sm: 11, xs: 10 };
+    const boxCols = { xl: 6, lg: 7, md: 7, sm: 11, xs: 10 };
     const buttonShow = computed(() => rows.value.length === 0);
     const visible = ref(false);
 

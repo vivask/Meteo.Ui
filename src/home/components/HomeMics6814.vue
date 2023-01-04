@@ -23,8 +23,9 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed, inject } from 'vue';
-import HomeLabelVue from '@/controller/components/HomeLabel.vue';
+import { defineComponent, ref, computed } from 'vue';
+import HomeLabelVue from '@/home/components/HomeLabel.vue';
+import { jwtClient } from '../../shared/api/jwtClient';
 
 export default defineComponent({
   name: 'HomeMics6814',
@@ -44,7 +45,6 @@ export default defineComponent({
   },
 
   setup() {
-    //const axios = inject('axios');
     const whiteIcon = new URL('@/shared/assets/icons/NH3-48x48-white.png', import.meta.url).href;
     const blueIcon = new URL('@/shared/assets/icons/NH3-48x48-blue.png', import.meta.url).href;
     const iconColor = '#3092EA';
@@ -56,15 +56,15 @@ export default defineComponent({
       color: computed(() => (hover.value ? iconColor : 'white')),
 
       checkNh3() {
-        axios.put('/esp32/mics6814/nh3/chk');
+        jwtClient.put('/esp32/mics6814/nh3/chk');
       },
 
       checkNo2() {
-        axios.put('/esp32/mics6814/no2/chk');
+        jwtClient.put('/esp32/mics6814/no2/chk');
       },
 
       checkCo() {
-        axios.put('/esp32/mics6814/co/chk');
+        jwtClient.put('/esp32/mics6814/co/chk');
       },
     };
   },

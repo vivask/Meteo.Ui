@@ -1,5 +1,5 @@
 import { jwtClient } from '../../shared/api/jwtClient';
-import { useLoaderStore } from '../../shared/stores/useLoaderStore';
+
 /**
  * Request proxy servers status
  * @returns {Promise<ResultContainer<any>>}
@@ -9,7 +9,6 @@ export async function getProxyState() {
   return jwtClient
     .get('/proxy/status')
     .then(({ success, result }) => {
-      useLoaderStore().useSpinner(false);
       return !success
         ? empty
         : {

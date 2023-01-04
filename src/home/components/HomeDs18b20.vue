@@ -13,7 +13,7 @@
         </q-avatar>
       </q-item-section>
       <q-item-section>
-        <q-item-label class="text-bold text-h6" :color="color">BME280</q-item-label>
+        <q-item-label class="text-bold text-h6" :color="color">DS18B20</q-item-label>
       </q-item-section>
     </q-item>
     <home-label-vue
@@ -24,17 +24,16 @@
       :check="check"
       :available="available"
     />
-    <home-label-vue :value="pressure" label="Давлeние:" unit="mmHg" :available="available" />
-    <home-label-vue :value="humidity" label="Влажность:" unit="%" :available="available" />
   </div>
 </template>
 
 <script>
-import { defineComponent, ref, computed, inject } from 'vue';
-import HomeLabelVue from '@/controller/components/HomeLabel.vue';
+import { defineComponent, ref, computed } from 'vue';
+import HomeLabelVue from '@/home/components/HomeLabel.vue';
+import { jwtClient } from '../../shared/api/jwtClient';
 
 export default defineComponent({
-  name: 'HomeBme280',
+  name: 'HomeDs18b20',
 
   components: {
     HomeLabelVue,
@@ -44,14 +43,11 @@ export default defineComponent({
     available: Boolean,
     temperature: [String, Number],
     alarm: Boolean,
-    pressure: [String, Number],
-    humidity: [String, Number],
   },
 
   setup() {
-    //const axios = inject('axios');
-    const whiteIcon = new URL('@/shared/assets/icons/humidity-48x48-white.png', import.meta.url).href;
-    const blueIcon = new URL('@/shared/assets/icons/humidity-48x48-blue.png', import.meta.url).href;
+    const whiteIcon = new URL('@/shared/assets/icons/temperature-48x48-white.png', import.meta.url).href;
+    const blueIcon = new URL('@/shared/assets/icons/temperature-48x48-blue.png', import.meta.url).href;
     const iconColor = '#3092EA';
     const hover = ref(false);
 
@@ -61,7 +57,7 @@ export default defineComponent({
       color: computed(() => (hover.value ? iconColor : 'white')),
 
       check() {
-        axios.put('/esp32/bme280/temperature/chk');
+        jwtClient.put('/esp32/ds18b20/temperature/chk');
       },
     };
   },

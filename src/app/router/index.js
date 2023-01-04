@@ -1,11 +1,14 @@
 import { createRouter, createMemoryHistory, createWebHistory, createWebHashHistory } from 'vue-router';
-import { useAuthStore } from '@/shared/stores/useAuthStore.js';
-import { useLayoutStore } from '@/shared/stores/useLayoutStore.js';
+import { useAuthStore } from '../../shared/stores/useAuthStore.js';
+import { useLayoutStore } from '../../shared/stores/useLayoutStore.js';
 import { useLoaderStore } from '../../shared/stores/useLoaderStore';
-import { layoutsRoutes } from '@/layouts/router/layoutsRoutes.js';
-import { homeRoutes } from '@/controller/router/homeRoutes.js';
+import { layoutsRoutes } from '../../layouts/router/layoutsRoutes.js';
 import { authRoutes } from '../../auth/router/authRoutes';
+import { homeRoutes } from '../../home/router/homeRoutes';
 import { proxyRoutes } from '../../proxy/router/proxyRoutes';
+import { controllerRoutes } from '../../controller/router/controllerRoutes.js';
+import { scheduleRoutes } from '../../schedule/router/scheduleRoutes.js';
+import { secureRoutes } from '../../secure/router/secureRoutes.js';
 
 const createHistory = import.meta.env.SERVER
   ? createMemoryHistory(import.meta.env.BASE_URL)
@@ -18,7 +21,7 @@ export const router = createRouter({
   routes: [],
 });
 
-const layoutsChildren = [homeRoutes, authRoutes, proxyRoutes];
+const layoutsChildren = [homeRoutes, authRoutes, controllerRoutes, proxyRoutes, scheduleRoutes, secureRoutes];
 
 for (const children of layoutsChildren) {
   for (const route of children) {

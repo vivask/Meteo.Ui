@@ -21,8 +21,9 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed, inject } from 'vue';
-import HomeLabelVue from '@/controller/components/HomeLabel.vue';
+import { defineComponent, ref, computed } from 'vue';
+import HomeLabelVue from '@/home/components/HomeLabel.vue';
+import { jwtClient } from '../../shared/api/jwtClient';
 
 export default defineComponent({
   name: 'HomeZe08ch2o',
@@ -38,7 +39,6 @@ export default defineComponent({
   },
 
   setup() {
-    //const axios = inject('axios');
     const whiteIcon = new URL('@/shared/assets/icons/CH2O-48x48-white.png', import.meta.url).href;
     const blueIcon = new URL('@/shared/assets/icons/CH2O-48x48-blue.png', import.meta.url).href;
     const iconColor = '#3092EA';
@@ -50,10 +50,8 @@ export default defineComponent({
       color: computed(() => (hover.value ? iconColor : 'white')),
 
       check() {
-        axios.put('/esp32/ze08ch2o/ch2o/chk');
+        jwtClient.put('/esp32/ze08ch2o/ch2o/chk');
       },
-
-      prevent() {},
     };
   },
 });

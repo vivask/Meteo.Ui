@@ -1,8 +1,8 @@
 <template>
-  <ui-box-vue :columns="boxCols" header="ESP32 Management" :spinner="spinner">
+  <ui-box-vue :columns="boxCols" header="ESP32 Management">
     <template #header>
-      <q-badge v-if="!disable" color="grey-1"> Core0: {{ core_0_load }}% </q-badge>
-      <q-badge v-if="!disable" color="grey-1"> Core1: {{ core_1_load }}% </q-badge>
+      <q-badge v-if="status.alive" color="grey-1"> Core0: {{ status.core_0_load }}% </q-badge>
+      <q-badge v-if="status.alive" color="grey-1"> Core1: {{ status.core_1_load }}% </q-badge>
     </template>
     <q-markup-table>
       <tbody>
@@ -10,7 +10,7 @@
           <td class="wd-max">
             <q-file
               v-model="file"
-              :disable="disable"
+              :disable="!status.alive"
               accept=".bin"
               label="Firmware file"
               outlined
@@ -21,7 +21,14 @@
         </tr>
         <tr>
           <td class="wd-max text-right">
-            <q-btn class="wd-max" :disable="disable" dense color="warning" icon="upgrade" @click="handelFirmware()">
+            <q-btn
+              class="wd-max"
+              :disable="!status.alive"
+              dense
+              color="warning"
+              icon="upgrade"
+              @click="handelFirmware()"
+            >
               <q-tooltip>Firmware upgrade</q-tooltip>
             </q-btn>
           </td>
@@ -30,7 +37,7 @@
           <td class="wd-max text-right">
             <q-btn
               class="wd-max"
-              :disable="disable"
+              :disable="!status.alive"
               dense
               color="warning"
               icon="mdi-wifi-cog"
@@ -44,7 +51,7 @@
           <td class="wd-max text-right">
             <q-btn
               class="wd-max"
-              :disable="disable"
+              :disable="!status.alive"
               dense
               color="primary"
               icon="mdi-power-cycle"
@@ -58,7 +65,7 @@
           <td class="wd-max text-right">
             <q-btn
               class="wd-max"
-              :disable="disable"
+              :disable="!status.alive"
               dense
               color="primary"
               icon="mdi-power-cycle"
@@ -74,11 +81,11 @@
 </template>
 
 <script>
-import { defineComponent, ref, inject, onActivated, onDeactivated, computed } from 'vue';
-import UiBoxVue from '@/components/UiBox.vue';
-import { useConfirmDialog } from '@/composables/useConfirmDialog.js';
-import { useEsp32Store } from '@/stores/useEsp32Store.js';
+import { defineComponent, ref, onActivated, onDeactivated } from 'vue';
+import UiBoxVue from '@/shared/components/UiBox.vue';
+import { useConfirmDialog } from '@/shared/composables/useConfirmDialog.js';
 import { Notify } from 'quasar';
+import { getEsp32State, upgradeFirmware, setupMode, reboorEsp32, reboorAvr } from '../api/settingApi';
 
 export default defineComponent({
   name: 'PageEsp32Setting',
@@ -89,19 +96,14 @@ export default defineComponent({
 
   setup() {
     let timer;
-    const axios = inject('axios');
-    const store = useEsp32Store();
-    const spinner = ref(false);
     const confirm = useConfirmDialog();
     const boxCols = { xl: 6, lg: 6, md: 7, sm: 11, xs: 10 };
     const file = ref(null);
-    const disable = computed(() => !store.status.alive);
-    const core_0_load = computed(() => store.status.cpu0_load);
-    const core_1_load = computed(() => store.status.cpu1_load);
+    const status = ref({ alive: false });
 
     onActivated(() => {
-      timer = setInterval(() => {
-        store.esp32State();
+      timer = setInterval(async () => {
+        status.value = await getEsp32State();
       }, 1000);
     });
 
@@ -110,12 +112,9 @@ export default defineComponent({
     });
 
     return {
-      spinner,
       boxCols,
       file,
-      disable,
-      core_0_load,
-      core_1_load,
+      status,
 
       async handelFirmware() {
         if (!(file?.value && file.value.name.length > 0)) {
@@ -127,11 +126,7 @@ export default defineComponent({
         } else {
           const ok = await confirm.show('Are you sure to upgrade esp32?');
           if (ok) {
-            let data = new FormData();
-            data.append('firmware', file.value);
-            axios.put('/esp32/upgrade', data).then(() => {
-              file.value = null;
-            });
+            upgradeFirmware(file);
           }
         }
       },
@@ -139,21 +134,21 @@ export default defineComponent({
       async handeleSetupMode() {
         const ok = await confirm.show('Are you sure to set the settings mode?');
         if (ok) {
-          axios.put('esp32/setup').then(() => {});
+          setupMode();
         }
       },
 
       async handleRebotEsp32() {
         const ok = await confirm.show('Are you sure you want to reload esp32?');
         if (ok) {
-          axios.put('esp32/reboot').then(() => {});
+          reboorEsp32();
         }
       },
 
       async handleRebotAvr() {
         const ok = await confirm.show('Are you sure you want to reload avr?');
         if (ok) {
-          axios.put('esp32/reboot/avr').then(() => {});
+          reboorAvr();
         }
       },
     };

@@ -1,4 +1,3 @@
-//import https from 'agent-base';
 import axios from 'axios';
 import { createErrorResult, createSuccessResult } from './ResultContainer.js';
 import { NetworkError } from './NetworkError.js';
@@ -37,7 +36,7 @@ export const serviceClient = (props) => {
 
   client.interceptors.request.use((request) => {
     if (!jwt) {
-      loader.start();
+      if (request.method === 'get') loader.start();
     } else {
       const accountService = useAuthStore();
       const account = accountService.user;
@@ -45,7 +44,7 @@ export const serviceClient = (props) => {
 
       if (isLoggedIn) {
         request.headers.Authorization = `Bearer ${account.token}`;
-        loader.start();
+        if (request.method === 'get') loader.start();
       }
     }
 

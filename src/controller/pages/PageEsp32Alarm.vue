@@ -1,12 +1,5 @@
 <template>
-  <ui-box-vue
-    :columns="boxCols"
-    header="Alarm Setting"
-    :spinner="spinner"
-    :buttonShow="true"
-    buttonLabel="Refresh"
-    :buttonClick="refresh"
-  >
+  <ui-box-vue :columns="boxCols" header="Alarm Setting" :buttonShow="true" buttonLabel="Refresh" :buttonClick="refresh">
     <q-card>
       <q-card-section>
         <q-form class="q-gutter-md" @submit.prevent="handleSubmit()">
@@ -110,9 +103,10 @@
 </template>
 
 <script>
-import { defineComponent, ref, inject, onMounted, watch, computed } from 'vue';
-import UiBoxVue from '@/components/UiBox.vue';
-import { useConfirmDialog } from '@/composables/useConfirmDialog.js';
+import { defineComponent, ref, onMounted } from 'vue';
+import UiBoxVue from '@/shared/components/UiBox.vue';
+import { useConfirmDialog } from '@/shared/composables/useConfirmDialog.js';
+import { getAlarms, setAlarms } from '../api/alarmApi';
 
 export default defineComponent({
   name: 'PageEsp32Alarm',
@@ -122,18 +116,15 @@ export default defineComponent({
   },
 
   setup() {
-    const axios = inject('axios');
     const settings = ref({});
-    const spinner = ref(true);
     const confirm = useConfirmDialog();
     const boxCols = { xl: 6, lg: 6, md: 7, sm: 11, xs: 10 };
 
-    const refresh = () => axios.get('/esp32/settings').then((resp) => (settings.value = resp.data.data));
+    const refresh = async () => (settings.value = await getAlarms());
 
     onMounted(() => refresh());
 
     return {
-      spinner,
       settings,
       boxCols,
       refresh,
@@ -141,17 +132,7 @@ export default defineComponent({
       async handleSubmit() {
         const ok = await confirm.show('Update settings?');
         if (ok) {
-          settings.value.max_6814_nh3 = parseFloat(settings.value.max_6814_nh3);
-          settings.value.max_6814_no2 = parseFloat(settings.value.max_6814_no2);
-          settings.value.max_6814_co = parseFloat(settings.value.max_6814_co);
-          settings.value.min_temp = parseFloat(settings.value.min_temp);
-          settings.value.max_temp = parseFloat(settings.value.max_temp);
-          settings.value.min_bmx280_tempr = parseFloat(settings.value.min_bmx280_tempr);
-          settings.value.max_bmx280_tempr = parseFloat(settings.value.max_bmx280_tempr);
-          settings.value.max_rad_stat = parseFloat(settings.value.max_rad_stat);
-          settings.value.max_rad_dyn = parseFloat(settings.value.max_rad_dyn);
-          settings.value.max_ch2o = parseFloat(settings.value.max_ch2o);
-          axios.put('/esp32/settings', settings.value);
+          setAlarms(settings.value);
         }
       },
     };

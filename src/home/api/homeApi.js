@@ -1,32 +1,9 @@
 import { webClient } from './webClient';
-import { jwtClient } from '../../shared/api/jwtClient';
-import { date } from 'quasar';
+import { useUtils } from '../../shared/composables/useUtils';
 
 const MAX_DATA_UPDATE_PERIOD_S = 12;
 
-const duration = (time) => date.formatDate(new Date(), 'X') - date.formatDate(time, 'X');
-
-/**
- * Request controller status
- * @returns {Promise<ResultContainer<any>>}
- */
-export async function getEsp32State() {
-  const empty = { alive: false };
-  return jwtClient
-    .get('/esp32/status')
-    .then(({ success, result }) => {
-      return !success
-        ? empty
-        : {
-            alive: duration(result.esp32_date_time_now) < MAX_DATA_UPDATE_PERIOD_S,
-            core_0_load: parseFloat(result.cpu0_load).toFixed(1),
-            core_1_load: parseFloat(result.cpu1_load).toFixed(1),
-          };
-    })
-    .catch(() => {
-      return empty;
-    });
-}
+const { duration } = useUtils();
 
 /**
  * Request controller peripheral data

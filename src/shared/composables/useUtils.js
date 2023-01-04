@@ -14,5 +14,11 @@ export function useUtils() {
 
   const activeColor = (active) => (active ? 'positive' : 'grey');
 
-  return { formatLongDate, isEmptyTime, activeIcon, activeColor, shortDate, shortTime };
+  const duration = (time) => date.formatDate(new Date(), 'X') - date.formatDate(time, 'X');
+
+  const isTime = (v) => /^([0-1]?\d|2[0-3]):[0-5]\d:[0-5]\d$/.test(v);
+
+  const isDate = (v) => /^-?[\d]+\\-[0-1]\d\\-[0-3]\d$/.test(v);
+
+  return { formatLongDate, isEmptyTime, activeIcon, activeColor, shortDate, shortTime, duration, isDate, isTime };
 }
