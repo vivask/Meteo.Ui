@@ -13,7 +13,7 @@
 
     <q-page-container>
       <router-view v-slot="{ Component }">
-        <template v-if="Component && !(spinner && loading)">
+        <template v-if="Component">
           <keep-alive :max="3" :exclude="['autovpn', 'ignorevpn']">
             <component :is="Component" />
           </keep-alive>

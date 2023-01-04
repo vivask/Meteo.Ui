@@ -1,5 +1,4 @@
 import { jwtClient } from '../../shared/api/jwtClient';
-import { useLoaderStore } from '../../shared/stores/useLoaderStore';
 import { useRelationStore } from '../../shared/stores/useRelationStore';
 
 const store = useRelationStore();
@@ -15,7 +14,6 @@ export function useTableWrapper(api, rows) {
           if (!success) {
             return [];
           } else {
-            console.log(result);
             store.refresh(api);
             return result;
           }
@@ -30,9 +28,11 @@ export function useTableWrapper(api, rows) {
     return await jwtClient
       .put(api, target)
       .then(({ success, result }) => {
-        target.id = result;
-        rows.value.push(target);
-        store.modify(api);
+        if (success) {
+          target.id = result;
+          rows.value.push(target);
+          store.modify(api);
+        }
         return rows.value;
       })
       .catch(() => {

@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md">
+  <div v-show="show" class="q-pa-md">
     <div class="row justify-center items-start crisper">
       <div class="square rounded-borders" :class="cols">
         <q-item :class="{ 'bottom-line': line }">
@@ -27,8 +27,9 @@
 </template>
 
 <script>
-import { defineComponent, computed, watch } from 'vue';
-import { Notify, Screen } from 'quasar';
+import { defineComponent, computed } from 'vue';
+import { Screen } from 'quasar';
+import { useLoaderStore } from '../../shared/stores/useLoaderStore';
 
 export default defineComponent({
   name: 'UiBox',
@@ -72,9 +73,12 @@ export default defineComponent({
 
   setup(props) {
     const showTooltiip = computed(() => !!props.tooltip && props.tooltip.length > 0);
+    const loader = useLoaderStore();
+    const show = computed(() => !(loader.loading && loader.spinner));
 
     return {
       showTooltiip,
+      show,
       cols: computed(() => `col-${props.columns[Screen.name]}`),
     };
   },
