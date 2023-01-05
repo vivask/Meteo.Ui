@@ -24,8 +24,9 @@
 </template>
 
 <script>
-import { defineComponent, ref, onMounted, inject } from 'vue';
+import { defineComponent, ref, onMounted } from 'vue';
 import { useSubmitForm } from '@/shared/composables/useSubmitForm';
+import { getSyncTypes } from '../api/tableParamApi';
 
 export default defineComponent({
   name: 'FormTableParam',
@@ -33,17 +34,12 @@ export default defineComponent({
   emits: ['cancel', 'submit'],
 
   setup(props, { emit }) {
-    const axios = inject('axios');
     const popup = ref(null);
     const stypes = ref([]);
 
     const { localProp, show, handleSubmit, handleCancel } = useSubmitForm(popup, emit);
 
-    onMounted(() => {
-      axios.get('/database/stypes').then((response) => {
-        stypes.value = response.data.data;
-      });
-    });
+    onMounted(async () => (stypes.value = await getSyncTypes()));
 
     return {
       localProp,

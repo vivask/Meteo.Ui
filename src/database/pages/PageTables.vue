@@ -67,7 +67,7 @@ import { defineComponent, ref, computed, onMounted } from 'vue';
 import UiBoxVue from '@/shared/components/UiBox.vue';
 import UiRoundBtnVue from '@/shared/components/UiRoundBtn.vue';
 import { useTableHandlers } from '@/shared/composables/useTableHandlers';
-import FormTableVue from '@/forms/FormTable.vue';
+import FormTableVue from '../forms/FormTable.vue';
 import { useConfirmDialog } from '@/shared/composables/useConfirmDialog.js';
 import { createWrapper, Delete, Import, Save, Drop } from '../api/tableApi';
 import { Notify } from 'quasar';
