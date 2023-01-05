@@ -1,7 +1,7 @@
 export const secureRoutes = [
   {
     path: '/secure/sshkeys',
-    component: () => import('@/pages/PageSshKeys.vue'),
+    component: () => import('@/secure/pages/PageSshKeys.vue'),
     meta: {
       requiresAuth: true,
       spinner: true,
@@ -9,7 +9,7 @@ export const secureRoutes = [
   },
   {
     path: '/secure/sshhosts',
-    component: () => import('@/pages/PageSshHosts.vue'),
+    component: () => import('@/secure/pages/PageSshHosts.vue'),
     meta: {
       requiresAuth: true,
       spinner: true,
@@ -17,7 +17,7 @@ export const secureRoutes = [
   },
   {
     path: '/secure/gitusers',
-    component: () => import('@/pages/PageGitUsers.vue'),
+    component: () => import('@/secure/pages/PageGitUsers.vue'),
     meta: {
       requiresAuth: true,
       spinner: true,

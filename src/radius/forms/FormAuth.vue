@@ -2,19 +2,9 @@
   <q-dialog ref="popup" transition-show="rotate" transition-hide="rotate" persistent>
     <q-card style="min-width: 350px">
       <q-card-section>
-        <q-form class="q-gutter-md" autocomplete="off" @submit.prevent="handleSubmit">
-          <q-select
-            v-model="localProp.ssh_key"
-            outlined
-            dense
-            :options="ssh_keys"
-            option-label="owner"
-            hint="Service *"
-            lazy-rules
-            :rules="[(val) => val || 'Please select something']"
-          />
-          <ui-input-vue v-model="localProp.username" type="text" hint="User name *" />
-          <ui-password-input-vue v-model="localProp.password" hint="Password *" />
+        <q-form class="q-gutter-md" autocomplete="off" @submit.prevent="onSubmit">
+          <ui-input-vue v-model="localProp.username" hint="User Name *" autocomplete="off" />
+          <ui-password-input-vue v-model="localProp.value" hint="Password *" autocomplete="off" />
           <ui-password-input-vue ref="input" v-model="confirm" hint="Confirm password *" />
           <q-card-actions align="left" class="text-primary">
             <q-btn label="Submit" type="submit" color="primary" />
@@ -27,15 +17,14 @@
 </template>
 
 <script>
-import { defineComponent, ref, onMounted } from 'vue';
-import UiInputVue from '@/shared/components/UiInput.vue';
-import UiPasswordInputVue from '@/shared/components/UiPasswordInput.vue';
-import { useSubmitForm } from '@/shared/composables/useSubmitForm';
+import { defineComponent, ref } from 'vue';
+import UiInputVue from '@/components/UiInput.vue';
+import UiPasswordInputVue from '@/components/UiPasswordInput.vue';
+import { useSubmitForm } from '@/composables/useSubmitForm';
 import { Notify } from 'quasar';
-import { getSshKeys } from '../api/formsApi';
 
 export default defineComponent({
-  name: 'FormGitUser',
+  name: 'FormAuth',
 
   components: {
     UiInputVue,
@@ -46,23 +35,21 @@ export default defineComponent({
 
   setup(props, { emit }) {
     const popup = ref(null);
-    const ssh_keys = ref([]);
     const confirm = ref(null);
     const input = ref(null);
+    const isPwd = ref(true);
 
     const { localProp, show: formShow, handleSubmit, handleCancel } = useSubmitForm(popup, emit);
-
-    onMounted(async () => (ssh_keys.value = await getSshKeys()));
 
     return {
       localProp,
       popup,
-      ssh_keys,
       confirm,
       input,
+      isPwd,
 
       show(prop) {
-        confirm.value = prop.password;
+        confirm.value = prop.value;
         formShow(prop);
       },
 
@@ -70,7 +57,7 @@ export default defineComponent({
       handleCancel,
 
       onSubmit() {
-        if (localProp.value.password != confirm.value) {
+        if (localProp.value.value != confirm.value) {
           Notify.create({
             timeout: import.meta.env.ERROR_TIMEOUT,
             type: 'negative',
@@ -78,6 +65,8 @@ export default defineComponent({
           });
           input.value.focus();
         } else {
+          localProp.value.attribute = 'Cleartext-Password';
+          localProp.value.op = ':=';
           handleSubmit();
         }
       },

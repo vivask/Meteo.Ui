@@ -14,7 +14,6 @@
 
 <script>
 import { defineComponent, ref, computed } from 'vue';
-import { validateIP, validateHost, validateDomainName } from '../helpers/utils.js';
 
 export default defineComponent({
   name: 'UiInput',
@@ -37,6 +36,18 @@ export default defineComponent({
 
   setup(props, { emit }) {
     const localModel = ref(props.modelValue);
+
+    const validateIP = (ip) =>
+      /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
+        ip,
+      );
+
+    const validateDomainName = (dn) => /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/.test(dn);
+
+    const validateHost = (host) =>
+      /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
+        host,
+      ) || /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/.test(host);
 
     const rules = computed(() =>
       props.rule === 'ip'
