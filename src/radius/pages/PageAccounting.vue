@@ -2,7 +2,6 @@
   <ui-box-vue
     :columns="boxCols"
     header="Accounting Radius"
-    :spinner="spinner"
     :buttonShow="true"
     buttonLabel="Clear"
     :buttonClick="handleClear"
@@ -28,11 +27,12 @@
 </template>
 
 <script>
-import { defineComponent, ref, inject, onMounted, watch, computed } from 'vue';
-import UiBoxVue from '@/components/UiBox.vue';
-import { useUtils } from '@/composables/useUtils.js';
-import { useConfirmDialog } from '@/composables/useConfirmDialog.js';
-import { useLayoutStore } from '@/stores/useLayoutStore.js';
+import { defineComponent, ref, onMounted, watch, computed } from 'vue';
+import UiBoxVue from '@/shared/components/UiBox.vue';
+import { useUtils } from '@/shared/composables/useUtils.js';
+import { useConfirmDialog } from '@/shared/composables/useConfirmDialog.js';
+import { useLayoutStore } from '@/shared/stores/useLayoutStore.js';
+import { getAccounting, applyValidation, Clear } from '../api/accountingApi';
 
 export default defineComponent({
   name: 'PageAccounting',
@@ -100,10 +100,8 @@ export default defineComponent({
       },
     ];
 
-    const axios = inject('axios');
     const rows = ref([]);
     const confirm = useConfirmDialog();
-    const spinner = ref(true);
     const boxCols = { xl: 9, lg: 9, md: 7, sm: 11, xs: 10 };
     const { formatLongDate } = useUtils();
     const layoutStore = useLayoutStore();
@@ -115,17 +113,13 @@ export default defineComponent({
     const color = (row) => (isValidUser(row) ? 'positive' : isVerifiedUser(row) ? 'warning' : 'negative');
     const icon = (row) => (row.verified.length > 0 ? 'verified_user' : 'mdi-shield-account');
 
-    const refresh = () => {
-      const url = '/radius/accounting/' + filter.value;
-      axios.get(url).then((resp) => (rows.value = resp.data.data));
-    };
+    const refresh = async () => (rows.value = await getAccounting(filter.value));
 
     onMounted(() => refresh());
 
     watch(filter, () => refresh());
 
     return {
-      spinner,
       columns,
       rows,
       confirm,
@@ -135,20 +129,16 @@ export default defineComponent({
       color,
       icon,
 
-      handleVerify(row) {
+      async handleVerify(row) {
         if (!isVerifiedUser(row)) {
-          const url = '/radius/accounting/verified/' + row.id;
-          axios.put(url).then(() => {
-            refresh();
-          });
+          const ok = await applyValidation(row.id);
+          if (ok) refresh();
         }
       },
 
-      handleClear() {
-        const url = '/radius/accounting/clear/' + filter.value;
-        axios.put(url).then(() => {
-          refresh();
-        });
+      async handleClear() {
+        const ok = await Clear(filter.value);
+        if (ok) refresh();
       },
     };
   },

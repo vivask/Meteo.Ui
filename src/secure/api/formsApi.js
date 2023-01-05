@@ -1,5 +1,9 @@
 import { jwtClient } from '../../shared/api/jwtClient';
 
+/**
+ * Request ssh keys
+ * @returns {Promise<ResultContainer<any>>}
+ */
 export async function getSshKeys() {
   const empty = [];
   return jwtClient

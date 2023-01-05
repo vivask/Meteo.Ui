@@ -48,11 +48,11 @@
 
 <script>
 import { defineComponent, computed, ref } from 'vue';
-import UiInputVue from '@/components/UiInput.vue';
-import { useSubmitForm } from '@/composables/useSubmitForm';
-import FormTableParamVue from '@/forms/FormTableParam.vue';
-import { useConfirmDialog } from '@/composables/useConfirmDialog.js';
-import UiRoundBtnVue from '@/components/UiRoundBtn.vue';
+import UiInputVue from '@/shared/components/UiInput.vue';
+import { useSubmitForm } from '@/shared/composables/useSubmitForm';
+import FormTableParamVue from './FormTableParam.vue';
+import { useConfirmDialog } from '@/shared/composables/useConfirmDialog.js';
+import UiRoundBtnVue from '@/shared/components/UiRoundBtn.vue';
 
 const columns = [{ name: 'value', align: 'left', classes: 'wd-50' }, { name: 'actions' }];
 

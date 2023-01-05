@@ -2,7 +2,6 @@
   <ui-box-vue
     :columns="boxCols"
     header="Local hosts"
-    :spinner="spinner"
     :buttonShow="buttonShow"
     buttonLabel="Add"
     :buttonClick="handleAdd"
@@ -64,18 +63,19 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed, onMounted, inject } from 'vue';
-import UiBoxVue from '@/components/UiBox.vue';
-import { useTableWrapper } from '@/composables/useTableWrapper.js';
-import { useTableHandlers } from '@/composables/useTableHandlers';
+import { defineComponent, ref, computed, onMounted } from 'vue';
+import UiBoxVue from '@/shared/components/UiBox.vue';
+import UiRoundBtnVue from '@/shared/components/UiRoundBtn.vue';
+import { useTableHandlers } from '@/shared/composables/useTableHandlers';
 import FormTableVue from '@/forms/FormTable.vue';
-import { useConfirmDialog } from '@/composables/useConfirmDialog.js';
-import UiRoundBtnVue from '@/components/UiRoundBtn.vue';
+import { useConfirmDialog } from '@/shared/composables/useConfirmDialog.js';
+import { createWrapper, Delete, Import, Save, Drop } from '../api/tableApi';
+import { Notify } from 'quasar';
 
 const columns = [
   { name: 'state', align: 'left', classes: 'wd-50' },
-  { name: 'name', align: 'left', field: 'name', classes: 'wd-100', sortable: true },
-  { name: 'note', align: 'left', field: 'note', classes: 'wd-100', sortable: true },
+  { name: 'name', label: 'Name', align: 'left', field: 'name', classes: 'wd-100', sortable: true },
+  { name: 'note', label: 'Note', align: 'left', field: 'note', classes: 'wd-100', sortable: true },
   { name: 'actions' },
 ];
 
@@ -89,9 +89,8 @@ export default defineComponent({
   },
 
   setup() {
-    const axios = inject('axios');
     const rows = ref([]);
-    const wrapper = useTableWrapper('/database/tables', axios, rows);
+    const wrapper = createWrapper(rows);
     const spinner = ref(true);
     const form = ref(null);
     const boxCols = { xl: 6, lg: 6, md: 7, sm: 11, xs: 10 };
@@ -102,9 +101,7 @@ export default defineComponent({
 
     const { handleAdd, handleEdit, handleSubmit, handleCancel } = useTableHandlers(visible, form, rows, wrapper, {});
 
-    onMounted(async () => {
-      rows.value = await wrapper.Get();
-    });
+    onMounted(async () => (rows.value = await wrapper.Get()));
 
     return {
       spinner,
@@ -124,38 +121,59 @@ export default defineComponent({
       handleCancel,
 
       async handleDelete(row) {
-        const ok = await confirm.show('Are you sure to delete this items?');
+        let ok = await confirm.show('Are you sure to delete this items?');
         if (ok) {
           const data = wrapper.Selected(row, selected.value);
           selected.value = [];
-          axios.post('/database/tables/delete', data);
+          ok = await Delete(data);
+          if (ok) {
+            rows.value = await wrapper.Get();
+          }
         }
       },
 
       async handleImport(row) {
-        const ok = await confirm.show('Are you sure to import this table from csv?');
+        let ok = await confirm.show('Are you sure to import this table from csv?');
         if (ok) {
           const data = wrapper.Selected(row, selected.value);
           selected.value = [];
-          axios.put('/database/import', data);
+          ok = await Import(data);
+          if (ok) {
+            Notify.create({
+              type: 'info',
+              message: 'Import completed',
+            });
+          }
         }
       },
 
       async handleSave(row) {
-        const ok = await confirm.show('Are you sure to save this table to csv?');
+        let ok = await confirm.show('Are you sure to save this table to csv?');
         if (ok) {
           const data = wrapper.Selected(row, selected.value);
           selected.value = [];
-          axios.put('/database/save', data);
+          ok = await Save(data);
+          if (ok) {
+            Notify.create({
+              type: 'info',
+              message: 'Import completed',
+            });
+          }
         }
       },
 
       async handleDdrop(row) {
-        const ok = await confirm.show('Are you sure to drop this tables?');
+        let ok = await confirm.show('Are you sure to drop this tables?');
         if (ok) {
           const data = wrapper.Selected(row, selected.value);
           selected.value = [];
-          axios.post('/database/tables/drop', data);
+          ok = await Drop(data);
+          if (ok) {
+            Notify.create({
+              type: 'info',
+              message: 'Drop completed',
+            });
+          }
         }
       },
     };

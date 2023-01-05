@@ -25,7 +25,7 @@
 
 <script>
 import { defineComponent, ref, onMounted, inject } from 'vue';
-import { useSubmitForm } from '@/composables/useSubmitForm';
+import { useSubmitForm } from '@/shared/composables/useSubmitForm';
 
 export default defineComponent({
   name: 'FormTableParam',

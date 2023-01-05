@@ -9,6 +9,9 @@ import { proxyRoutes } from '../../proxy/router/proxyRoutes';
 import { controllerRoutes } from '../../controller/router/controllerRoutes.js';
 import { scheduleRoutes } from '../../schedule/router/scheduleRoutes.js';
 import { secureRoutes } from '../../secure/router/secureRoutes.js';
+import { serversRoutes } from '../../servers/router/serversRoutes.js';
+import { radiusRoutes } from '../../radius/router/radiusRoutes.js';
+import { databaseRoutes } from '../../database/router/databaseRoutes.js';
 
 const createHistory = import.meta.env.SERVER
   ? createMemoryHistory(import.meta.env.BASE_URL)
@@ -21,7 +24,17 @@ export const router = createRouter({
   routes: [],
 });
 
-const layoutsChildren = [homeRoutes, authRoutes, controllerRoutes, proxyRoutes, scheduleRoutes, secureRoutes];
+const layoutsChildren = [
+  homeRoutes,
+  authRoutes,
+  controllerRoutes,
+  proxyRoutes,
+  scheduleRoutes,
+  secureRoutes,
+  serversRoutes,
+  radiusRoutes,
+  databaseRoutes,
+];
 
 for (const children of layoutsChildren) {
   for (const route of children) {

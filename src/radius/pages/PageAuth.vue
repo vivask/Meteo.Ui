@@ -2,7 +2,6 @@
   <ui-box-vue
     :columns="boxCols"
     header="Authentication Radius"
-    :spinner="spinner"
     :buttonShow="buttonShow"
     buttonLabel="Add"
     :buttonClick="handleAdd"
@@ -27,12 +26,12 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed, onMounted, inject } from 'vue';
-import UiBoxVue from '@/components/UiBox.vue';
-import FormAuthVue from '@/forms/FormAuth.vue';
-import { useTableWrapper } from '@/composables/useTableWrapper.js';
-import { useTableHandlers } from '@/composables/useTableHandlers';
-import UiRoundBtnVue from '@/components/UiRoundBtn.vue';
+import { defineComponent, ref, computed, onMounted } from 'vue';
+import UiBoxVue from '@/shared/components/UiBox.vue';
+import FormAuthVue from '../forms/FormAuth.vue';
+import { createWrapper } from '../api/authApi';
+import { useTableHandlers } from '@/shared/composables/useTableHandlers';
+import UiRoundBtnVue from '@/shared/components/UiRoundBtn.vue';
 
 const columns = [
   { name: 'state' },
@@ -52,10 +51,8 @@ export default defineComponent({
   },
 
   setup() {
-    const axios = inject('axios');
     const rows = ref([]);
-    const wrapper = useTableWrapper('/radius/auth', axios, rows);
-    const spinner = ref(true);
+    const wrapper = createWrapper(rows);
     const form = ref(null);
     const boxCols = { xl: 6, lg: 6, md: 7, sm: 11, xs: 10 };
     const buttonShow = computed(() => rows.value.length === 0);
@@ -70,12 +67,9 @@ export default defineComponent({
       {},
     );
 
-    onMounted(async () => {
-      rows.value = await wrapper.Get(true);
-    });
+    onMounted(async () => (rows.value = await wrapper.Get(true)));
 
     return {
-      spinner,
       columns,
       rows,
       buttonShow,

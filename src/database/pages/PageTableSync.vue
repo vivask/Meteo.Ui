@@ -1,5 +1,5 @@
 <template>
-  <ui-box-vue :columns="boxCols" header="Table Synchronization" :spinner="spinner">
+  <ui-box-vue :columns="boxCols" header="Table Synchronization">
     <q-table hide-header :rows="rows" :columns="columns" row-key="name" :rows-per-page-options="[10, 50, 100, 0]">
       <template #top>
         <q-checkbox v-model="allSelected" color="grey" @update:model-value="handleSelectedAll" />
@@ -47,8 +47,9 @@
 </template>
 
 <script>
-import { defineComponent, computed, ref, inject, onMounted } from 'vue';
-import UiBoxVue from '@/components/UiBox.vue';
+import { defineComponent, computed, ref, onMounted } from 'vue';
+import UiBoxVue from '@/shared/components/UiBox.vue';
+import { getTables } from '../api/syncApi';
 
 const columns = [
   { name: 'selected' },
@@ -66,31 +67,15 @@ export default defineComponent({
   },
 
   setup() {
-    const axios = inject('axios');
-    const spinner = ref(true);
     const selected = ref([]);
     const allSelected = ref(false);
     const rows = ref([]);
     const boxCols = { xl: 6, lg: 6, md: 7, sm: 11, xs: 10 };
     const disable = computed(() => selected.value.length === 0);
 
-    onMounted(() =>
-      axios.get('/database/tables').then((resp) => {
-        let result = resp.data.data;
-        for (let idx in result) {
-          result[idx].selected = false;
-          result[idx].method = 'Replace';
-          result[idx].direction = 'Main => Back';
-          for (let i in result[idx].params) {
-            result[idx].params[i].note = result[idx].params[i].stype.note;
-          }
-        }
-        rows.value = result;
-      }),
-    );
+    onMounted(async () => (rows.value = await getTables()));
 
     return {
-      spinner,
       selected,
       allSelected,
       columns,

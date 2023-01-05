@@ -2,12 +2,11 @@
   <ui-box-vue
     :columns="boxCols"
     header="Verified users"
-    :spinner="spinner"
     :buttonShow="true"
     buttonLabel="Refresh"
     :buttonClick="refresh"
   >
-    <q-table :rows="rows" :columns="columns" row-key="name" :rows-per-page-options="[10, 50, 100, 0]">
+    <q-table :rows="rows" :columns="columns" row-key="name" :rows-per-page-options="[0, 10, 50, 100]">
       <template #body-cell-actions="props">
         <q-td :props="props">
           <ui-round-btn-vue
@@ -23,12 +22,12 @@
 </template>
 
 <script>
-import { defineComponent, ref, inject, onMounted, watch, computed } from 'vue';
-import UiBoxVue from '@/components/UiBox.vue';
-import { useUtils } from '@/composables/useUtils.js';
-import UiRoundBtnVue from '@/components/UiRoundBtn.vue';
-import { useTableWrapper } from '@/composables/useTableWrapper.js';
-import { useConfirmDialog } from '@/composables/useConfirmDialog.js';
+import { defineComponent, ref, onMounted } from 'vue';
+import UiBoxVue from '@/shared/components/UiBox.vue';
+import { useUtils } from '@/shared/composables/useUtils.js';
+import UiRoundBtnVue from '@/shared/components/UiRoundBtn.vue';
+import { useConfirmDialog } from '@/shared/composables/useConfirmDialog.js';
+import { createWrapper } from '../api/verifiedApi';
 
 export default defineComponent({
   name: 'PageVerified',
@@ -65,10 +64,8 @@ export default defineComponent({
       { name: 'actions' },
     ];
 
-    const axios = inject('axios');
     const rows = ref([]);
-    const spinner = ref(true);
-    const wrapper = useTableWrapper('/radius/verified', axios, rows);
+    const wrapper = createWrapper(rows);
     const confirm = useConfirmDialog();
     const boxCols = { xl: 6, lg: 6, md: 7, sm: 11, xs: 10 };
     const { formatLongDate } = useUtils();
@@ -78,7 +75,6 @@ export default defineComponent({
     onMounted(() => refresh());
 
     return {
-      spinner,
       columns,
       rows,
       boxCols,
