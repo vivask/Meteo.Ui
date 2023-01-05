@@ -66,10 +66,10 @@ export default defineComponent({
       active,
       (newVal) => {
         if (newVal && hasParentMenu.value) {
-          //const parent = instance.parent.parent.parent.parent.parent;
-          /*if (parent.type.name === 'UiMenuExpansion') {
+          const parent = instance.parent.parent.parent.parent.parent;
+          if (parent.type.name === 'UiMenuExpansion') {
             parent.ctx.open();
-          }*/
+          }
         }
       },
       { immediate: true },

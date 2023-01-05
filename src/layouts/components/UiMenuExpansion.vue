@@ -35,7 +35,7 @@ export default defineComponent({
       model,
       hasParentMenu,
 
-      /*open() {
+      open() {
         model.value = true;
         if (hasParentMenu.value) {
           const parent = instance.parent.parent.parent.parent.parent;
@@ -43,7 +43,7 @@ export default defineComponent({
             parent.ctx.open();
           }
         }
-      },*/
+      },
     };
   },
 });
