@@ -5,14 +5,7 @@ import { useLoaderStore } from '../stores/useLoaderStore.js';
 import { useAuthStore } from '../stores/useAuthStore.js';
 
 export const serviceClient = (props) => {
-  const { baseURL, jwt, ca, crt, key } = props;
-
-  /*const httpsAgent =
-    ca && crt && key
-      ? new https.Agent({
-          rejectUnauthorized: false, // (NOTE: this will disable client verification)
-        })
-      : null;*/
+  const { baseURL, jwt } = props;
 
   const client = axios.create({
     baseURL: baseURL,
@@ -29,7 +22,6 @@ export const serviceClient = (props) => {
          */
       return ![408, 413, 429].includes(status) && status < 500;
     },
-    //httpsAgent: httpsAgent,
   });
 
   const loader = useLoaderStore();
@@ -57,6 +49,7 @@ export const serviceClient = (props) => {
       if (response.status >= 400) {
         const errorMessage = response.data.message ?? response.data ?? response.statusText;
         loader.fault(errorMessage);
+        console.log('Response status: ', response.status);
         return createErrorResult(
           {
             statusCode: response.status,
@@ -78,6 +71,7 @@ export const serviceClient = (props) => {
 
         if (jwt) {
           const accountService = useAuthStore();
+          console.log('Error status: ', response.status);
           if (originalConfig.url !== '/signup' && error.response) {
             if ([401, 403].includes(response.status) && accountService.user) {
               if (response.status === 403) {

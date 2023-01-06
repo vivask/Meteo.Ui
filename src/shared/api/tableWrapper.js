@@ -6,6 +6,9 @@ const relations = {
   '/schedule/tasks': [{ '/schedule/jobs': true }],
   '/schedule/jobs': [{ '/schedule/cron': true }],
   '/sshclient/sshkeys': [{ '/sshclient/sshhosts': true }, { '/sshclient/gitusers': true }],
+  '/radius/accounting/': [{ '/radius/verified': true }],
+  '/radius/verified': [{ '/radius/accounting': true }],
+  '/database/tables': [{ '/database/sync': true }],
 };
 
 export function tableWrapper(api, rows) {

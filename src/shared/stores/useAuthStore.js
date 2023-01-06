@@ -56,6 +56,7 @@ export const useAuthStore = defineStore('auth', () => {
     async refreshToken() {
       const _user = await fetchWrapper.get(`${baseUrl}/refresh_token`);
 
+      console.log('Refresh:', _user);
       // update pinia state
       user.value = _user;
       refresh.value = true;

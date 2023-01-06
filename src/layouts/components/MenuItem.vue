@@ -5,7 +5,7 @@
     clickable
     :href="path"
     :active="active"
-    :class="{ 'sub-menu-item': hasParentMenu }"
+    :class="{ 'sub-menu-item': nested }"
   >
     <q-item-section side>
       <q-icon :name="icon" :color="color" />
@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { defineComponent, getCurrentInstance, computed, watch, ref } from 'vue';
+import { defineComponent, computed, watch } from 'vue';
 import { useLayoutStore } from '@/shared/stores/useLayoutStore.js';
 
 const prefix = import.meta.env.VITE_ROUTER_MODE === 'hash' ? '#' : '';
@@ -45,14 +45,17 @@ export default defineComponent({
       type: String,
       default: 'primary',
     },
+
+    nested: {
+      type: Boolean,
+      default: true,
+    },
   },
 
   emits: ['active'],
 
   setup(props, { emit }) {
     const store = useLayoutStore();
-    const instance = getCurrentInstance();
-    const hasParentMenu = computed(() => instance.parent.type.name !== 'QDrawer');
     const path = computed(() => {
       let path = prefix + '/';
       for (let item of props.href) {
@@ -64,19 +67,15 @@ export default defineComponent({
 
     watch(
       active,
-      (newVal) => {
-        if (newVal && hasParentMenu.value) {
-          const parent = instance.parent.parent.parent.parent.parent;
-          if (parent.type.name === 'UiMenuExpansion') {
-            parent.ctx.open();
-          }
+      () => {
+        if (active.value) {
+          emit('active', props.title);
         }
       },
       { immediate: true },
     );
 
     return {
-      hasParentMenu,
       path,
       active,
     };

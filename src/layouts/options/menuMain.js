@@ -8,10 +8,12 @@ export const useMenuPeripheral = {
   icon: 'sensors',
   title: 'Peripheral',
   value: 'peripheral',
+  toggle: false,
   menu: [
     {
-      label: 'BME280',
+      title: 'BME280',
       value: 'bme280',
+      toggle: false,
       menu: [
         {
           icon: 'mdi-thermometer',
@@ -31,8 +33,9 @@ export const useMenuPeripheral = {
       ],
     },
     {
-      label: 'MICS6814',
+      title: 'MICS6814',
       value: 'mics6814',
+      toggle: false,
       menu: [
         {
           icon: 'mdi-gas-cylinder',
@@ -52,8 +55,9 @@ export const useMenuPeripheral = {
       ],
     },
     {
-      label: 'RadSens',
+      title: 'RadSens',
       value: 'radsens',
+      toggle: false,
       menu: [
         {
           icon: 'mdi-radioactive',
@@ -68,8 +72,9 @@ export const useMenuPeripheral = {
       ],
     },
     {
-      label: 'ZE08CH2O',
+      title: 'ZE08CH2O',
       value: 'ze08ch2o',
+      toggle: false,
       menu: [
         {
           icon: 'mdi-gas-cylinder',
@@ -79,8 +84,9 @@ export const useMenuPeripheral = {
       ],
     },
     {
-      label: 'DS18B20',
+      title: 'DS18B20',
       value: 'ds18b20',
+      toggle: false,
       menu: [
         {
           icon: 'mdi-thermometer',
@@ -96,6 +102,7 @@ export const useMenuController = {
   icon: 'mdi-memory',
   title: 'Controller',
   value: 'esp32',
+  toggle: false,
   menu: [
     {
       icon: 'mdi-cog-box',
@@ -119,10 +126,12 @@ export const useMenuServices = {
   icon: 'settings_suggest',
   title: 'Services',
   value: 'services',
+  toggle: false,
   menu: [
     {
-      label: 'Proxy',
+      title: 'Proxy',
       value: 'proxy',
+      toggle: false,
       menu: [
         {
           icon: 'mdi-server-network',
@@ -152,8 +161,9 @@ export const useMenuServices = {
       ],
     },
     {
-      label: 'Schedule',
+      title: 'Schedule',
       value: 'schedule',
+      toggle: false,
       menu: [
         {
           icon: 'pending_actions',
@@ -173,8 +183,9 @@ export const useMenuServices = {
       ],
     },
     {
-      label: 'Secure',
+      title: 'Secure',
       value: 'secure',
+      toggle: false,
       menu: [
         {
           icon: 'mdi-key-variant',
@@ -194,8 +205,9 @@ export const useMenuServices = {
       ],
     },
     {
-      label: 'Servers',
+      title: 'Servers',
       value: 'servers',
+      toggle: false,
       menu: [
         {
           icon: 'mdi-server-network',
@@ -210,8 +222,9 @@ export const useMenuServices = {
       ],
     },
     {
-      label: 'Radius',
+      title: 'Radius',
       value: 'radius',
+      toggle: false,
       menu: [
         {
           icon: 'mdi-account-circle-outline',
@@ -231,8 +244,9 @@ export const useMenuServices = {
       ],
     },
     {
-      label: 'Database',
+      title: 'Database',
       value: 'database',
+      toggle: false,
       menu: [
         {
           icon: 'mdi-table-large',

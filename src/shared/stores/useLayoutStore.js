@@ -6,6 +6,8 @@ export const useLayoutStore = defineStore('layout', () => {
   const periodFilter = ref(null);
   const rangeFilter = ref(null);
   const usersFilter = ref(null);
+  const storedExpansions = JSON.parse(localStorage.getItem('expansions'));
+  const expansions = storedExpansions ? ref(storedExpansions) : ref({});
 
   const aciveItem = computed(() => {
     for (let [key, value] of Object.entries(items.value)) {
@@ -20,6 +22,7 @@ export const useLayoutStore = defineStore('layout', () => {
     periodFilter,
     rangeFilter,
     usersFilter,
+    expansions,
 
     setItems(item) {
       Object.keys(items.value).forEach((key) => (items.value[key] = false));
@@ -41,6 +44,21 @@ export const useLayoutStore = defineStore('layout', () => {
 
     usersChange(value) {
       usersFilter.value = value;
+    },
+
+    setShowExpansion(item) {
+      expansions.value[item] = true;
+      localStorage.setItem('expansions', JSON.stringify(expansions.value));
+    },
+
+    setHideExpansion(item) {
+      expansions.value[item] = false;
+      localStorage.setItem('expansions', JSON.stringify(expansions.value));
+    },
+
+    isOpenedExpansion(item) {
+      const itemExist = Object.keys(expansions.value).some((key) => key === item);
+      return itemExist && expansions.value[item];
     },
   };
 });

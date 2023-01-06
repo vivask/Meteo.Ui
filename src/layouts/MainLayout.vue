@@ -1,20 +1,18 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <ui-tool-bar-vue v-model="drawer" />
-    <ui-menu-main-vue :drawer="drawer" />
+    <tool-bar-vue v-model="drawer" />
+    <menu-main-vue :drawer="drawer" />
 
     <q-ajax-bar position="bottom" color="yellow" size="10px" :hijack-filter="ajaxFilterFn" />
 
     <q-footer elevated>
-      <q-toolbar>
-        <q-spinner-bars v-if="isActivePeripheral" color="primary" size="2em" />
-      </q-toolbar>
+      <q-toolbar> </q-toolbar>
     </q-footer>
 
     <q-page-container>
       <router-view v-slot="{ Component }">
         <template v-if="Component">
-          <keep-alive :max="3" :exclude="['autovpn', 'ignorevpn']">
+          <keep-alive :max="3">
             <component :is="Component" />
           </keep-alive>
         </template>
@@ -25,11 +23,9 @@
 
 <script>
 import { defineComponent, ref, computed, watch } from 'vue';
-import { useAjaxFilter } from '@/layouts/helpers/ajaxFilter.js';
-import UiToolBarVue from '@/layouts/components/UiToolBar.vue';
-import UiMenuMainVue from '@/layouts/components/UiMenuMain.vue';
-import UiContainerVue from '@/shared/components/UiContainer.vue';
-import UiSpinnerVue from '@/shared/components/UiSpinner.vue';
+import { useAjaxFilter } from './options/ajaxFilter.js';
+import ToolBarVue from './components/ToolBar.vue';
+import MenuMainVue from './components/MenuMain.vue';
 import { useLoaderStore } from '../shared/stores/useLoaderStore';
 import { useQuasar, Notify, Loading, QSpinnerGears } from 'quasar';
 
@@ -37,10 +33,8 @@ export default defineComponent({
   name: 'MainLayout',
 
   components: {
-    UiToolBarVue,
-    UiMenuMainVue,
-    UiContainerVue,
-    UiSpinnerVue,
+    ToolBarVue,
+    MenuMainVue,
   },
 
   setup() {
@@ -78,7 +72,6 @@ export default defineComponent({
       drawer,
       useAjaxFilter,
       isAuthenticated: ref(true),
-      isActivePeripheral: ref(false),
       loading,
       spinner,
       error,

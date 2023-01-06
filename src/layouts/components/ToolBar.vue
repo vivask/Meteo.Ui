@@ -9,7 +9,7 @@
       <q-btn v-else flat dense size="md" round icon="mdi-logout" @click="logout"></q-btn>
 
       <span v-for="filter in filters" :key="filter.value">
-        <ui-menu-filter-vue v-if="filter.show" v-model="filter.value" :icon="filter.icon" :options="filter.options" />
+        <menu-filter-vue v-if="filter.show" v-model="filter.value" :icon="filter.icon" :options="filter.options" />
       </span>
     </q-toolbar>
   </q-header>
@@ -18,8 +18,8 @@
 <script>
 import { defineComponent, toRefs, computed, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import { useMenuFilters } from '@/layouts/helpers/menuFilters.js';
-import UiMenuFilterVue from '@/layouts/components/UiMenuFilter.vue';
+import { useMenuFilters } from '../options/menuFilters.js';
+import MenuFilterVue from '../components/MenuFilter.vue';
 import { useAuthStore } from '@/shared/stores/useAuthStore.js';
 import { useLayoutStore } from '@/shared/stores/useLayoutStore.js';
 import { useModelProxy } from '@/shared/composables/useModelProxy.js';
@@ -32,7 +32,7 @@ export default defineComponent({
   name: 'UiToolBar',
 
   components: {
-    UiMenuFilterVue,
+    MenuFilterVue,
   },
 
   props: {
