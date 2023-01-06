@@ -38,9 +38,7 @@ export default defineComponent({
       default: false,
     },
 
-    toggle: {
-      type: Boolean,
-    },
+    toggle: Boolean,
   },
 
   emits: ['active'],
@@ -59,7 +57,7 @@ export default defineComponent({
     });
 
     watch(toggle, () => {
-      if (toggle.value) {
+      if (toggle.value && popup?.value) {
         popup.value.show();
         emit('active', props.value);
       }
