@@ -39,6 +39,7 @@ import { useAuthStore } from '@/shared/stores/useAuthStore.js';
 import { Notify } from 'quasar';
 import UiPasswordInputVue from '@/shared/components/UiPasswordInput.vue';
 import UiInputVue from '@/shared/components/UiInput.vue';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   name: 'PageLogin',
@@ -49,20 +50,25 @@ export default defineComponent({
   },
 
   setup() {
+    const router = useRouter();
     const login = ref({});
 
     return {
       login,
 
-      onSubmit() {
+      async onSubmit() {
         const authStore = useAuthStore();
-        return authStore.login(login.value.username, login.value.password).catch((error) =>
+        try {
+          await authStore.login(login.value.username, login.value.password);
+          //const to = router.currentRoute.value.query.next || '/';
+          //console.log(to);
+        } catch (error) {
           Notify.create({
             timeout: import.meta.env.ERROR_TIMEOUT,
             type: 'negative',
             message: error,
-          }),
-        );
+          });
+        }
       },
     };
   },

@@ -37,13 +37,15 @@ export const useAuthStore = defineStore('auth', () => {
       // update pinia state
       user.value = _user;
       refresh.value = false;
-      returnUrl.value = router.currentRoute.value.query.next;
+      returnUrl.value = router.currentRoute.value.query.next || '/';
+
+      console.log('returnUrl: ', returnUrl.value);
 
       // store user details and jwt in local storage to keep user logged in between page refreshes
       localStorage.setItem('user', JSON.stringify(user.value));
 
       // redirect to previous url or default to home page
-      router.push(returnUrl.value || '/');
+      router.push(returnUrl.value);
     },
 
     logout() {
@@ -63,6 +65,10 @@ export const useAuthStore = defineStore('auth', () => {
 
       // store user details and jwt in local storage to keep user logged in between page refreshes
       localStorage.setItem('user', JSON.stringify(user.value));
+    },
+
+    setUrl(value) {
+      returnUrl.value = value;
     },
   };
 });

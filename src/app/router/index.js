@@ -59,8 +59,9 @@ router.beforeEach(async (to) => {
   const authRequired = to.matched.some((record) => record.meta.requiresAuth);
   const auth = useAuthStore();
 
-  if (authRequired && !auth.user) {
-    auth.returnUrl = to.fullPath;
+  if (authRequired && !auth.loggedIn) {
+    auth.setUrl(to.fullPath);
+    console.log('redirect to /login');
     return '/login';
   }
 });
