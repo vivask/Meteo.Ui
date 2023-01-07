@@ -1,3 +1,0 @@
-{
-  "unlisted": ["/.*", "/*.js", "/*.json", "/*.yml", "/*.md", "/node_modules", "/images", "/assets"]
-}
