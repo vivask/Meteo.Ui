@@ -50,7 +50,7 @@ for (const routes of modulesRoutes) {
   }
 }
 
-router.beforeEach(async (to) => {
+router.beforeEach(async (to, from, next) => {
   const spinner = to.matched.some((record) => record.meta.spinner);
   const loader = useLoaderStore();
   loader.useSpinner(spinner);
@@ -61,8 +61,9 @@ router.beforeEach(async (to) => {
 
   if (authRequired && !auth.loggedIn) {
     auth.setUrl(to.fullPath);
-    console.log('redirect to /login');
-    return '/login';
+    next({ name: 'login', query: { next: to.fullPath } });
+  } else {
+    next();
   }
 });
 
