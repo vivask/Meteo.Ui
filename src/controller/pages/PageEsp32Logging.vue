@@ -22,9 +22,9 @@
 
 <script>
 import { defineComponent, ref, onMounted } from 'vue';
-import UiBoxVue from '@/shared/components/UiBox.vue';
-import { useConfirmDialog } from '@/shared/composables/useConfirmDialog.js';
-import { useUtils } from '@/shared/composables/useUtils.js';
+import UiBoxVue from 'src/app/components/UiBox.vue';
+import { useConfirmDialog } from 'src/app/composables/useConfirmDialog.js';
+import { useUtils } from 'src/app/composables/useUtils.js';
 import { getLogging, clearLogging } from '../api/loggingApi';
 
 const columns = [

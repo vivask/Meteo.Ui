@@ -1,7 +1,7 @@
 export const databaseRoutes = [
   {
     path: '/database/tables',
-    component: () => import('@/database/pages/PageTables.vue'),
+    component: () => import('../pages/PageTables.vue'),
     meta: {
       requiresAuth: true,
       spinner: true,
@@ -9,7 +9,7 @@ export const databaseRoutes = [
   },
   {
     path: '/database/sync',
-    component: () => import('@/database/pages/PageTableSync.vue'),
+    component: () => import('../pages/PageTableSync.vue'),
     meta: {
       requiresAuth: true,
       spinner: true,

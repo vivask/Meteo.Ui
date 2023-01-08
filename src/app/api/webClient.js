@@ -2,10 +2,8 @@ import axios from 'axios';
 import { createErrorResult, createSuccessResult } from './ResultContainer.js';
 import { NetworkError } from './NetworkError.js';
 import { useLoaderStore } from '../stores/useLoaderStore.js';
-import { useAuthStore } from '../stores/useAuthStore.js';
-import { useRouter } from 'vue-router';
 
-export const jwtClient = axios.create({
+export const webClient = axios.create({
   baseURL: process.env.API_URL,
   withCredentials: false,
   headers: {
@@ -22,26 +20,19 @@ export const jwtClient = axios.create({
   },
 });
 
-const loaderStore = useLoaderStore();
-const authStore = useAuthStore();
+const loader = useLoaderStore();
 
-jwtClient.interceptors.request.use((request) => {
-  const account = authStore.user;
-  const isLoggedIn = authStore.loggedIn;
-
-  if (isLoggedIn) {
-    request.headers.Authorization = `Bearer ${account.token}`;
-    if (request.method === 'get') loaderStore.start();
-  }
+webClient.interceptors.request.use((request) => {
+  if (request.method === 'get') loader.start();
   return request;
 });
 
-jwtClient.interceptors.response.use(
+webClient.interceptors.response.use(
   (response) => {
-    loaderStore.stop();
+    loader.stop();
     if (response.status >= 400) {
       const errorMessage = response.data.message ?? response.data ?? response.statusText;
-      loaderStore.fault(errorMessage);
+      loader.fault(errorMessage);
       return createErrorResult(
         {
           statusCode: response.status,
@@ -53,34 +44,17 @@ jwtClient.interceptors.response.use(
       return createSuccessResult(response.data.data, response);
     }
   },
-  async (error) => {
-    loaderStore.stop();
+  (error) => {
+    loader.stop();
     const { response } = error;
     const originalConfig = error.config;
     const errorMessage =
       `[${originalConfig.method} ${originalConfig.url}] error: ${response.data?.message}` || response.statusText;
-    loaderStore.fault(errorMessage);
+    loader.fault(errorMessage);
 
     if (!error.response || error.code === 'ECONNABORTED') {
       return Promise.reject(new NetworkError(error.request));
     } else {
-      if (originalConfig.url !== '/signup' && error.response) {
-        if ([401, 403].includes(response.status) && authStore.loggedIn) {
-          const router = useRouter();
-          if (response.status === 403) {
-            authStore.logout();
-            router.push('/');
-          } else {
-            try {
-              await authStore.refreshToken();
-              return axios(originalConfig);
-            } catch (error) {
-              authStore.logout();
-              router.push('/');
-            }
-          }
-        }
-      }
       return Promise.reject(errorMessage);
     }
   },

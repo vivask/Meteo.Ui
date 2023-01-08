@@ -5,7 +5,7 @@
       <q-card :style="$q.screen.lt.sm ? { width: '80%' } : { width: '50%' }">
         <q-card-section>
           <q-avatar size="103px" class="absolute-center shadow-10">
-            <img src="../../app/assets/icons/account-circle-1.svg" alt="avatar" />
+            <img :src="icon" alt="avatar" />
           </q-avatar>
         </q-card-section>
         <q-card-section>
@@ -39,6 +39,7 @@ import { useAuthStore } from '../../app/stores/useAuthStore.js';
 import { Notify } from 'quasar';
 import UiPasswordInputVue from '../../app/components/UiPasswordInput.vue';
 import UiInputVue from '../../app/components/UiInput.vue';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   name: 'PageLogin',
@@ -50,16 +51,21 @@ export default defineComponent({
 
   setup() {
     const login = ref({});
+    const router = useRouter();
+    const icon = new URL(`${process.env.ICON_PATH}/account-circle-1.svg`, import.meta.url).href;
 
     return {
       login,
+      icon,
 
       async onSubmit() {
         const authStore = useAuthStore();
         try {
-          return await authStore.login(login.value.username, login.value.password);
+          await authStore.login(login.value.username, login.value.password);
+          const to = router.currentRoute.value.query.next || '/';
+          router.push(to);
         } catch (error) {
-          return Notify.create({
+          Notify.create({
             timeout: process.env.NOTIFY_TIMEOUT,
             type: 'negative',
             message: error,

@@ -1,4 +1,4 @@
-import { webClient } from './webClient';
+import { webClient } from '../../app/api/webClient';
 import { useUtils } from '../../app/composables/useUtils';
 
 const MAX_DATA_UPDATE_PERIOD_S = 12;

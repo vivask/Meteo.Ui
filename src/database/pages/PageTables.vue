@@ -64,11 +64,11 @@
 
 <script>
 import { defineComponent, ref, computed, onMounted } from 'vue';
-import UiBoxVue from '@/shared/components/UiBox.vue';
-import UiRoundBtnVue from '@/shared/components/UiRoundBtn.vue';
-import { useTableHandlers } from '@/shared/composables/useTableHandlers';
+import UiBoxVue from 'src/app/components/UiBox.vue';
+import UiRoundBtnVue from 'src/app/components/UiRoundBtn.vue';
+import { useTableHandlers } from 'src/app/composables/useTableHandlers';
 import FormTableVue from '../forms/FormTable.vue';
-import { useConfirmDialog } from '@/shared/composables/useConfirmDialog.js';
+import { useConfirmDialog } from 'src/app/composables/useConfirmDialog.js';
 import { createWrapper, Delete, Import, Save, Drop } from '../api/tableApi';
 import { Notify } from 'quasar';
 

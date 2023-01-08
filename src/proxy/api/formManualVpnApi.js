@@ -1,4 +1,4 @@
-import { jwtClient } from '../../shared/api/jwtClient';
+import { jwtClient } from '../../app/api/jwtClient';
 
 export async function getVpnLists() {
   const empty = [];

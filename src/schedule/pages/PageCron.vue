@@ -30,9 +30,9 @@
 
 <script>
 import { defineComponent, ref, computed, onMounted, inject, onActivated } from 'vue';
-import UiBoxVue from '@/shared/components/UiBox.vue';
+import UiBoxVue from 'src/app/components/UiBox.vue';
 import { createWarapper } from '../api/cronApi';
-import { useUtils } from '@/shared/composables/useUtils';
+import { useUtils } from 'src/app/composables/useUtils';
 
 const columns = [{ name: 'state' }, { name: 'job' }];
 

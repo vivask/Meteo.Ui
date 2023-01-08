@@ -25,7 +25,7 @@
 
 <script>
 import { defineComponent, ref, onMounted } from 'vue';
-import { useSubmitForm } from '@/shared/composables/useSubmitForm';
+import { useSubmitForm } from 'src/app/composables/useSubmitForm';
 import { getSyncTypes } from '../api/tableParamApi';
 
 export default defineComponent({

@@ -1,5 +1,5 @@
-import { tableWrapper } from '@/shared/api/tableWrapper.js';
-import { jwtClient } from '../../shared/api/jwtClient';
+import { tableWrapper } from 'src/app/api/tableWrapper.js';
+import { jwtClient } from 'src/app/api/jwtClient';
 
 const api = '/schedule/jobs';
 

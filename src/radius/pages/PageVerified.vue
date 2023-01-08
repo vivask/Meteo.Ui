@@ -23,10 +23,10 @@
 
 <script>
 import { defineComponent, ref, onMounted } from 'vue';
-import UiBoxVue from '@/shared/components/UiBox.vue';
-import { useUtils } from '@/shared/composables/useUtils.js';
-import UiRoundBtnVue from '@/shared/components/UiRoundBtn.vue';
-import { useConfirmDialog } from '@/shared/composables/useConfirmDialog.js';
+import UiBoxVue from 'src/components/UiBox.vue';
+import { useUtils } from 'src/composables/useUtils.js';
+import UiRoundBtnVue from 'src/components/UiRoundBtn.vue';
+import { useConfirmDialog } from 'src/composables/useConfirmDialog.js';
 import { createWrapper } from '../api/verifiedApi';
 
 export default defineComponent({

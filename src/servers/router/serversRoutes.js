@@ -1,7 +1,7 @@
 export const serversRoutes = [
   {
     path: '/servers/main',
-    component: () => import('@/servers/pages/PageServerMain.vue'),
+    component: () => import('../pages/PageServerMain.vue'),
     meta: {
       requiresAuth: true,
       spinner: true,
@@ -9,7 +9,7 @@ export const serversRoutes = [
   },
   {
     path: '/servers/backup',
-    component: () => import('@/servers/pages/PageServerBackup.vue'),
+    component: () => import('../pages/PageServerBackup.vue'),
     meta: {
       requiresAuth: true,
       spinner: true,

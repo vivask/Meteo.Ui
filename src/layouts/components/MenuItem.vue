@@ -18,7 +18,7 @@
 
 <script>
 import { defineComponent, computed, watch } from 'vue';
-import { useLayoutStore } from '../../app/stores/useLayoutStore.js';
+import { useLayoutStore } from 'src/app/stores/useLayoutStore.js';
 
 const prefix = process.env.VUE_ROUTER_MODE === 'hash' ? '#' : '';
 
@@ -68,6 +68,7 @@ export default defineComponent({
     watch(
       active,
       () => {
+        //console.log(props.title, ': ', active.value);
         if (active.value) {
           emit('active', props.title);
         }

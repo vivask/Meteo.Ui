@@ -48,7 +48,7 @@
 
 <script>
 import { defineComponent, computed, ref, onMounted } from 'vue';
-import UiBoxVue from '@/shared/components/UiBox.vue';
+import UiBoxVue from 'src/app/components/UiBox.vue';
 import { getTables } from '../api/syncApi';
 
 const columns = [

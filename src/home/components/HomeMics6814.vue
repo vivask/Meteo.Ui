@@ -25,7 +25,7 @@
 <script>
 import { defineComponent, ref, computed } from 'vue';
 import HomeLabelVue from './HomeLabel.vue';
-//import { jwtClient } from '../../shared/api/jwtClient';
+//import { jwtClient } from 'src/shared/api/jwtClient';
 
 export default defineComponent({
   name: 'HomeMics6814',

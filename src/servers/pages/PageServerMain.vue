@@ -33,7 +33,7 @@
 
 <script>
 import { defineComponent, ref, onMounted } from 'vue';
-import UiBoxVue from '@/shared/components/UiBox.vue';
+import UiBoxVue from 'src/app/components/UiBox.vue';
 import MainTransmissionVue from '../components/MainTransmission.vue';
 import MainSambaVue from '../components/MainSamba.vue';
 import ServiceStorageVue from '../components/ServiceStorage.vue';

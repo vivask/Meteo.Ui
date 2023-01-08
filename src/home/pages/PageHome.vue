@@ -62,7 +62,7 @@ import HomeMics6814Vue from '../components/HomeMics6814.vue';
 import HomeRadsensVue from '../components/HomeRadsens.vue';
 import HomeDs18b20Vue from '../components/HomeDs18b20.vue';
 import HomeZe08ch2oVue from '../components/HomeZe08ch2o.vue';
-//import { getEsp32Data } from '../api/homeApi';
+import { getEsp32Data } from '../api/homeApi';
 
 const sensorsTemplate = {
   data: {},
@@ -89,7 +89,7 @@ export default defineComponent({
 
     onActivated(() => {
       timer = setInterval(async () => {
-        //sensors.value = await getEsp32Data();
+        sensors.value = await getEsp32Data();
       }, 1000);
     });
 

@@ -1,8 +1,18 @@
 import { route } from 'quasar/wrappers';
 import { createRouter, createMemoryHistory, createWebHistory, createWebHashHistory } from 'vue-router';
-import { layoutsRoutes } from '../../layouts/router/layoutsRoutes.js';
-import { homeRoutes } from '../../home/router/homeRoutes';
-import { authRoutes } from '../../auth/router/authRoutes';
+import { useAuthStore } from '../stores/useAuthStore.js';
+import { useLayoutStore } from '../stores/useLayoutStore.js';
+import { useLoaderStore } from '../stores/useLoaderStore';
+import { layoutsRoutes } from 'src/layouts/router/layoutsRoutes.js';
+import { authRoutes } from 'src/auth/router/authRoutes.js';
+import { homeRoutes } from 'src/home/router/homeRoutes.js';
+import { controllerRoutes } from 'src/controller/router/controllerRoutes.js';
+import { proxyRoutes } from 'src/proxy/router/proxyRoutes.js';
+import { scheduleRoutes } from 'src/schedule/router/scheduleRoutes.js';
+import { secureRoutes } from 'src/secure/router/secureRoutes.js';
+import { serversRoutes } from 'src/servers/router/serversRoutes.js';
+import { radiusRoutes } from 'src/radius/router/radiusRoutes.js';
+import { databaseRoutes } from 'src/database/router/databaseRoutes.js';
 
 /*
  * If not building with SSR mode, you can
@@ -14,6 +24,10 @@ import { authRoutes } from '../../auth/router/authRoutes';
  */
 
 export default route(function (/* { store, ssrContext } */) {
+  const authStore = useAuthStore();
+  const loaderStore = useLoaderStore();
+  const layoutStore = useLayoutStore();
+
   const createHistory = process.env.SERVER
     ? createMemoryHistory
     : process.env.VUE_ROUTER_MODE === 'history'
@@ -30,7 +44,17 @@ export default route(function (/* { store, ssrContext } */) {
     history: createHistory(process.env.VUE_ROUTER_BASE),
   });
 
-  const layoutsChildren = [homeRoutes, authRoutes];
+  const layoutsChildren = [
+    authRoutes,
+    homeRoutes,
+    controllerRoutes,
+    proxyRoutes,
+    scheduleRoutes,
+    secureRoutes,
+    serversRoutes,
+    radiusRoutes,
+    databaseRoutes,
+  ];
 
   for (const children of layoutsChildren) {
     for (const route of children) {
@@ -45,6 +69,26 @@ export default route(function (/* { store, ssrContext } */) {
       Router.addRoute(route);
     }
   }
+
+  Router.beforeEach(async (to, from, next) => {
+    const spinner = to.matched.some((record) => record.meta.spinner);
+
+    loaderStore.useSpinner(spinner);
+
+    // redirect to login page if not logged in and trying to access a restricted page
+    const authRequired = to.matched.some((record) => record.meta.requiresAuth);
+
+    if (authRequired && !authStore.loggedIn) {
+      next({ name: 'login', query: { next: to.fullPath } });
+    } else {
+      next();
+    }
+  });
+
+  Router.afterEach((to) => {
+    const prefix = process.env.VUE_ROUTER_MODE === 'hash' ? '#' : '';
+    layoutStore.setItems(prefix + to.path);
+  });
 
   return Router;
 });

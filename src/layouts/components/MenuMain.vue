@@ -76,7 +76,7 @@ import { defineComponent, computed, ref, watch, toRefs } from 'vue';
 import { useMenuHome, useMenuPeripheral, useMenuController, useMenuServices } from '../options/menuMain.js';
 import MenuItemVue from './MenuItem.vue';
 import MenuExpansionVue from './MenuExpansion.vue';
-import { useAuthStore } from '../../app/stores/useAuthStore.js';
+import { useAuthStore } from 'src/app/stores/useAuthStore.js';
 
 export default defineComponent({
   name: 'UiMenuMain',

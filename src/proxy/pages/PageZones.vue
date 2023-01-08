@@ -27,12 +27,12 @@
 
 <script>
 import { defineComponent, ref, computed, onMounted } from 'vue';
-import UiBoxVue from '@/shared/components/UiBox.vue';
+import UiBoxVue from 'src/app/components/UiBox.vue';
 import FormZoneVue from '../forms/FormZone.vue';
 import { createWrapper } from '../api/zonesApi';
-import { useTableHandlers } from '@/shared/composables/useTableHandlers';
-import { useUtils } from '@/shared/composables/useUtils.js';
-import UiRoundBtnVue from '@/shared/components/UiRoundBtn.vue';
+import { useTableHandlers } from 'src/app/composables/useTableHandlers';
+import { useUtils } from 'src/app/composables/useUtils.js';
+import UiRoundBtnVue from 'src/app/components/UiRoundBtn.vue';
 
 const columns = [
   { name: 'state' },

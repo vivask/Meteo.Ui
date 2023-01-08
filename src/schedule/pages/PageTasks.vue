@@ -39,10 +39,10 @@
 
 <script>
 import { defineComponent, ref, computed, onMounted, inject } from 'vue';
-import UiBoxVue from '@/shared/components/UiBox.vue';
-import UiRoundBtnVue from '@/shared/components/UiRoundBtn.vue';
+import UiBoxVue from 'src/app/components/UiBox.vue';
+import UiRoundBtnVue from 'src/app/components/UiRoundBtn.vue';
 import { createWarapper } from '../api/tasksApi';
-import { useTableHandlers } from '@/shared/composables/useTableHandlers';
+import { useTableHandlers } from 'src/app/composables/useTableHandlers';
 import FormTaskVue from '../forms/FormTask.vue';
 
 const columns = [

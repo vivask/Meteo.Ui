@@ -20,9 +20,9 @@ import { defineComponent, toRefs, computed, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useMenuFilters } from '../options/menuFilters.js';
 import MenuFilterVue from '../components/MenuFilter.vue';
-import { useAuthStore } from '../../app/stores/useAuthStore.js';
-import { useLayoutStore } from '../../app/stores/useLayoutStore.js';
-import { useModelProxy } from '../../app/composables/useModelProxy.js';
+import { useAuthStore } from 'src/app/stores/useAuthStore.js';
+import { useLayoutStore } from 'src/app/stores/useLayoutStore.js';
+import { useModelProxy } from 'src/app/composables/useModelProxy.js';
 
 const PERIOD = 0;
 const RANGE = 1;
@@ -82,6 +82,7 @@ export default defineComponent({
 
       logout() {
         authStore.logout();
+        router.push('/');
       },
     };
   },

@@ -15,7 +15,7 @@
 <script>
 import { defineComponent } from 'vue';
 import UiRowContainerVue from './UiRowContainer.vue';
-import UiSquareBtnVue from '@/shared/components/UiSquareBtn.vue';
+import UiSquareBtnVue from 'src/app/components/UiSquareBtn.vue';
 
 export default defineComponent({
   name: 'ServiceStorage',

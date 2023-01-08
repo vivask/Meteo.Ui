@@ -18,9 +18,9 @@
 
 <script>
 import { defineComponent, ref } from 'vue';
-import UiInputVue from '@/shared/components/UiInput.vue';
-import UiPasswordInputVue from '@/shared/components/UiPasswordInput.vue';
-import { useSubmitForm } from '@/shared/composables/useSubmitForm';
+import UiInputVue from 'src/components/UiInput.vue';
+import UiPasswordInputVue from 'src/components/UiPasswordInput.vue';
+import { useSubmitForm } from 'src/composables/useSubmitForm';
 import { Notify } from 'quasar';
 
 export default defineComponent({

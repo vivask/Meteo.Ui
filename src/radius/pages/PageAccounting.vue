@@ -28,10 +28,10 @@
 
 <script>
 import { defineComponent, ref, onMounted, watch, computed } from 'vue';
-import UiBoxVue from '@/shared/components/UiBox.vue';
-import { useUtils } from '@/shared/composables/useUtils.js';
-import { useConfirmDialog } from '@/shared/composables/useConfirmDialog.js';
-import { useLayoutStore } from '@/shared/stores/useLayoutStore.js';
+import UiBoxVue from 'src/components/UiBox.vue';
+import { useUtils } from 'src/composables/useUtils.js';
+import { useConfirmDialog } from 'src/composables/useConfirmDialog.js';
+import { useLayoutStore } from 'src/stores/useLayoutStore.js';
 import { getAccounting, applyValidation, Clear } from '../api/accountingApi';
 
 export default defineComponent({

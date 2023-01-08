@@ -27,7 +27,7 @@
 <script>
 import { defineComponent } from 'vue';
 import UiRowContainerVue from './UiRowContainer.vue';
-import UiSquareBtnVue from '@/shared/components/UiSquareBtn.vue';
+import UiSquareBtnVue from 'src/app/components/UiSquareBtn.vue';
 import { RestartSamba, StopSamba, StartSamba } from '../api/mainApi';
 
 export default defineComponent({

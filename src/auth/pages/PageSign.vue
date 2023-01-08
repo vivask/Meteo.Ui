@@ -10,7 +10,7 @@
       <q-card :style="Screen.name === 'xs' ? { width: '80%' } : { width: '50%' }">
         <q-card-section>
           <q-avatar size="103px" class="absolute-center shadow-10">
-            <img src="../../app/assets/icons/account-circle-1.svg" alt="avatar" />
+            <img :src="icon" alt="avatar" />
           </q-avatar>
         </q-card-section>
         <q-card-section>
@@ -45,6 +45,7 @@ import { Screen, Notify } from 'quasar';
 import { useAuthStore } from '../../app/stores/useAuthStore.js';
 import UiInputVue from '../../app/components/UiInput.vue';
 import UiPasswordInputVue from '../../app/components/UiPasswordInput.vue';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   name: 'PageSign',
@@ -55,11 +56,13 @@ export default defineComponent({
   },
 
   setup() {
+    const router = useRouter();
     const store = useAuthStore();
     const signup = ref({});
     const confirm = ref(null);
     const confirmInput = ref(null);
     const passwordInput = ref(null);
+    const icon = new URL(`${process.env.ICON_PATH}/account-circle-1.svg`, import.meta.url).href;
 
     return {
       signup,
@@ -67,8 +70,9 @@ export default defineComponent({
       confirm,
       confirmInput,
       passwordInput,
+      icon,
 
-      handelSubmit() {
+      async handelSubmit() {
         if (signup.value.password != signup.value.confirm) {
           Notify.create({
             timeout: import.meta.env.ERROR_TIMEOUT,
@@ -84,7 +88,16 @@ export default defineComponent({
           });
           passwordInput.value.focus();
         } else {
-          store.signup(signup);
+          try {
+            await store.signup(signup);
+            router.push('/');
+          } catch (error) {
+            Notify.create({
+              timeout: process.env.NOTIFY_TIMEOUT,
+              type: 'negative',
+              message: error,
+            });
+          }
         }
       },
     };

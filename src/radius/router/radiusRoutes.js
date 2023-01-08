@@ -1,7 +1,7 @@
 export const radiusRoutes = [
   {
     path: '/radius/auth',
-    component: () => import('@/radius/pages/PageAuth.vue'),
+    component: () => import('../pages/PageAuth.vue'),
     meta: {
       requiresAuth: true,
       spinner: true,
@@ -9,7 +9,7 @@ export const radiusRoutes = [
   },
   {
     path: '/radius/accounting',
-    component: () => import('@/radius/pages/PageAccounting.vue'),
+    component: () => import('../pages/PageAccounting.vue'),
     meta: {
       requiresAuth: true,
       spinner: true,
@@ -17,7 +17,7 @@ export const radiusRoutes = [
   },
   {
     path: '/radius/verified',
-    component: () => import('@/radius/pages/PageVerified.vue'),
+    component: () => import('../pages/PageVerified.vue'),
     meta: {
       requiresAuth: true,
       spinner: true,

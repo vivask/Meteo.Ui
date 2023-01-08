@@ -1,5 +1,4 @@
-import { tableWrapper } from '@/shared/api/tableWrapper.js';
-import { jwtClient } from '../../shared/api/jwtClient';
+import { tableWrapper } from '../../app/api/tableWrapper.js';
 
 const api = '/proxy/manualvpn';
 

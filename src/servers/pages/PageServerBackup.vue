@@ -32,7 +32,7 @@
 
 <script>
 import { defineComponent, ref, onMounted } from 'vue';
-import UiBoxVue from '@/shared/components/UiBox.vue';
+import UiBoxVue from 'src/app/components/UiBox.vue';
 import BackupKodiVue from '../components/BackupKodi.vue';
 import ServiceStorageVue from '../components/ServiceStorage.vue';
 import { createServices } from './backupTemplate';

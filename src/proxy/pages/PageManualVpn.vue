@@ -22,11 +22,11 @@
 
 <script>
 import { defineComponent, ref, computed, onMounted } from 'vue';
-import UiBoxVue from '@/shared/components/UiBox.vue';
+import UiBoxVue from 'src/app/components/UiBox.vue';
 import FormVpnHostVue from '../forms/FormVpnHost.vue';
 import { createWrapper } from '../api/manualVpnApi';
-import { useTableHandlers } from '@/shared/composables/useTableHandlers';
-import UiRoundBtnVue from '@/shared/components/UiRoundBtn.vue';
+import { useTableHandlers } from 'src/app/composables/useTableHandlers';
+import UiRoundBtnVue from 'src/app/components/UiRoundBtn.vue';
 
 const columns = [
   { name: 'name', align: 'left', field: 'name', sortable: true },

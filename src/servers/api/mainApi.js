@@ -1,4 +1,4 @@
-import { jwtClient } from '../../shared/api/jwtClient';
+import { jwtClient } from 'src/app/api/jwtClient';
 
 /**
  * Request main servers status

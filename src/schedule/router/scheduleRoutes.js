@@ -1,7 +1,7 @@
 export const scheduleRoutes = [
   {
     path: '/schedule/timetable',
-    component: () => import('@/schedule/pages/PageJobs.vue'),
+    component: () => import('../pages/PageJobs.vue'),
     meta: {
       requiresAuth: true,
       spinner: true,
@@ -9,7 +9,7 @@ export const scheduleRoutes = [
   },
   {
     path: '/schedule/tasks',
-    component: () => import('@/schedule/pages/PageTasks.vue'),
+    component: () => import('../pages/PageTasks.vue'),
     meta: {
       requiresAuth: true,
       spinner: true,
@@ -17,7 +17,7 @@ export const scheduleRoutes = [
   },
   {
     path: '/schedule/cron',
-    component: () => import('@/schedule/pages/PageCron.vue'),
+    component: () => import('../pages/PageCron.vue'),
     meta: {
       requiresAuth: true,
       spinner: true,

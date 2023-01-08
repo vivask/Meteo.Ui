@@ -25,11 +25,11 @@
 
 <script>
 import { defineComponent, ref, onActivated, onMounted } from 'vue';
-import UiBoxVue from '@/shared/components/UiBox.vue';
-import { useUtils } from '@/shared/composables/useUtils.js';
+import UiBoxVue from 'src/app/components/UiBox.vue';
+import { useUtils } from 'src/app/composables/useUtils.js';
 import { createWrapper } from '../api/ignoreVpnApi';
-import UiRoundBtnVue from '@/shared/components/UiRoundBtn.vue';
-import { useConfirmDialog } from '@/shared/composables/useConfirmDialog.js';
+import UiRoundBtnVue from 'src/app/components/UiRoundBtn.vue';
+import { useConfirmDialog } from 'src/app/composables/useConfirmDialog.js';
 
 export default defineComponent({
   name: 'PageIgnoreVpn',

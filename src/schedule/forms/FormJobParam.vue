@@ -29,8 +29,8 @@
 
 <script>
 import { defineComponent, ref, watch } from 'vue';
-import UiInputVue from '@/shared/components/UiInput.vue';
-import { useSubmitForm } from '@/shared/composables/useSubmitForm';
+import UiInputVue from 'src/app/components/UiInput.vue';
+import { useSubmitForm } from 'src/app/composables/useSubmitForm';
 
 export default defineComponent({
   name: 'FormTaskParam',
