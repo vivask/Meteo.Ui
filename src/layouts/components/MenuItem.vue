@@ -68,9 +68,9 @@ export default defineComponent({
     watch(
       active,
       () => {
-        //console.log(props.title, ': ', active.value);
         if (active.value) {
-          emit('active', props.title);
+          //console.log(props.title);
+          emit('active');
         }
       },
       { immediate: true },

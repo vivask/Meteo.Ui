@@ -12,7 +12,7 @@
       </div>
       <div v-if="$q.screen.name == 'xs'" class="flex-break"></div>
       <div class="q-ml-sm square rounded-borders shadow-8" :class="cols">
-        <HomeMics6814Vue
+        <home-mics6814-vue
           :available="sensors.alive.mics6814"
           :nh3="sensors.data.mics6814_nh3"
           :alarm-nh3="sensors.data.max_6814_nh3_alarm"
@@ -24,7 +24,7 @@
       </div>
       <div v-if="$q.screen.name == 'xs' || $q.screen.name == 'sm'" class="flex-break" />
       <div class="q-ml-sm square rounded-borders shadow-8" :class="cols">
-        <HomeRadsensVue
+        <home-radsens-vue
           :available="sensors.alive.radsens"
           :static="sensors.data.radsens_static"
           :static-alarm="sensors.data.max_rad_stat_alarm"
@@ -34,7 +34,7 @@
       </div>
       <div v-if="$q.screen.name == 'xs'" class="flex-break" />
       <div class="q-ml-sm square rounded-borders shadow-8" :class="cols">
-        <HomeDs18b20Vue
+        <home-ds18b20-vue
           :available="sensors.alive.ds18b20"
           :temperature="sensors.data.ds18b20_tempr"
           :alarm="sensors.data.max_ds18b20_alarm || sensors.data.min_ds18b20_alarm"
@@ -42,7 +42,7 @@
       </div>
       <div v-if="$q.screen.name == 'xs' || $q.screen.name == 'sm'" class="flex-break" />
       <div class="q-ml-sm square rounded-borders shadow-8" :class="cols">
-        <HomeZe08ch2oVue
+        <home-ze08ch2o-vue
           :available="sensors.alive.ze08ch2o"
           :ch2o="sensors.data.ze08_ch2o"
           :alarm="sensors.data.max_ch2o_alarm"

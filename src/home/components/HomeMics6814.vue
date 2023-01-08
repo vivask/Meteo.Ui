@@ -25,7 +25,7 @@
 <script>
 import { defineComponent, ref, computed } from 'vue';
 import HomeLabelVue from './HomeLabel.vue';
-//import { jwtClient } from 'src/shared/api/jwtClient';
+import { jwtClient } from 'src/app/api/jwtClient';
 
 export default defineComponent({
   name: 'HomeMics6814',
@@ -45,8 +45,8 @@ export default defineComponent({
   },
 
   setup() {
-    const whiteIcon = new URL(`${process.env.ICON_PATH}/NH3-48x48-white.png`, import.meta.url).href;
-    const blueIcon = new URL(`${process.env.ICON_PATH}/NH3-48x48-blue.png`, import.meta.url).href;
+    const whiteIcon = new URL('../../assets/NH3-48x48-white.png', import.meta.url).href;
+    const blueIcon = new URL('../../assets/NH3-48x48-blue.png', import.meta.url).href;
     const iconColor = '#3092EA';
     const hover = ref(false);
 
@@ -56,15 +56,15 @@ export default defineComponent({
       color: computed(() => (hover.value ? iconColor : 'white')),
 
       checkNh3() {
-        //jwtClient.put('/esp32/mics6814/nh3/chk');
+        jwtClient.put('/esp32/mics6814/nh3/chk');
       },
 
       checkNo2() {
-        //jwtClient.put('/esp32/mics6814/no2/chk');
+        jwtClient.put('/esp32/mics6814/no2/chk');
       },
 
       checkCo() {
-        //jwtClient.put('/esp32/mics6814/co/chk');
+        jwtClient.put('/esp32/mics6814/co/chk');
       },
     };
   },

@@ -32,7 +32,7 @@
 <script>
 import { defineComponent, ref, computed } from 'vue';
 import HomeLabelVue from './HomeLabel.vue';
-//import { jwtClient } from 'src/shared/api/jwtClient';
+import { jwtClient } from 'src/app/api/jwtClient';
 
 export default defineComponent({
   name: 'HomeBme280',
@@ -50,8 +50,8 @@ export default defineComponent({
   },
 
   setup() {
-    const whiteIcon = new URL(`${process.env.ICON_PATH}/humidity-48x48-white.png`, import.meta.url).href;
-    const blueIcon = new URL(`${process.env.ICON_PATH}/humidity-48x48-blue.png`, import.meta.url).href;
+    const whiteIcon = new URL('../../assets/humidity-48x48-white.png', import.meta.url).href;
+    const blueIcon = new URL('../../assets/humidity-48x48-blue.png', import.meta.url).href;
     const iconColor = '#3092EA';
     const hover = ref(false);
 
@@ -61,7 +61,7 @@ export default defineComponent({
       color: computed(() => (hover.value ? iconColor : 'white')),
 
       check() {
-        //jwtClient.put('/esp32/bme280/temperature/chk');
+        jwtClient.put('/esp32/bme280/temperature/chk');
       },
     };
   },

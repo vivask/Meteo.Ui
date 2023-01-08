@@ -52,7 +52,7 @@ export default defineComponent({
   setup() {
     const login = ref({});
     const router = useRouter();
-    const icon = new URL(`${process.env.ICON_PATH}/account-circle-1.svg`, import.meta.url).href;
+    const icon = new URL('../../assets/account-circle-1.svg', import.meta.url).href;
 
     return {
       login,

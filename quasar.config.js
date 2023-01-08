@@ -64,7 +64,6 @@ module.exports = configure(function (/* ctx */) {
       // analyze: true,
       env: {
         API_URL: '/api/v1',
-        ICON_PATH: '../../app/assets/icons',
         NOTIFY_TIMEOUT: 10000,
       },
       // rawDefine: {}

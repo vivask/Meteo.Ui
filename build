@@ -1,6 +1,6 @@
 #!/bin/bash
 
-npm run  build
+quasar  build
 
 rm -rf /home/w/Projects/Meteo/Backend/ui/*
-cp -r ./dist/* /home/w/Projects/Meteo/Backend/ui/
+cp -r ./dist/spa/* /home/w/Projects/Meteo/Backend/ui/

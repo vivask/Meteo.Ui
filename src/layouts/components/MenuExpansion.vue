@@ -52,14 +52,14 @@ export default defineComponent({
       const opened = store.isOpenedExpansion(props.value);
       if (opened) {
         popup.value.show();
-        emit('active', props.value);
+        emit('active');
       }
     });
 
     watch(toggle, () => {
-      if (toggle.value && popup?.value) {
+      if (popup?.value) {
         popup.value.show();
-        emit('active', props.value);
+        emit('active');
       }
     });
 

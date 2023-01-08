@@ -27,11 +27,11 @@
 
 <script>
 import { defineComponent, ref, computed, onMounted } from 'vue';
-import UiBoxVue from 'src/components/UiBox.vue';
+import UiBoxVue from 'src/app/components/UiBox.vue';
 import FormAuthVue from '../forms/FormAuth.vue';
 import { createWrapper } from '../api/authApi';
-import { useTableHandlers } from 'src/composables/useTableHandlers';
-import UiRoundBtnVue from 'src/components/UiRoundBtn.vue';
+import { useTableHandlers } from 'src/app/composables/useTableHandlers';
+import UiRoundBtnVue from 'src/app/components/UiRoundBtn.vue';
 
 const columns = [
   { name: 'state' },

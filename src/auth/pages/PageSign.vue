@@ -62,7 +62,7 @@ export default defineComponent({
     const confirm = ref(null);
     const confirmInput = ref(null);
     const passwordInput = ref(null);
-    const icon = new URL(`${process.env.ICON_PATH}/account-circle-1.svg`, import.meta.url).href;
+    const icon = new URL('../../assets/account-circle-1.svg', import.meta.url).href;
 
     return {
       signup,
