@@ -48,7 +48,7 @@ export default defineComponent({
 
     const showError = (message) => {
       Notify.create({
-        timeout: import.meta.env.ERROR_TIMEOUT,
+        timeout: import.meta.env.NOTIFY_TIMEOUT,
         type: 'negative',
         message: message,
       });

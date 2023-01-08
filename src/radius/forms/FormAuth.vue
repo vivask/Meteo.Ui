@@ -59,7 +59,7 @@ export default defineComponent({
       onSubmit() {
         if (localProp.value.value != confirm.value) {
           Notify.create({
-            timeout: import.meta.env.ERROR_TIMEOUT,
+            timeout: import.meta.env.NOTIFY_TIMEOUT,
             type: 'negative',
             message: 'Passwords do not match!',
           });

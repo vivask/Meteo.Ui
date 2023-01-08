@@ -71,14 +71,14 @@ export default defineComponent({
       handelSubmit() {
         if (signup.value.password != signup.value.confirm) {
           Notify.create({
-            timeout: import.meta.env.ERROR_TIMEOUT,
+            timeout: import.meta.env.NOTIFY_TIMEOUT,
             type: 'negative',
             message: 'Passwords do not match!',
           });
           confirmInput.value.focus();
         } else if (signup.value.password.length < 6) {
           Notify.create({
-            timeout: import.meta.env.ERROR_TIMEOUT,
+            timeout: import.meta.env.NOTIFY_TIMEOUT,
             type: 'negative',
             message: 'Password must be 6 or more characters.',
           });

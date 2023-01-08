@@ -64,7 +64,7 @@ export default defineComponent({
           //console.log(to);
         } catch (error) {
           Notify.create({
-            timeout: import.meta.env.ERROR_TIMEOUT,
+            timeout: import.meta.env.NOTIFY_TIMEOUT,
             type: 'negative',
             message: error,
           });
