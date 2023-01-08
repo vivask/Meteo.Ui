@@ -108,6 +108,10 @@ export default defineComponent({
     const { drawer } = toRefs(props);
     const authStore = useAuthStore();
     const isAuthenticated = computed(() => authStore.loggedIn);
+    const menuHome = useMenuHome;
+    const menuPeripheral = ref(useMenuPeripheral);
+    const menuController = ref(useMenuController);
+    const menuServices = ref(useMenuServices);
 
     watch(drawer, () => {
       localModel.value = !localModel.value;
@@ -115,15 +119,11 @@ export default defineComponent({
 
     return {
       localModel,
-      menuHome: useMenuHome,
-      menuPeripheral: useMenuPeripheral,
-      menuController: useMenuController,
-      menuServices: useMenuServices,
+      menuHome,
+      menuPeripheral,
+      menuController,
+      menuServices,
       isAuthenticated,
-
-      onActive(event) {
-        console.log(event);
-      },
     };
   },
 });
