@@ -34,7 +34,7 @@ export const useAuthStore = defineStore('auth', () => {
     },
 
     logout() {
-      fetchWrapper.get(`${baseUrl}/logout`);
+      //fetchWrapper.get(`${baseUrl}/logout`);
       user.value = null;
       localStorage.removeItem('user');
     },

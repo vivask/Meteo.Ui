@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue';
+import { defineComponent, computed, watch } from 'vue';
 import { Line } from 'vue-chartjs';
 import {
   Chart as ChartJS,
@@ -25,6 +25,7 @@ import {
   PointElement,
   CategoryScale,
 } from 'chart.js';
+import { useLayoutStore } from 'src/app/stores/useLayoutStore.js';
 
 ChartJS.register(Title, Tooltip, Legend, LineElement, LinearScale, PointElement, CategoryScale);
 
@@ -87,6 +88,10 @@ export default defineComponent({
   },
 
   setup(props) {
+    const layoutStore = useLayoutStore();
+    const period = computed(() => layoutStore.periodFilter);
+    const range = computed(() => layoutStore.periodFilter);
+
     const chartData = {
       labels: props.labels,
       datasets: [
@@ -104,9 +109,15 @@ export default defineComponent({
       maintainAspectRatio: false,
     };
 
+    watch(period, () => {});
+    watch(range, () => {});
+
     return {
       chartOptions,
       chartData,
+
+      periodSelect() {},
+      rangeSelect() {},
     };
   },
 });
