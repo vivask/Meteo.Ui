@@ -16,7 +16,7 @@ export default defineComponent({
   name: 'UiChartBox',
 
   setup() {
-    const columns = { xl: 8, lg: 8, md: 4, sm: 5, xs: 10 };
+    const columns = { xl: 8, lg: 10, md: 4, sm: 5, xs: 10 };
     const cols = computed(() => `col-${columns[Screen.name]}`);
 
     return {

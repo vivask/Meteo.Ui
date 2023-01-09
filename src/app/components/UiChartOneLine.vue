@@ -1,7 +1,7 @@
 <template>
   <Line
-    :chart-options="chartOptions"
-    :chart-data="chartData"
+    :options="options"
+    :data="data"
     :chart-id="chartId"
     :dataset-id-key="datasetIdKey"
     :plugins="plugins"
@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { defineComponent, computed, watch } from 'vue';
+import { defineComponent, computed } from 'vue';
 import { Line } from 'vue-chartjs';
 import {
   Chart as ChartJS,
@@ -25,7 +25,6 @@ import {
   PointElement,
   CategoryScale,
 } from 'chart.js';
-import { useLayoutStore } from 'src/app/stores/useLayoutStore.js';
 
 ChartJS.register(Title, Tooltip, Legend, LineElement, LinearScale, PointElement, CategoryScale);
 
@@ -53,7 +52,7 @@ export default defineComponent({
 
     height: {
       type: Number,
-      default: 400,
+      default: 500,
     },
 
     cssClasses: {
@@ -76,7 +75,7 @@ export default defineComponent({
       required: true,
     },
 
-    data: {
+    values: {
       type: Array,
       required: true,
     },
@@ -88,36 +87,26 @@ export default defineComponent({
   },
 
   setup(props) {
-    const layoutStore = useLayoutStore();
-    const period = computed(() => layoutStore.periodFilter);
-    const range = computed(() => layoutStore.periodFilter);
-
-    const chartData = {
+    const data = computed(() => ({
       labels: props.labels,
       datasets: [
         {
           label: props.label,
           backgroundColor: '#f87979',
           borderColor: '#f87979',
-          data: props.data,
+          data: props.values,
         },
       ],
-    };
+    }));
 
-    const chartOptions = {
+    const options = {
       responsive: true,
       maintainAspectRatio: false,
     };
 
-    watch(period, () => {});
-    watch(range, () => {});
-
     return {
-      chartOptions,
-      chartData,
-
-      periodSelect() {},
-      rangeSelect() {},
+      options,
+      data,
     };
   },
 });

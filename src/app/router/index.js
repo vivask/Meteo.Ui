@@ -13,6 +13,7 @@ import { secureRoutes } from 'src/secure/router/secureRoutes.js';
 import { serversRoutes } from 'src/servers/router/serversRoutes.js';
 import { radiusRoutes } from 'src/radius/router/radiusRoutes.js';
 import { databaseRoutes } from 'src/database/router/databaseRoutes.js';
+import { bme280Routes } from 'src/bme280/router/bme280Routes.js';
 
 /*
  * If not building with SSR mode, you can
@@ -54,6 +55,7 @@ export default route(function (/* { store, ssrContext } */) {
     serversRoutes,
     radiusRoutes,
     databaseRoutes,
+    bme280Routes,
   ];
 
   for (const children of layoutsChildren) {

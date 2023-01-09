@@ -86,7 +86,7 @@ module.exports = configure(function (/* ctx */) {
       open: false, // opens browser window automatically
       proxy: {
         '/api/v1': {
-          target: 'https://192.168.1.9',
+          target: 'https://192.168.1.3',
           changeOrigin: true,
           secure: false,
         },

@@ -8,7 +8,7 @@ export const useMenuFilters = [
       { text: 'Month', value: 'month' },
       { text: 'Year', value: 'year' },
     ],
-    routes: [],
+    routes: ['/bme280/temperature', '/bme280/pressure', '/bme280/humidity'],
     icon: 'mdi-dots-square',
   },
   {
@@ -19,7 +19,7 @@ export const useMenuFilters = [
       { text: 'Minimum', value: 'min' },
       { text: 'Maximum', value: 'max' },
     ],
-    routes: [],
+    routes: ['/bme280/temperature', '/bme280/pressure', '/bme280/humidity'],
     icon: 'mdi-dots-vertical',
   },
   {
