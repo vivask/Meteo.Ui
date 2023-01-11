@@ -24,7 +24,7 @@ export default defineComponent({
 
   setup() {
     const layoutStore = useLayoutStore();
-    const { filter } = useFilterWrapper(usePeriodFilters, layoutStore.periodChange);
+    const { filter } = useFilterWrapper(usePeriodFilters, layoutStore.periodChange, layoutStore.periodFilter);
 
     return {
       filter,

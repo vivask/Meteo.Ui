@@ -24,7 +24,7 @@ export default defineComponent({
 
   setup() {
     const layoutStore = useLayoutStore();
-    const { filter } = useFilterWrapper(useRangeFilters, layoutStore.rangeChange);
+    const { filter } = useFilterWrapper(useRangeFilters, layoutStore.rangeChange, layoutStore.rangeFilter);
 
     return {
       filter,

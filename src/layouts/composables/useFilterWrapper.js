@@ -1,16 +1,20 @@
 import { computed, watch, toRefs, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-export function useFilterWrapper(templateFilter, storeFunc) {
+export function useFilterWrapper(templateFilter, storeSet, storeGet) {
   const filter = ref(templateFilter);
-  const { value: filterValue, label: filterLabel } = toRefs(filter.value);
+  const { value: filterValue } = toRefs(filter.value);
   const router = useRouter();
   const currentRoute = computed(() => router.currentRoute.value.path);
+
+  filter.value.value = storeGet.value;
+  filter.value.label = storeGet.label;
 
   watch(
     filterValue,
     () => {
-      storeFunc({ value: filterValue.value, label: filterLabel.value });
+      const val = { value: filter.value.value, label: filter.value.label };
+      storeSet(val);
     },
     { immediate: true },
   );

@@ -1,6 +1,6 @@
 export const usePeriodFilters = {
-  value: 'day',
-  label: 'Day',
+  value: null,
+  label: null,
   show: false,
   options: [
     { text: 'Day', value: 'day' },
@@ -13,8 +13,8 @@ export const usePeriodFilters = {
 };
 
 export const useRangeFilters = {
-  value: 'avg',
-  label: 'Average',
+  value: null,
+  label: null,
   show: false,
   options: [
     { text: 'Average', value: 'avg' },
@@ -26,8 +26,8 @@ export const useRangeFilters = {
 };
 
 export const useUsersFilters = {
-  value: 'suspect',
-  label: 'Suspect',
+  value: null,
+  label: null,
   show: false,
   options: [
     { text: 'All', value: 'all' },
