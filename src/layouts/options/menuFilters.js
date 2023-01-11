@@ -8,7 +8,7 @@ export const usePeriodFilters = {
     { text: 'Month', value: 'month' },
     { text: 'Year', value: 'year' },
   ],
-  routes: ['/bme280/temperature', '/bme280/pressure', '/bme280/humidity'],
+  routes: ['/bme280/temperature', '/bme280/pressure', '/bme280/humidity', '/ze08ch2o/ch2o'],
   icon: 'mdi-dots-square',
 };
 
@@ -21,7 +21,7 @@ export const useRangeFilters = {
     { text: 'Minimum', value: 'min' },
     { text: 'Maximum', value: 'max' },
   ],
-  routes: ['/bme280/temperature', '/bme280/pressure', '/bme280/humidity'],
+  routes: ['/bme280/temperature', '/bme280/pressure', '/bme280/humidity', '/ze08ch2o/ch2o'],
   icon: 'mdi-dots-vertical',
 };
 
