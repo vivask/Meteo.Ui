@@ -6,11 +6,11 @@ import { webClient } from 'src/app/api/webClient';
  * @param range
  * @param period
  */
-export async function getBmx280Data(range, spsing, begin, end) {
+export async function getBmx280Data(range, period, begin, end) {
   const empty = [];
-  const url = `/esp32/bmx280/${range}/${spsing}`;
+  const url = `/esp32/bmx280/${range}/${period}`;
   return webClient
-    .post('/esp32/bmx280/min/day', { begin, end })
+    .post(url, { begin, end })
     .then(({ success, result }) => (success ? result : empty))
     .catch(() => empty);
 }

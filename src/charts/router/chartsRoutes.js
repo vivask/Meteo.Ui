@@ -1,4 +1,4 @@
-export const bme280Routes = [
+export const chartsRoutes = [
   {
     path: '/bme280/:parameter',
     component: () => import('../pages/PageBme280.vue'),

@@ -25,7 +25,7 @@ import { defineComponent, ref } from 'vue';
 let id = 0;
 
 export default defineComponent({
-  name: 'UiFilter',
+  name: 'MenuFilter',
 
   props: {
     icon: {
@@ -46,9 +46,14 @@ export default defineComponent({
       type: String,
       default: () => `radio-group-${id++}`,
     },
+
+    label: {
+      type: String,
+      required: true,
+    },
   },
 
-  emits: ['update:modelValue'],
+  emits: ['update:modelValue', 'update:label'],
 
   setup(props, { emit }) {
     const radio = ref(props.modelValue);
@@ -58,7 +63,9 @@ export default defineComponent({
       radio,
       menu,
       emitVal(value) {
+        const item = props.options.find((item) => item.value == value);
         emit('update:modelValue', value);
+        emit('update:label', item.text);
         menu.value = false;
       },
     };

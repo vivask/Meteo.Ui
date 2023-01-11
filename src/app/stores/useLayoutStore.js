@@ -3,9 +3,12 @@ import { computed, ref } from 'vue';
 
 export const useLayoutStore = defineStore('layout', () => {
   const items = ref({});
-  const periodFilter = ref(null);
-  const rangeFilter = ref(null);
-  const usersFilter = ref(null);
+  const storedPeriodFilter = JSON.parse(localStorage.getItem('period_filter'));
+  const periodFilter = ref({}); //storedPeriodFilter ? ref(storedPeriodFilter) : ref({});
+  const storedRangeFilter = JSON.parse(localStorage.getItem('range_filter'));
+  const rangeFilter = ref({}); //storedRangeFilter ? ref(storedRangeFilter) : ref({});
+  const storedUserFilter = JSON.parse(localStorage.getItem('user_filter'));
+  const usersFilter = ref({}); //storedUserFilter ? ref(storedUserFilter) : ref({});
   const storedExpansions = JSON.parse(localStorage.getItem('expansions'));
   const expansions = storedExpansions ? ref(storedExpansions) : ref({});
 
@@ -35,15 +38,15 @@ export const useLayoutStore = defineStore('layout', () => {
     },
 
     periodChange(value) {
-      periodFilter.value = value;
+      if (periodFilter.value !== value) periodFilter.value = value;
     },
 
     rangeChange(value) {
-      rangeFilter.value = value;
+      if (rangeFilter.value !== value) rangeFilter.value = value;
     },
 
     usersChange(value) {
-      usersFilter.value = value;
+      if (usersFilter.value !== value) usersFilter.value = value;
     },
 
     setShowExpansion(item) {
