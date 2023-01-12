@@ -18,7 +18,7 @@
             tooltip="Prior"
             color="primary"
             icon="navigate_before"
-            class="wd-half"
+            :class="priorClass"
             @click="prior"
           />
           <ui-square-btn-vue
@@ -26,7 +26,7 @@
             tooltip="Next"
             color="primary"
             icon="navigate_next"
-            class="wd-half"
+            :class="nextClass"
             @click="next"
           />
         </div>
@@ -90,8 +90,10 @@ export default defineComponent({
     const period = computed(() => layoutStore.periodFilter.value);
     let end = null;
     let begin = null;
-    const columns = { xl: 8, lg: 10, md: 7, sm: 7, xs: 10 };
+    const columns = { xl: 8, lg: 10, md: 10, sm: 10, xs: 10 };
     const cols = computed(() => `col-${columns[Screen.name]}`);
+    const priorClass = computed(() => (Screen.name === 'xs' ? 'wd-100' : 'wd-half'));
+    const nextClass = computed(() => (Screen.name === 'xs' ? 'wd-100 mt-10' : 'wd-half ml-5'));
 
     const { values } = toRefs(props);
     const priorDisable = ref(false);
@@ -182,6 +184,8 @@ export default defineComponent({
       periodBack,
       nextDisable,
       priorDisable,
+      priorClass,
+      nextClass,
 
       next() {
         end = periodForward();
@@ -210,6 +214,10 @@ export default defineComponent({
   border: 1px solid rgba(86, 61, 124, .2)
 .wd-half
   width: 49%
+.wd-100
+  width: 100%
 .ml-5
   margin-left: 7px
+.mt-10
+  margin-top: 10px
 </style>

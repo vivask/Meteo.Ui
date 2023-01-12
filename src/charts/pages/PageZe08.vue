@@ -5,11 +5,11 @@
 <script>
 import { defineComponent, ref, computed } from 'vue';
 import ChartBoxVue from '../components/ChartBox.vue';
-import { getZe08Data } from '../api/ze08Api';
+import { getData } from '../api/ze08Api';
 import { useChartWrapper } from '../composables/useChartWrapper';
 
 export default defineComponent({
-  name: 'PageBme280',
+  name: 'PageZe08',
 
   components: {
     ChartBoxVue,
@@ -22,13 +22,13 @@ export default defineComponent({
   },
 
   setup(props) {
-    const ze08Data = ref([]);
+    const data = ref([]);
 
-    const { chartLabel, chartPeriod, chartLabels } = useChartWrapper(props.parameter, ze08Data, getZe08Data);
+    const { chartLabel, chartPeriod, chartLabels } = useChartWrapper(props.parameter, data, getData);
 
     const chartData = computed(() => {
       const field = 'ch2o';
-      const result = ze08Data.value.map((item) => item[field]);
+      const result = data.value.map((item) => item[field]);
       return result;
     });
 
@@ -37,7 +37,7 @@ export default defineComponent({
       chartPeriod,
       chartData,
       chartLabels,
-      ze08Data,
+      data,
     };
   },
 });

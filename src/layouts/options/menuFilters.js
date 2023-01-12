@@ -8,7 +8,18 @@ export const usePeriodFilters = {
     { text: 'Month', value: 'month' },
     { text: 'Year', value: 'year' },
   ],
-  routes: ['/bme280/temperature', '/bme280/pressure', '/bme280/humidity', '/ze08ch2o/ch2o'],
+  routes: [
+    '/bme280/temperature',
+    '/bme280/pressure',
+    '/bme280/humidity',
+    '/mics6814/no2',
+    '/mics6814/nh3',
+    '/mics6814/co',
+    '/radsens/static',
+    '/radsens/dynamic',
+    '/ze08ch2o/ch2o',
+    '/ds18b20/temperature',
+  ],
   icon: 'mdi-dots-square',
 };
 
@@ -21,7 +32,18 @@ export const useRangeFilters = {
     { text: 'Minimum', value: 'min' },
     { text: 'Maximum', value: 'max' },
   ],
-  routes: ['/bme280/temperature', '/bme280/pressure', '/bme280/humidity', '/ze08ch2o/ch2o'],
+  routes: [
+    '/bme280/temperature',
+    '/bme280/pressure',
+    '/bme280/humidity',
+    '/mics6814/no2',
+    '/mics6814/nh3',
+    '/mics6814/co',
+    '/radsens/static',
+    '/radsens/dynamic',
+    '/ze08ch2o/ch2o',
+    '/ds18b20/temperature',
+  ],
   icon: 'mdi-dots-vertical',
 };
 

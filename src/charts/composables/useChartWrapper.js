@@ -11,14 +11,16 @@ export function useChartWrapper(sensorParameter, sensorData, api) {
   const chartLabel = computed(() => `${range.value.label} ${sensorParameter}`);
   const chartPeriod = ref({});
   const chartLabels = computed(() => {
-    return sensorData.value.map((item) => {
-      let date = new Date(item.gdate);
-      return period.value === 'day'
-        ? shortTime(date)
-        : period.value === 'year'
-        ? monthes[date.getMonth()]
-        : shortDate(date);
-    });
+    return !sensorData?.value
+      ? []
+      : sensorData.value.map((item) => {
+          let date = new Date(item.gdate);
+          return period.value === 'day'
+            ? shortTime(date)
+            : period.value === 'year'
+            ? monthes[date.getMonth()]
+            : shortDate(date);
+        });
   });
 
   const refresh = async () => {

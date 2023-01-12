@@ -4,7 +4,7 @@
     class="relative-position container cursor-pointer q-hoverable"
     @mouseover="hover = true"
     @mouseleave="hover = false"
-    @click.prevent="() => {}"
+    @click.prevent="router.push('/mics6814/no2')"
   >
     <q-item dense>
       <q-item-section side>
@@ -16,16 +16,38 @@
         <q-item-label class="text-bold text-h6" :color="color">MICS6814</q-item-label>
       </q-item-section>
     </q-item>
-    <home-label-vue :value="nh3" label="NH3:" unit="мг/м3" :alarm="alarmNh3" :check="checkNh3" :available="available" />
-    <home-label-vue :value="no2" label="NO2:" unit="мг/м3" :alarm="alarmNo2" :check="checkNo2" :available="available" />
-    <home-label-vue :value="co" label="CO:" unit="мг/м3" :alarm="alarmCo" :check="checkCo" :available="available" />
+    <home-label-vue
+      :value="nh3"
+      label="NH3:"
+      unit="мг/м3"
+      :alarm="alarmNh3"
+      :check="checkMics6814Nh3Alarm"
+      :available="available"
+    />
+    <home-label-vue
+      :value="no2"
+      label="NO2:"
+      unit="мг/м3"
+      :alarm="alarmNo2"
+      :check="checkMics6814No2Alarm"
+      :available="available"
+    />
+    <home-label-vue
+      :value="co"
+      label="CO:"
+      unit="мг/м3"
+      :alarm="alarmCo"
+      :check="checkMics6814CoAlarm"
+      :available="available"
+    />
   </div>
 </template>
 
 <script>
 import { defineComponent, ref, computed } from 'vue';
 import HomeLabelVue from './HomeLabel.vue';
-import { jwtClient } from 'src/app/api/jwtClient';
+import { checkMics6814No2Alarm, checkMics6814Nh3Alarm, checkMics6814CoAlarm } from '../api/homeApi';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   name: 'HomeMics6814',
@@ -45,27 +67,20 @@ export default defineComponent({
   },
 
   setup() {
+    const router = useRouter();
     const whiteIcon = new URL('../../assets/NH3-48x48-white.png', import.meta.url).href;
     const blueIcon = new URL('../../assets/NH3-48x48-blue.png', import.meta.url).href;
     const iconColor = '#3092EA';
     const hover = ref(false);
 
     return {
+      router,
       hover,
       icon: computed(() => (hover.value ? blueIcon : whiteIcon)),
       color: computed(() => (hover.value ? iconColor : 'white')),
-
-      checkNh3() {
-        jwtClient.put('/esp32/mics6814/nh3/chk');
-      },
-
-      checkNo2() {
-        jwtClient.put('/esp32/mics6814/no2/chk');
-      },
-
-      checkCo() {
-        jwtClient.put('/esp32/mics6814/co/chk');
-      },
+      checkMics6814No2Alarm,
+      checkMics6814Nh3Alarm,
+      checkMics6814CoAlarm,
     };
   },
 });

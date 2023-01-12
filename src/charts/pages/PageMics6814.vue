@@ -5,11 +5,11 @@
 <script>
 import { defineComponent, ref, computed } from 'vue';
 import ChartBoxVue from '../components/ChartBox.vue';
-import { getData } from '../api/bme280Api';
+import { getData } from '../api/mics6814Api';
 import { useChartWrapper } from '../composables/useChartWrapper';
 
 export default defineComponent({
-  name: 'PageBme280',
+  name: 'PageMics6814',
 
   components: {
     ChartBoxVue,
@@ -27,8 +27,8 @@ export default defineComponent({
     const { chartLabel, chartPeriod, chartLabels } = useChartWrapper(props.parameter, data, getData);
 
     const chartData = computed(() => {
-      const field = props.parameter === 'pressure' ? 'press' : props.parameter === 'temperature' ? 'tempr' : 'hum';
-      const result = data.value.map((item) => (field === 'press' ? item[field] / 133 : item[field]));
+      const field = props.parameter;
+      const result = data.value.map((item) => item[field]);
       return result;
     });
 

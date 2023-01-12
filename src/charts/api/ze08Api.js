@@ -6,7 +6,7 @@ import { webClient } from 'src/app/api/webClient';
  * @param range
  * @param period
  */
-export async function getZe08Data(range, period, begin, end) {
+export async function getData(range, period, begin, end) {
   const empty = [];
   const url = `/esp32/ze08ch2o/${range}/${period}`;
   return webClient

@@ -4,7 +4,7 @@
     class="relative-position container cursor-pointer q-hoverable"
     @mouseover="hover = true"
     @mouseleave="hover = false"
-    @click.prevent="() => {}"
+    @click.prevent="router.push('/ze08ch2o/ch2o')"
   >
     <q-item dense>
       <q-item-section side>
@@ -16,14 +16,22 @@
         <q-item-label class="text-bold text-h6" :color="color">ZE08CH2O</q-item-label>
       </q-item-section>
     </q-item>
-    <home-label-vue :value="ch2o" label="CH2O:" unit="ppm" :alarm="alarm" :check="check" :available="available" />
+    <home-label-vue
+      :value="ch2o"
+      label="CH2O:"
+      unit="ppm"
+      :alarm="alarm"
+      :check="checkZe08CH2OAlarm"
+      :available="available"
+    />
   </div>
 </template>
 
 <script>
 import { defineComponent, ref, computed } from 'vue';
 import HomeLabelVue from './HomeLabel.vue';
-import { jwtClient } from 'src/app/api/jwtClient';
+import { checkZe08CH2OAlarm } from '../api/homeApi';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   name: 'HomeZe08ch2o',
@@ -39,19 +47,18 @@ export default defineComponent({
   },
 
   setup() {
+    const router = useRouter();
     const whiteIcon = new URL('../../assets/CH2O-48x48-white.png', import.meta.url).href;
     const blueIcon = new URL('../../assets/CH2O-48x48-blue.png', import.meta.url).href;
     const iconColor = '#3092EA';
     const hover = ref(false);
 
     return {
+      router,
       hover,
       icon: computed(() => (hover.value ? blueIcon : whiteIcon)),
       color: computed(() => (hover.value ? iconColor : 'white')),
-
-      check() {
-        jwtClient.put('/esp32/ze08ch2o/ch2o/chk');
-      },
+      checkZe08CH2OAlarm,
     };
   },
 });
