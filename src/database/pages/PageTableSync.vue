@@ -1,6 +1,6 @@
 <template>
   <ui-box-vue :columns="boxCols" header="Table Synchronization">
-    <q-table hide-header :rows="rows" :columns="columns" row-key="name" :rows-per-page-options="[10, 50, 100, 0]">
+    <q-table hide-header :rows="rows" :columns="columns" row-key="name" :rows-per-page-options="[0, 10, 50, 100]">
       <template #top>
         <q-checkbox v-model="allSelected" color="grey" @update:model-value="handleSelectedAll" />
         <p class="header-table text-caption">Table</p>
@@ -49,7 +49,7 @@
 <script>
 import { defineComponent, computed, ref, onMounted } from 'vue';
 import UiBoxVue from 'src/app/components/UiBox.vue';
-import { getTables } from '../api/syncApi';
+import { getTables, syncTable } from '../api/syncApi';
 
 const columns = [
   { name: 'selected' },
@@ -110,7 +110,7 @@ export default defineComponent({
       },
 
       handleSync(row) {
-        console.log('handleSync: ', row);
+        syncTable(row);
       },
 
       handleAllSync(event) {
