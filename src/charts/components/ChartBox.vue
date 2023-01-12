@@ -90,7 +90,7 @@ export default defineComponent({
     const period = computed(() => layoutStore.periodFilter.value);
     let end = null;
     let begin = null;
-    const columns = { xl: 8, lg: 10, md: 4, sm: 5, xs: 10 };
+    const columns = { xl: 8, lg: 10, md: 7, sm: 7, xs: 10 };
     const cols = computed(() => `col-${columns[Screen.name]}`);
 
     const { values } = toRefs(props);
