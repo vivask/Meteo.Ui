@@ -28,9 +28,12 @@ export async function getTables() {
 
 /**
  * Sync table
+ * @returns {Promise<ResultContainer<any>>}
  */
 export async function syncTable(row) {
   const url = `/database/${row.method.stype.id}/${row.name}/${row.direction === 'Main => Back' ? 'forward' : 'back'}`;
-  console.log(url);
-  jwtClient.put(url);
+  return await jwtClient
+    .put(url)
+    .then(({ success }) => success)
+    .catch(() => false);
 }

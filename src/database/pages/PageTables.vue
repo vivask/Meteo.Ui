@@ -13,7 +13,7 @@
       :columns="columns"
       row-key="name"
       selection="multiple"
-      :rows-per-page-options="[10, 50, 100, 0]"
+      :rows-per-page-options="[0, 10, 50, 100]"
     >
       <template #body-cell-state="props">
         <q-td :props="props">

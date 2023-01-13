@@ -50,6 +50,8 @@
 import { defineComponent, computed, ref, onMounted } from 'vue';
 import UiBoxVue from 'src/app/components/UiBox.vue';
 import { getTables, syncTable } from '../api/syncApi';
+import { useConfirmDialog } from 'src/app/composables/useConfirmDialog.js';
+import { Notify } from 'quasar';
 
 const columns = [
   { name: 'selected' },
@@ -72,8 +74,24 @@ export default defineComponent({
     const rows = ref([]);
     const boxCols = { xl: 6, lg: 6, md: 7, sm: 11, xs: 10 };
     const disable = computed(() => selected.value.length === 0);
+    const confirm = useConfirmDialog();
 
     onMounted(async () => (rows.value = await getTables()));
+
+    const handleAllSync = async () => {
+      let ok = await confirm.show('Synchronizing multiple tables will take a long time. Continue?');
+      if (ok) {
+        for (let row of selected.value) {
+          ok = await syncTable(row);
+          if (ok) {
+            Notify.create({
+              type: 'info',
+              message: `Table ${row.name} synchronization success!`,
+            });
+          }
+        }
+      }
+    };
 
     return {
       selected,
@@ -82,6 +100,7 @@ export default defineComponent({
       rows,
       boxCols,
       disable,
+      handleAllSync,
 
       handleSelectedAll(toggle) {
         if (toggle) {
@@ -109,12 +128,21 @@ export default defineComponent({
         rows.value[idx].direction = rows.value[idx].direction === 'Main => Back' ? 'Main <= Back' : 'Main => Back';
       },
 
-      handleSync(row) {
-        syncTable(row);
-      },
-
-      handleAllSync(event) {
-        console.log('handleAllSync: ', event);
+      async handleSync(row) {
+        if (selected.value.length) {
+          handleAllSync();
+        } else {
+          let ok = await confirm.show('Synchronization will take some time. Continue?');
+          if (ok) {
+            ok = await syncTable(row);
+            if (ok) {
+              Notify.create({
+                type: 'info',
+                message: `Table ${row.name} synchronization success!`,
+              });
+            }
+          }
+        }
       },
     };
   },
