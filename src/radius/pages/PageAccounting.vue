@@ -105,7 +105,7 @@ export default defineComponent({
     const boxCols = { xl: 9, lg: 9, md: 7, sm: 11, xs: 10 };
     const { formatLongDate } = useUtils();
     const layoutStore = useLayoutStore();
-    const filter = computed(() => layoutStore.usersFilter);
+    const filter = computed(() => layoutStore.usersFilter.value);
 
     const isVerifiedUser = (row) => row.verified && row.verified.length > 0 && row.valid && row.valid.length > 0;
     const isValidUser = (row) => isVerifiedUser(row) && row.valid === row.username;

@@ -29,6 +29,14 @@ import {
   RestartPostgresCont,
   StopPostgresCont,
   StartPostgresCont,
+  getClusterLogging,
+  getMessangerLogging,
+  getSshclientLogging,
+  getScheduleLogging,
+  getProxyLogging,
+  getServerLogging,
+  getWebLogging,
+  getEsp32Logging,
 } from '../api/mainApi';
 
 export function createServices(state) {
@@ -36,6 +44,7 @@ export function createServices(state) {
     {
       title: 'Cluster',
       disable: !!state.value.ClusterService,
+      logging: getClusterLogging,
       restart: RestartClusterCont,
       start: StartClusterCont,
       stop: StopClusterCont,
@@ -43,6 +52,7 @@ export function createServices(state) {
     {
       title: 'Messanger',
       disable: !!state.value.MessangerService,
+      logging: getMessangerLogging,
       restart: RestartMessangerCont,
       start: StartMessangerCont,
       stop: StopMessangerCont,
@@ -50,6 +60,7 @@ export function createServices(state) {
     {
       title: 'Sshclient',
       disable: !!state.value.SshclientService,
+      logging: getSshclientLogging,
       restart: RestartSshclientCont,
       start: StartSshclientCont,
       stop: StopSshclientCont,
@@ -57,6 +68,7 @@ export function createServices(state) {
     {
       title: 'Schedule',
       disable: !!state.value.ScheduleService,
+      logging: getScheduleLogging,
       restart: RestartScheduleCont,
       start: StartScheduleCont,
       stop: StopScheduleCont,
@@ -64,6 +76,7 @@ export function createServices(state) {
     {
       title: 'Proxy',
       disable: !!state.value.ProxyService,
+      logging: getProxyLogging,
       restart: RestartProxyCont,
       start: StartProxyCont,
       stop: StopProxyCont,
@@ -71,6 +84,7 @@ export function createServices(state) {
     {
       title: 'Server',
       disable: !!state.value.ServerService,
+      logging: getServerLogging,
       restart: RestartServerCont,
       start: StartServerCont,
       stop: StopServerCont,
@@ -78,6 +92,7 @@ export function createServices(state) {
     {
       title: 'Web',
       disable: !!state.value.WebService,
+      logging: getWebLogging,
       restart: RestartWebCont,
       start: StartWebCont,
       stop: StopWebCont,
@@ -85,6 +100,7 @@ export function createServices(state) {
     {
       title: 'Esp32',
       disable: !!state.value.Esp32,
+      logging: getEsp32Logging,
       restart: RestartEsp32Cont,
       start: StartEsp32Cont,
       stop: StopEsp32Cont,

@@ -21,6 +21,7 @@
           :key="item.title"
           :title="item.title"
           :disable="item.disable"
+          :logging="item.logging"
           :restart="item.restart"
           :start="item.start"
           :stop="item.stop"

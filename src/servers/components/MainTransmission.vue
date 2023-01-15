@@ -31,7 +31,7 @@
     <ui-square-btn-vue
       :disable="disable"
       tooltip="Start transmission daemon"
-      color="warning"
+      color="primary"
       icon="start"
       @click="StartTransmission"
     />

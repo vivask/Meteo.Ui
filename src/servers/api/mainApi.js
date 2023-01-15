@@ -247,3 +247,99 @@ export function Shutdown() {
     getState();
   });
 }
+
+/**
+ * Request cluster logging
+ * @returns {Promise<ResultContainer<any>>}
+ */
+export async function getClusterLogging() {
+  const empty = [];
+  return jwtClient
+    .get('/main/cluster/logging')
+    .then(({ success, result }) => (success ? result : empty))
+    .catch(() => empty);
+}
+
+/**
+ * Request messanger logging
+ * @returns {Promise<ResultContainer<any>>}
+ */
+export async function getMessangerLogging() {
+  const empty = [];
+  return jwtClient
+    .get('/main/messanger/logging')
+    .then(({ success, result }) => (success ? result : empty))
+    .catch(() => empty);
+}
+
+/**
+ * Request sshclient logging
+ * @returns {Promise<ResultContainer<any>>}
+ */
+export async function getSshclientLogging() {
+  const empty = [];
+  return jwtClient
+    .get('/main/sshclient/logging')
+    .then(({ success, result }) => (success ? result : empty))
+    .catch(() => empty);
+}
+
+/**
+ * Request schedule logging
+ * @returns {Promise<ResultContainer<any>>}
+ */
+export async function getScheduleLogging() {
+  const empty = [];
+  return jwtClient
+    .get('/main/schedule/logging')
+    .then(({ success, result }) => (success ? result : empty))
+    .catch(() => empty);
+}
+
+/**
+ * Request proxy logging
+ * @returns {Promise<ResultContainer<any>>}
+ */
+export async function getProxyLogging() {
+  const empty = [];
+  return jwtClient
+    .get('/main/proxy/logging')
+    .then(({ success, result }) => (success ? result : empty))
+    .catch(() => empty);
+}
+
+/**
+ * Request server logging
+ * @returns {Promise<ResultContainer<any>>}
+ */
+export async function getServerLogging() {
+  const empty = [];
+  return jwtClient
+    .get('/main/server/logging')
+    .then(({ success, result }) => (success ? result : empty))
+    .catch(() => empty);
+}
+
+/**
+ * Request web logging
+ * @returns {Promise<ResultContainer<any>>}
+ */
+export async function getWebLogging() {
+  const empty = [];
+  return jwtClient
+    .get('/main/web/logging')
+    .then(({ success, result }) => (success ? result : empty))
+    .catch(() => empty);
+}
+
+/**
+ * Request esp32 logging
+ * @returns {Promise<ResultContainer<any>>}
+ */
+export async function getEsp32Logging() {
+  const empty = [];
+  return jwtClient
+    .get('/main/esp32/logging')
+    .then(({ success, result }) => (success ? result : empty))
+    .catch(() => empty);
+}

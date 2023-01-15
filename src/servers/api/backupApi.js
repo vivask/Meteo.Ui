@@ -155,19 +155,19 @@ export function StartWebCont() {
 }
 
 export function RestartEsp32Cont() {
-  jwtClient.put('/main/restart/esp32').then(() => {
+  jwtClient.put('/backup/restart/esp32').then(() => {
     getState();
   });
 }
 
 export function StopEsp32Cont() {
-  jwtClient.put('/main/stop/esp32').then(() => {
+  jwtClient.put('/backup/stop/esp32').then(() => {
     getState();
   });
 }
 
 export function StartEsp32Cont() {
-  jwtClient.put('/main/start/esp32').then(() => {
+  jwtClient.put('/backup/start/esp32').then(() => {
     getState();
   });
 }
@@ -200,4 +200,100 @@ export function Shutdown() {
   jwtClient.put('/backup/shutdown').then(() => {
     getState();
   });
+}
+
+/**
+ * Request cluster logging
+ * @returns {Promise<ResultContainer<any>>}
+ */
+export async function getClusterLogging() {
+  const empty = [];
+  return jwtClient
+    .get('/backup/cluster/logging')
+    .then(({ success, result }) => (success ? result : empty))
+    .catch(() => empty);
+}
+
+/**
+ * Request messanger logging
+ * @returns {Promise<ResultContainer<any>>}
+ */
+export async function getMessangerLogging() {
+  const empty = [];
+  return jwtClient
+    .get('/backup/messanger/logging')
+    .then(({ success, result }) => (success ? result : empty))
+    .catch(() => empty);
+}
+
+/**
+ * Request sshclient logging
+ * @returns {Promise<ResultContainer<any>>}
+ */
+export async function getSshclientLogging() {
+  const empty = [];
+  return jwtClient
+    .get('/backup/sshclient/logging')
+    .then(({ success, result }) => (success ? result : empty))
+    .catch(() => empty);
+}
+
+/**
+ * Request schedule logging
+ * @returns {Promise<ResultContainer<any>>}
+ */
+export async function getScheduleLogging() {
+  const empty = [];
+  return jwtClient
+    .get('/backup/schedule/logging')
+    .then(({ success, result }) => (success ? result : empty))
+    .catch(() => empty);
+}
+
+/**
+ * Request proxy logging
+ * @returns {Promise<ResultContainer<any>>}
+ */
+export async function getProxyLogging() {
+  const empty = [];
+  return jwtClient
+    .get('/backup/proxy/logging')
+    .then(({ success, result }) => (success ? result : empty))
+    .catch(() => empty);
+}
+
+/**
+ * Request server logging
+ * @returns {Promise<ResultContainer<any>>}
+ */
+export async function getServerLogging() {
+  const empty = [];
+  return jwtClient
+    .get('/backup/server/logging')
+    .then(({ success, result }) => (success ? result : empty))
+    .catch(() => empty);
+}
+
+/**
+ * Request web logging
+ * @returns {Promise<ResultContainer<any>>}
+ */
+export async function getWebLogging() {
+  const empty = [];
+  return jwtClient
+    .get('/backup/web/logging')
+    .then(({ success, result }) => (success ? result : empty))
+    .catch(() => empty);
+}
+
+/**
+ * Request esp32 logging
+ * @returns {Promise<ResultContainer<any>>}
+ */
+export async function getEsp32Logging() {
+  const empty = [];
+  return jwtClient
+    .get('/backup/esp32/logging')
+    .then(({ success, result }) => (success ? result : empty))
+    .catch(() => empty);
 }

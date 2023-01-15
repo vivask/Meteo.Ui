@@ -85,11 +85,11 @@ export default defineComponent({
   emits: ['update:modelValue'],
 
   setup(props, { emit }) {
+    let end = null;
+    let begin = null;
     const { modelValue } = toRefs(props);
     const layoutStore = useLayoutStore();
     const period = computed(() => layoutStore.periodFilter.value);
-    let end = null;
-    let begin = null;
     const columns = { xl: 8, lg: 10, md: 10, sm: 10, xs: 10 };
     const cols = computed(() => `col-${columns[Screen.name]}`);
     const priorClass = computed(() => (Screen.name === 'xs' ? 'wd-100' : 'wd-half'));
