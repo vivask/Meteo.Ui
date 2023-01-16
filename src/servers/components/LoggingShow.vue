@@ -32,14 +32,16 @@ export default defineComponent({
   setup(props, { emit }) {
     const popup = ref(null);
     const lines = ref(null);
+    const clear = ref(null);
 
     const handleClose = () => {
       popup.value.hide();
       emit('close');
     };
 
-    const show = (prop) => {
+    const show = (prop, fnClear) => {
       lines.value = prop;
+      clear.value = fnClear;
       popup.value.show();
     };
 
@@ -48,8 +50,14 @@ export default defineComponent({
       lines,
       handleClose,
       show,
+      clear,
 
-      handleClear() {},
+      handleClear() {
+        if (clear?.value) {
+          lines.value = [];
+          clear.value();
+        }
+      },
     };
   },
 });

@@ -44,6 +44,18 @@ export function StartSamba() {
   jwtClient.put('/main/samba/start');
 }
 
+export function RestartRadius() {
+  jwtClient.put('/main/radius/restart');
+}
+
+export function StopRadius() {
+  jwtClient.put('/main/radius/stop');
+}
+
+export function StartRadius() {
+  jwtClient.put('/main/radius/start');
+}
+
 export function RemountStorage() {
   jwtClient.put('/main/storage/remount');
 }
@@ -57,195 +69,131 @@ export function MountStorage() {
 }
 
 export function RestartClusterCont() {
-  jwtClient.put('/main/restart/cluster').then(() => {
-    getState();
-  });
+  jwtClient.put('/main/restart/cluster');
 }
 
 export function StartClusterCont() {
-  jwtClient.put('/main/start/cluster').then(() => {
-    getState();
-  });
+  jwtClient.put('/main/start/cluster');
 }
 
 export function StopClusterCont() {
-  jwtClient.put('/main/stop/cluster').then(() => {
-    getState();
-  });
+  jwtClient.put('/main/stop/cluster');
 }
 
 export function RestartMessangerCont() {
-  jwtClient.put('/main/restart/messanger').then(() => {
-    getState();
-  });
+  jwtClient.put('/main/restart/messanger');
 }
 
 export function StopMessangerCont() {
-  jwtClient.put('/main/stop/messanger').then(() => {
-    getState();
-  });
+  jwtClient.put('/main/stop/messanger');
 }
 
 export function StartMessangerCont() {
-  jwtClient.put('/main/start/messanger').then(() => {
-    getState();
-  });
+  jwtClient.put('/main/start/messanger');
 }
 
 export function RestartSshclientCont() {
-  jwtClient.put('/main/restart/sshclient').then(() => {
-    getState();
-  });
+  jwtClient.put('/main/restart/sshclient');
 }
 
 export function StopSshclientCont() {
-  jwtClient.put('/main/stop/sshclient').then(() => {
-    getState();
-  });
+  jwtClient.put('/main/stop/sshclient');
 }
 
 export function StartSshclientCont() {
-  jwtClient.put('/main/start/sshclient').then(() => {
-    getState();
-  });
+  jwtClient.put('/main/start/sshclient');
 }
 
 export function RestartScheduleCont() {
-  jwtClient.put('/main/restart/schedule').then(() => {
-    getState();
-  });
+  jwtClient.put('/main/restart/schedule');
 }
 
 export function StopScheduleCont() {
-  jwtClient.put('/main/stop/schedule').then(() => {
-    getState();
-  });
+  jwtClient.put('/main/stop/schedule');
 }
 
 export function StartScheduleCont() {
-  jwtClient.put('/main/start/schedule').then(() => {
-    getState();
-  });
+  jwtClient.put('/main/start/schedule');
 }
 
 export function RestartProxyCont() {
-  jwtClient.put('/main/restart/proxy').then(() => {
-    getState();
-  });
+  jwtClient.put('/main/restart/proxy');
 }
 
 export function StopProxyCont() {
-  jwtClient.put('/main/stop/proxy').then(() => {
-    getState();
-  });
+  jwtClient.put('/main/stop/proxy');
 }
 
 export function StartProxyCont() {
-  jwtClient.put('/main/start/proxy').then(() => {
-    getState();
-  });
+  jwtClient.put('/main/start/proxy');
 }
 
 export function RestartServerCont() {
-  jwtClient.put('/main/restart/server').then(() => {
-    getState();
-  });
+  jwtClient.put('/main/restart/server');
 }
 
 export function StopServerCont() {
-  jwtClient.put('/main/stop/server').then(() => {
-    getState();
-  });
+  jwtClient.put('/main/stop/server');
 }
 
 export function StartServerCont() {
-  jwtClient.put('/main/start/server').then(() => {
-    getState();
-  });
+  jwtClient.put('/main/start/server');
 }
 
 export function RestartWebCont() {
-  jwtClient.put('/main/restart/web').then(() => {
-    getState();
-  });
+  jwtClient.put('/main/restart/web');
 }
 
 export function StopWebCont() {
-  jwtClient.put('/main/stop/web').then(() => {
-    getState();
-  });
+  jwtClient.put('/main/stop/web');
 }
 
 export function StartWebCont() {
-  jwtClient.put('/main/start/web').then(() => {
-    getState();
-  });
+  jwtClient.put('/main/start/web');
 }
 
 export function RestartEsp32Cont() {
-  jwtClient.put('/main/restart/esp32').then(() => {
-    getState();
-  });
+  jwtClient.put('/main/restart/esp32');
 }
 
 export function StopEsp32Cont() {
-  jwtClient.put('/main/stop/esp32').then(() => {
-    getState();
-  });
+  jwtClient.put('/main/stop/esp32');
 }
 
 export function StartEsp32Cont() {
-  jwtClient.put('/main/start/esp32').then(() => {
-    getState();
-  });
+  jwtClient.put('/main/start/esp32');
 }
 
 export function RestartGogsCont() {
-  jwtClient.put('/main/restart/gogs').then(() => {
-    getState();
-  });
+  jwtClient.put('/main/restart/gogs');
 }
 
 export function StopGogsCont() {
-  jwtClient.put('/main/stop/gogs').then(() => {
-    getState();
-  });
+  jwtClient.put('/main/stop/gogs');
 }
 
 export function StartGogsCont() {
-  jwtClient.put('/main/start/gogs').then(() => {
-    getState();
-  });
+  jwtClient.put('/main/start/gogs');
 }
 
 export function RestartPostgresCont() {
-  jwtClient.put('/main/restart/postgres').then(() => {
-    getState();
-  });
+  jwtClient.put('/main/restart/postgres');
 }
 
 export function StopPostgresCont() {
-  jwtClient.put('/main/stop/postgres').then(() => {
-    getState();
-  });
+  jwtClient.put('/main/stop/postgres');
 }
 
 export function StartPostgresCont() {
-  jwtClient.put('/main/start/postgres').then(() => {
-    getState();
-  });
+  jwtClient.put('/main/start/postgres');
 }
 
 export function Reboot() {
-  jwtClient.put('/main/reboot').then(() => {
-    getState();
-  });
+  jwtClient.put('/main/reboot');
 }
 
 export function Shutdown() {
-  jwtClient.put('/main/shutdown').then(() => {
-    getState();
-  });
+  jwtClient.put('/main/shutdown');
 }
 
 /**
@@ -342,4 +290,92 @@ export async function getEsp32Logging() {
     .get('/main/esp32/logging')
     .then(({ success, result }) => (success ? result : empty))
     .catch(() => empty);
+}
+
+/**
+ * Clear cluster logging
+ * @returns {Promise<ResultContainer<any>>}
+ */
+export async function ClearClusterLogging() {
+  return jwtClient
+    .put('/main/cluster/logging')
+    .then(({ success }) => success)
+    .catch(() => false);
+}
+
+/**
+ * Clear messanger logging
+ * @returns {Promise<ResultContainer<any>>}
+ */
+export async function ClearMessangerLogging() {
+  return jwtClient
+    .put('/main/messanger/logging')
+    .then(({ success }) => success)
+    .catch(() => false);
+}
+
+/**
+ * Clear sshclient logging
+ * @returns {Promise<ResultContainer<any>>}
+ */
+export async function ClearSshclientLogging() {
+  return jwtClient
+    .put('/main/sshclient/logging')
+    .then(({ success }) => success)
+    .catch(() => false);
+}
+
+/**
+ * Clear schedule logging
+ * @returns {Promise<ResultContainer<any>>}
+ */
+export async function ClearScheduleLogging() {
+  return jwtClient
+    .put('/main/schedule/logging')
+    .then(({ success }) => success)
+    .catch(() => false);
+}
+
+/**
+ * Clear proxy logging
+ * @returns {Promise<ResultContainer<any>>}
+ */
+export async function ClearProxyLogging() {
+  return jwtClient
+    .put('/main/proxy/logging')
+    .then(({ success }) => success)
+    .catch(() => false);
+}
+
+/**
+ * Clear server logging
+ * @returns {Promise<ResultContainer<any>>}
+ */
+export async function ClearServerLogging() {
+  return jwtClient
+    .put('/main/server/logging')
+    .then(({ success }) => success)
+    .catch(() => false);
+}
+
+/**
+ * Clear web logging
+ * @returns {Promise<ResultContainer<any>>}
+ */
+export async function ClearWebLogging() {
+  return jwtClient
+    .put('/main/web/logging')
+    .then(({ success }) => success)
+    .catch(() => false);
+}
+
+/**
+ * Clear esp32 logging
+ * @returns {Promise<ResultContainer<any>>}
+ */
+export async function ClearEsp32Logging() {
+  return jwtClient
+    .put('/main/esp32/logging')
+    .then(({ success }) => success)
+    .catch(() => false);
 }

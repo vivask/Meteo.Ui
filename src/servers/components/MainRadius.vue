@@ -1,25 +1,25 @@
 <template>
-  <ui-row-container-vue title="Samba" :healthy="!disable">
+  <ui-row-container-vue title="Radius" :healthy="!disable">
     <ui-square-btn-vue
       :disable="disable"
-      tooltip="Restart samba daemon"
+      tooltip="Restart radius daemon"
       color="primary"
       icon="mdi-restart"
-      @click="RestartSamba"
+      @click="RestartRadius"
     />
     <ui-square-btn-vue
       :disable="disable"
-      tooltip="Stop samba daemon"
+      tooltip="Stop radius daemon"
       color="warning"
       icon="mdi-stop"
-      @click="StopSamba"
+      @click="StopRadius"
     />
     <ui-square-btn-vue
       :disable="!disable"
-      tooltip="Start samba daemon"
+      tooltip="Start radius daemon"
       color="primary"
       icon="start"
-      @click="StartSamba"
+      @click="StartRadius"
     />
   </ui-row-container-vue>
 </template>
@@ -28,10 +28,10 @@
 import { defineComponent } from 'vue';
 import UiRowContainerVue from './UiRowContainer.vue';
 import UiSquareBtnVue from 'src/app/components/UiSquareBtn.vue';
-import { RestartSamba, StopSamba, StartSamba } from '../api/mainApi';
+import { RestartRadius, StopRadius, StartRadius } from '../api/mainApi';
 
 export default defineComponent({
-  name: 'MainSamba',
+  name: 'MainRadius',
 
   components: {
     UiRowContainerVue,
@@ -47,9 +47,9 @@ export default defineComponent({
 
   setup() {
     return {
-      RestartSamba,
-      StopSamba,
-      StartSamba,
+      RestartRadius,
+      StopRadius,
+      StartRadius,
     };
   },
 });

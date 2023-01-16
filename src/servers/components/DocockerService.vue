@@ -1,5 +1,5 @@
 <template>
-  <ui-row-container-vue :title="`${title} container`">
+  <ui-row-container-vue :title="`${title} container`" :healthy="!disable">
     <ui-square-btn-vue
       v-if="logging"
       :tooltip="`Logging ${title} container`"
@@ -54,6 +54,10 @@ export default defineComponent({
       type: Function,
     },
 
+    clear: {
+      type: Function,
+    },
+
     restart: {
       type: Function,
       required: true,
@@ -82,7 +86,7 @@ export default defineComponent({
         const result = await props.logging();
         visible.value = true;
         await nextTick();
-        form.value.show(result);
+        form.value.show(result, props.clear);
       },
 
       handleClose() {

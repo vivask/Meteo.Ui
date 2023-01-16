@@ -1,17 +1,12 @@
 <template>
-  <ui-box-vue
-    :columns="boxCols"
-    header="Main Server Management"
-    :buttonShow="true"
-    buttonLabel="Refresh"
-    :buttonClick="refresh"
-  >
+  <ui-box-vue :columns="boxCols" header="Main Server Management">
     <q-markup-table>
       <tbody>
-        <main-transmission-vue :disable="!state.ServerService" />
-        <main-samba-vue :disable="!state.ServerService" />
+        <main-radius-vue :disable="!state.RadiusService" />
+        <main-transmission-vue :disable="!state.TransmissionService" />
+        <main-samba-vue :disable="!state.SambaService" />
         <service-storage-vue
-          :disable="!state.ServerService"
+          :disable="!state.StorageService"
           :remount="RemountStorage"
           :umount="UmountStorage"
           :mount="MountStorage"
@@ -22,19 +17,21 @@
           :title="item.title"
           :disable="item.disable"
           :logging="item.logging"
+          :clear="item.clear"
           :restart="item.restart"
           :start="item.start"
           :stop="item.stop"
         />
-        <server-reboot-vue title="Chatreey" :reboot="Reboot" :shutdown="Shutdown" />
+        <server-reboot-vue title="Chatreey" :reboot="Reboot" :shutdown="Shutdown" :disable="!state.WebService" />
       </tbody>
     </q-markup-table>
   </ui-box-vue>
 </template>
 
 <script>
-import { defineComponent, ref, onMounted } from 'vue';
+import { defineComponent, ref, onMounted, onActivated, onDeactivated } from 'vue';
 import UiBoxVue from 'src/app/components/UiBox.vue';
+import MainRadiusVue from '../components/MainRadius.vue';
 import MainTransmissionVue from '../components/MainTransmission.vue';
 import MainSambaVue from '../components/MainSamba.vue';
 import ServiceStorageVue from '../components/ServiceStorage.vue';
@@ -48,6 +45,7 @@ export default defineComponent({
 
   components: {
     UiBoxVue,
+    MainRadiusVue,
     MainTransmissionVue,
     MainSambaVue,
     ServiceStorageVue,
@@ -56,12 +54,23 @@ export default defineComponent({
   },
 
   setup() {
+    let timer;
     const boxCols = { xl: 5, lg: 5, md: 7, sm: 11, xs: 10 };
     const state = ref({});
     const services = createServices(state);
     const refresh = async () => (state.value = await getState());
 
     onMounted(() => refresh());
+
+    onActivated(() => {
+      timer = setInterval(async () => {
+        refresh();
+      }, 1000);
+    });
+
+    onDeactivated(() => {
+      clearTimeout(timer);
+    });
 
     return {
       state,

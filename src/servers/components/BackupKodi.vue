@@ -1,5 +1,5 @@
 <template>
-  <ui-row-container-vue title="Kodi">
+  <ui-row-container-vue title="Kodi" :healthy="!disable">
     <ui-square-btn-vue tooltip="Restart kodi daemon" color="primary" icon="mdi-restart" @click="RestartKodi" />
   </ui-row-container-vue>
 </template>
@@ -16,6 +16,13 @@ export default defineComponent({
   components: {
     UiRowContainerVue,
     UiSquareBtnVue,
+  },
+
+  props: {
+    disable: {
+      type: Boolean,
+      default: true,
+    },
   },
 
   setup() {
