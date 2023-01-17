@@ -8,47 +8,39 @@ export const useAuthStore = defineStore('auth', () => {
   const storedUser = JSON.parse(localStorage.getItem('user'));
   const initUser = storedUser && new Date(storedUser.expire) > Date.now() ? storedUser : null;
   const user = ref(initUser);
-  const refresh = ref(false);
   const loggedIn = computed(() => !!user.value);
+
+  const expired = () => {
+    const now = new Date();
+    const expire = new Date(user.value.expire);
+    return now > expire;
+  };
 
   return {
     user,
-    refresh,
     loggedIn,
     initUser,
     storedUser,
+    expired,
 
     async signup(payload) {
       await fetchWrapper.put(`${baseUrl}/signup`, payload);
     },
 
     async login(username, password) {
-      const _user = await fetchWrapper.post(`${baseUrl}/login`, { username, password });
+      user.value = await fetchWrapper.post(`${baseUrl}/login`, { username, password });
+      localStorage.setItem('user', JSON.stringify(user.value));
+    },
 
-      // update pinia state
-      user.value = _user;
-      refresh.value = false;
-
-      // store user details and jwt in local storage to keep user logged in between page refreshes
+    async refresh() {
+      user.value = await fetchWrapper.get(`${baseUrl}/refresh_token`);
       localStorage.setItem('user', JSON.stringify(user.value));
     },
 
     logout() {
-      //fetchWrapper.get(`${baseUrl}/logout`);
+      if (!expired()) fetchWrapper.get(`${baseUrl}/logout`);
       user.value = null;
       localStorage.removeItem('user');
-    },
-
-    async refreshToken() {
-      const _user = await fetchWrapper.get(`${baseUrl}/refresh_token`);
-
-      console.log('Refresh:', _user);
-      // update pinia state
-      user.value = _user;
-      refresh.value = true;
-
-      // store user details and jwt in local storage to keep user logged in between page refreshes
-      localStorage.setItem('user', JSON.stringify(user.value));
     },
   };
 });

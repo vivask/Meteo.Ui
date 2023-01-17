@@ -3,7 +3,6 @@ import { createErrorResult, createSuccessResult } from './ResultContainer.js';
 import { NetworkError } from './NetworkError.js';
 import { useLoaderStore } from '../stores/useLoaderStore.js';
 import { useAuthStore } from '../stores/useAuthStore.js';
-import { useRouter } from 'vue-router';
 
 export const jwtClient = axios.create({
   baseURL: process.env.API_URL,
@@ -22,6 +21,8 @@ export const jwtClient = axios.create({
   },
 });
 
+let timer = false;
+const duration = 60000;
 const loaderStore = useLoaderStore();
 const authStore = useAuthStore();
 
@@ -42,6 +43,7 @@ jwtClient.interceptors.response.use(
     if (response.status >= 400) {
       const errorMessage = response.data.message ?? response.data ?? response.statusText;
       loaderStore.fault(errorMessage);
+      authStore.logout();
       return createErrorResult(
         {
           statusCode: response.status,
@@ -50,6 +52,13 @@ jwtClient.interceptors.response.use(
         response,
       );
     } else {
+      if (!timer) {
+        timer = true;
+        setTimeout(async () => {
+          authStore.refresh();
+          timer = false;
+        }, duration);
+      }
       return createSuccessResult(response.data.data, response);
     }
   },
@@ -64,23 +73,6 @@ jwtClient.interceptors.response.use(
     if (!error.response || error.code === 'ECONNABORTED') {
       return Promise.reject(new NetworkError(error.request));
     } else {
-      if (originalConfig.url !== '/signup' && error.response) {
-        if ([401, 403].includes(response.status) && authStore.loggedIn) {
-          const router = useRouter();
-          if (response.status === 403) {
-            authStore.logout();
-            router.push('/');
-          } else {
-            try {
-              await authStore.refreshToken();
-              return axios(originalConfig);
-            } catch (error) {
-              authStore.logout();
-              router.push('/');
-            }
-          }
-        }
-      }
       return Promise.reject(errorMessage);
     }
   },

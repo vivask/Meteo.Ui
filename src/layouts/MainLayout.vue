@@ -22,12 +22,14 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed, watch } from 'vue';
+import { defineComponent, ref, computed, watch, onMounted } from 'vue';
 import { useAjaxFilter } from './options/ajaxFilter.js';
 import ToolBarVue from './components/ToolBar.vue';
 import MenuMainVue from './components/MenuMain.vue';
 import { useLoaderStore } from '../app/stores/useLoaderStore';
-import { useQuasar, Notify, Loading, QSpinnerGears } from 'quasar';
+import { useQuasar, Notify, Loading } from 'quasar';
+import { useAuthStore } from 'src/app/stores/useAuthStore';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   name: 'MainLayout',
@@ -45,6 +47,8 @@ export default defineComponent({
     const message = computed(() => loader.message);
     const loading = computed(() => loader.loading);
     const spinner = computed(() => loader.spinner);
+    const { expired, logout } = useAuthStore();
+    const router = useRouter();
 
     const showError = (message) => {
       Notify.create({
@@ -66,6 +70,16 @@ export default defineComponent({
       } else {
         Loading.hide();
       }
+    });
+
+    onMounted(() => {
+      const timer = setInterval(async () => {
+        if (expired()) {
+          logout();
+          router.push('/login');
+          clearInterval(timer);
+        }
+      }, 30000);
     });
 
     return {

@@ -39,6 +39,7 @@ import { createServices } from './mainTemplate';
 import DocockerServiceVue from '../components/DocockerService.vue';
 import ServerRebootVue from '../components/ServerReboot.vue';
 import { getState, RemountStorage, UmountStorage, MountStorage, Reboot, Shutdown } from '../api/mainApi';
+import { useAuthStore } from 'src/app/stores/useAuthStore.js';
 
 export default defineComponent({
   name: 'PageServerMain',
@@ -59,12 +60,13 @@ export default defineComponent({
     const state = ref({});
     const services = createServices(state);
     const refresh = async () => (state.value = await getState());
+    const storeAuth = useAuthStore();
 
     onMounted(() => refresh());
 
     onActivated(() => {
       timer = setInterval(async () => {
-        refresh();
+        if (storeAuth.loggedIn) refresh();
       }, 1000);
     });
 

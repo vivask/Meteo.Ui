@@ -83,10 +83,9 @@ export default defineComponent({
       visible,
 
       async handleLogging() {
-        const result = await props.logging();
         visible.value = true;
         await nextTick();
-        form.value.show(result, props.clear);
+        form.value.show(props.logging, props.clear);
       },
 
       handleClose() {

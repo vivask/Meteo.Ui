@@ -36,6 +36,7 @@ import ServiceStorageVue from '../components/ServiceStorage.vue';
 import { createServices } from './backupTemplate';
 import DocockerServiceVue from '../components/DocockerService.vue';
 import ServerRebootVue from '../components/ServerReboot.vue';
+import { useAuthStore } from 'src/app/stores/useAuthStore.js';
 
 import { getState, RestartStorage, StopStorage, StartStorage, Reboot, Shutdown } from '../api/backupApi';
 
@@ -57,11 +58,13 @@ export default defineComponent({
     const state = ref({});
     const services = createServices(state);
     const refresh = async () => (state.value = await getState());
+    const storeAuth = useAuthStore();
+
     onMounted(() => refresh());
 
     onActivated(() => {
       timer = setInterval(async () => {
-        refresh();
+        if (storeAuth.loggedIn) refresh();
       }, 1000);
     });
 
