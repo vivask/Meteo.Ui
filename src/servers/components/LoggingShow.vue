@@ -17,7 +17,7 @@
 
       <q-separator />
 
-      <q-card-section style="max-height: 90vh" class="scroll">
+      <q-card-section :style="style" class="scroll scroll-ares">
         <p v-for="(line, idx) in lines" :key="idx" ref="items">{{ line }}</p>
       </q-card-section>
     </q-card>
@@ -25,7 +25,8 @@
 </template>
 
 <script>
-import { defineComponent, ref, nextTick } from 'vue';
+import { defineComponent, ref, nextTick, computed } from 'vue';
+import { Screen } from 'quasar';
 
 export default defineComponent({
   name: 'LoggingShow',
@@ -38,6 +39,10 @@ export default defineComponent({
     const fnClear = ref(null);
     const fnRefresh = ref(null);
     const items = ref(null);
+    const style = computed(() => {
+      const areas = { xl: 90, lg: 90, md: 70, sm: 70, xs: 70 };
+      return `max-height: ${areas[Screen.name]}vh`;
+    });
 
     const refresh = async () => {
       if (fnRefresh?.value) {
@@ -69,6 +74,7 @@ export default defineComponent({
       handleClose,
       show,
       refresh,
+      style,
 
       handleClear() {
         if (fnClear?.value) {

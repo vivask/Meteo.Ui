@@ -9,7 +9,7 @@ export async function getAccounting(filter) {
   const empty = [];
   const url = '/radius/accounting/' + filter;
   return jwtClient
-    .get(url)
+    .post(url, { offset: 0, limit: 500 })
     .then(({ success, result }) => (success ? result : empty))
     .catch(() => empty);
 }

@@ -5,10 +5,6 @@
 
     <q-ajax-bar position="bottom" color="yellow" size="10px" :hijack-filter="ajaxFilterFn" />
 
-    <q-footer elevated>
-      <q-toolbar> </q-toolbar>
-    </q-footer>
-
     <q-page-container>
       <router-view v-slot="{ Component }">
         <template v-if="Component">
