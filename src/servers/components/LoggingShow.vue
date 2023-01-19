@@ -2,7 +2,7 @@
   <q-dialog ref="popup" :maximized="true">
     <q-card>
       <q-card-section class="row items-center q-pb-none">
-        <div></div>
+        <div class="text-h6">{{ title }} container log</div>
         <q-space />
         <q-btn icon="mdi-autorenew" flat round dense @click="refresh">
           <q-tooltip>Refresh</q-tooltip>
@@ -36,6 +36,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const popup = ref(null);
     const lines = ref(null);
+    const title = ref(null);
     const fnClear = ref(null);
     const fnRefresh = ref(null);
     const items = ref(null);
@@ -60,7 +61,8 @@ export default defineComponent({
       emit('close');
     };
 
-    const show = async (get, clear) => {
+    const show = async (get, clear, serviceTitle) => {
+      title.value = serviceTitle;
       fnRefresh.value = get;
       fnClear.value = clear;
       refresh();
@@ -75,6 +77,7 @@ export default defineComponent({
       show,
       refresh,
       style,
+      title,
 
       handleClear() {
         if (fnClear?.value) {
