@@ -3,16 +3,11 @@
     <q-markup-table>
       <tbody>
         <backup-kodi-vue :disable="!state.WebService" />
-        <backup-radius-vue :disable="!state.RadiusService" />
-        <service-storage-vue
-          :disable="!state.ServerService"
-          :remount="RestartStorage"
-          :umount="StopStorage"
-          :mount="StartStorage"
-        />
+        <backup-storage-vue :disable="!state.StorageService" />
         <dococker-service-vue
           v-for="item in services"
-          :key="item.title"
+          :key="item.value"
+          :value="item.value"
           :title="item.title"
           :disable="item.disable"
           :logging="item.logging"
@@ -31,14 +26,13 @@
 import { defineComponent, ref, onMounted, onActivated, onDeactivated } from 'vue';
 import UiBoxVue from '../../app/components/UiBox.vue';
 import BackupKodiVue from '../components/BackupKodi.vue';
-import BackupRadiusVue from '../components/BackupRadius.vue';
-import ServiceStorageVue from '../components/ServiceStorage.vue';
-import { createServices } from './backupTemplate';
+import BackupStorageVue from '../components/BackupStorage.vue';
+import { createServices } from '../options/backupTemplate';
 import DocockerServiceVue from '../components/DocockerService.vue';
 import ServerRebootVue from '../components/ServerReboot.vue';
 import { useAuthStore } from '../../app/stores/useAuthStore.js';
 
-import { getState, RestartStorage, StopStorage, StartStorage, Reboot, Shutdown } from '../api/backupApi';
+import { GetState, Reboot, Shutdown } from '../api/backupApi';
 
 export default defineComponent({
   name: 'PageServerBackup',
@@ -46,8 +40,7 @@ export default defineComponent({
   components: {
     UiBoxVue,
     BackupKodiVue,
-    BackupRadiusVue,
-    ServiceStorageVue,
+    BackupStorageVue,
     DocockerServiceVue,
     ServerRebootVue,
   },
@@ -57,7 +50,7 @@ export default defineComponent({
     const boxCols = { xl: 5, lg: 5, md: 7, sm: 11, xs: 10 };
     const state = ref({});
     const services = createServices(state);
-    const refresh = async () => (state.value = await getState());
+    const refresh = async () => (state.value = await GetState());
     const storeAuth = useAuthStore();
 
     onMounted(() => refresh());
@@ -78,9 +71,6 @@ export default defineComponent({
       refresh,
       services,
 
-      RestartStorage,
-      StopStorage,
-      StartStorage,
       Reboot,
       Shutdown,
     };

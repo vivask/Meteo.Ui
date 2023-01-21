@@ -54,15 +54,12 @@ for (const routes of modulesRoutes) {
 
 router.beforeEach(async (to, from, next) => {
   const spinner = to.matched.some((record) => record.meta.spinner);
-  const loader = useLoaderStore();
-  loader.useSpinner(spinner);
+  useLoaderStore().useSpinner(spinner);
 
   // redirect to login page if not logged in and trying to access a restricted page
   const authRequired = to.matched.some((record) => record.meta.requiresAuth);
-  const auth = useAuthStore();
 
-  if (authRequired && !auth.loggedIn) {
-    auth.setUrl(to.fullPath);
+  if (authRequired && !useAuthStore().loggedIn) {
     next({ name: 'login', query: { next: to.fullPath } });
   } else {
     next();
@@ -70,7 +67,6 @@ router.beforeEach(async (to, from, next) => {
 });
 
 router.afterEach((to) => {
-  const layout = useLayoutStore();
   const prefix = import.meta.env.VITE_ROUTER_MODE === 'hash' ? '#' : '';
-  layout.setItems(prefix + to.path);
+  useLayoutStore().setItems(prefix + to.path);
 });

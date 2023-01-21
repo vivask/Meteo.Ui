@@ -1,25 +1,25 @@
 <template>
-  <ui-row-container-vue title="Radius" :healthy="!disable">
+  <ui-row-container-vue title="Storage" :healthy="!disable">
     <ui-square-btn-vue
       :disable="disable"
-      tooltip="Restart radius daemon"
+      tooltip="Remount storage"
       color="primary"
       icon="mdi-restart"
-      @click="RestartRadius"
+      @click="StorageManipulation('restart')"
     />
     <ui-square-btn-vue
       :disable="disable"
-      tooltip="Stop radius daemon"
+      tooltip="Umount storage"
       color="warning"
-      icon="mdi-stop"
-      @click="StopRadius"
+      icon="link_off"
+      @click="StorageManipulation('stop')"
     />
     <ui-square-btn-vue
       :disable="!disable"
-      tooltip="Start radius daemon"
+      tooltip="Mount storage"
       color="primary"
-      icon="start"
-      @click="StartRadius"
+      icon="link"
+      @click="StorageManipulation('start')"
     />
   </ui-row-container-vue>
 </template>
@@ -28,10 +28,10 @@
 import { defineComponent } from 'vue';
 import UiRowContainerVue from './UiRowContainer.vue';
 import UiSquareBtnVue from '../../app/components/UiSquareBtn.vue';
-import { RestartRadius, StopRadius, StartRadius } from '../api/mainApi';
+import { StorageManipulation } from '../api/backupApi';
 
 export default defineComponent({
-  name: 'MainRadius',
+  name: 'BackupStorage',
 
   components: {
     UiRowContainerVue,
@@ -41,15 +41,13 @@ export default defineComponent({
   props: {
     disable: {
       type: Boolean,
-      required: true,
+      default: false,
     },
   },
 
   setup() {
     return {
-      RestartRadius,
-      StopRadius,
-      StartRadius,
+      StorageManipulation,
     };
   },
 });

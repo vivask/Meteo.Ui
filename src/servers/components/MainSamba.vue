@@ -5,21 +5,21 @@
       tooltip="Restart samba daemon"
       color="primary"
       icon="mdi-restart"
-      @click="RestartSamba"
+      @click="MediaService('restart')"
     />
     <ui-square-btn-vue
       :disable="disable"
       tooltip="Stop samba daemon"
       color="warning"
       icon="mdi-stop"
-      @click="StopSamba"
+      @click="MediaService('stop')"
     />
     <ui-square-btn-vue
       :disable="!disable"
       tooltip="Start samba daemon"
       color="primary"
       icon="start"
-      @click="StartSamba"
+      @click="MediaService('start')"
     />
   </ui-row-container-vue>
 </template>
@@ -28,7 +28,7 @@
 import { defineComponent } from 'vue';
 import UiRowContainerVue from './UiRowContainer.vue';
 import UiSquareBtnVue from '../../app/components/UiSquareBtn.vue';
-import { RestartSamba, StopSamba, StartSamba } from '../api/mainApi';
+import { MediaService } from '../api/mainApi';
 
 export default defineComponent({
   name: 'MainSamba',
@@ -47,9 +47,7 @@ export default defineComponent({
 
   setup() {
     return {
-      RestartSamba,
-      StopSamba,
-      StartSamba,
+      MediaService,
     };
   },
 });

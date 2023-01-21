@@ -37,6 +37,7 @@ export default defineComponent({
     const popup = ref(null);
     const lines = ref(null);
     const title = ref(null);
+    const name = ref(null);
     const fnClear = ref(null);
     const fnRefresh = ref(null);
     const items = ref(null);
@@ -47,7 +48,7 @@ export default defineComponent({
 
     const refresh = async () => {
       if (fnRefresh?.value) {
-        lines.value = await fnRefresh.value();
+        lines.value = await fnRefresh.value(name.value);
         await nextTick();
         if (items?.value) {
           const lastLine = items.value[lines.value.length - 1];
@@ -61,7 +62,8 @@ export default defineComponent({
       emit('close');
     };
 
-    const show = async (get, clear, serviceTitle) => {
+    const show = async (get, clear, serviceTitle, serviceName) => {
+      name.value = serviceName;
       title.value = serviceTitle;
       fnRefresh.value = get;
       fnClear.value = clear;
@@ -78,11 +80,12 @@ export default defineComponent({
       refresh,
       style,
       title,
+      name,
 
       handleClear() {
         if (fnClear?.value) {
           lines.value = [];
-          fnClear.value();
+          fnClear.value(name.value);
         }
       },
     };

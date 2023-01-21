@@ -5,10 +5,22 @@
       tooltip="Remount storage"
       color="primary"
       icon="mdi-restart"
-      @click="remount"
+      @click="MediaService('storage', 'remount')"
     />
-    <ui-square-btn-vue :disable="disable" tooltip="Umount storage" color="warning" icon="link_off" @click="umount" />
-    <ui-square-btn-vue :disable="!disable" tooltip="Mount storage" color="primary" icon="link" @click="mount" />
+    <ui-square-btn-vue
+      :disable="disable"
+      tooltip="Umount storage"
+      color="warning"
+      icon="link_off"
+      @click="MediaService('storage', 'umount')"
+    />
+    <ui-square-btn-vue
+      :disable="!disable"
+      tooltip="Mount storage"
+      color="primary"
+      icon="link"
+      @click="MediaService('storage', 'mount')"
+    />
   </ui-row-container-vue>
 </template>
 
@@ -16,9 +28,10 @@
 import { defineComponent } from 'vue';
 import UiRowContainerVue from './UiRowContainer.vue';
 import UiSquareBtnVue from '../../app/components/UiSquareBtn.vue';
+import { MediaService } from '../api/mainApi';
 
 export default defineComponent({
-  name: 'ServiceStorage',
+  name: 'MainStorage',
 
   components: {
     UiRowContainerVue,
@@ -30,21 +43,12 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+  },
 
-    remount: {
-      type: Function,
-      required: true,
-    },
-
-    umount: {
-      type: Function,
-      required: true,
-    },
-
-    mount: {
-      type: Function,
-      required: true,
-    },
+  setup() {
+    return {
+      MediaService,
+    };
   },
 });
 </script>

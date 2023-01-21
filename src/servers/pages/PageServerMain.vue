@@ -2,18 +2,13 @@
   <ui-box-vue :columns="boxCols" header="Main Server Management">
     <q-markup-table>
       <tbody>
-        <main-radius-vue :disable="!state.RadiusService" />
         <main-transmission-vue :disable="!state.TransmissionService" />
         <main-samba-vue :disable="!state.SambaService" />
-        <service-storage-vue
-          :disable="!state.StorageService"
-          :remount="RemountStorage"
-          :umount="UmountStorage"
-          :mount="MountStorage"
-        />
+        <main-storage-vue :disable="!state.StorageService" />
         <dococker-service-vue
           v-for="item in services"
-          :key="item.title"
+          :key="item.value"
+          :value="item.value"
           :title="item.title"
           :disable="item.disable"
           :logging="item.logging"
@@ -31,14 +26,13 @@
 <script>
 import { defineComponent, ref, onMounted, onActivated, onDeactivated } from 'vue';
 import UiBoxVue from '../../app/components/UiBox.vue';
-import MainRadiusVue from '../components/MainRadius.vue';
 import MainTransmissionVue from '../components/MainTransmission.vue';
 import MainSambaVue from '../components/MainSamba.vue';
-import ServiceStorageVue from '../components/ServiceStorage.vue';
-import { createServices } from './mainTemplate';
+import MainStorageVue from '../components/MainStorage.vue';
+import { createServices } from '../options/mainTemplate';
 import DocockerServiceVue from '../components/DocockerService.vue';
 import ServerRebootVue from '../components/ServerReboot.vue';
-import { getState, RemountStorage, UmountStorage, MountStorage, Reboot, Shutdown } from '../api/mainApi';
+import { GetState, Reboot, Shutdown } from '../api/mainApi';
 import { useAuthStore } from '../../app/stores/useAuthStore.js';
 
 export default defineComponent({
@@ -46,10 +40,9 @@ export default defineComponent({
 
   components: {
     UiBoxVue,
-    MainRadiusVue,
     MainTransmissionVue,
     MainSambaVue,
-    ServiceStorageVue,
+    MainStorageVue,
     DocockerServiceVue,
     ServerRebootVue,
   },
@@ -59,7 +52,7 @@ export default defineComponent({
     const boxCols = { xl: 5, lg: 5, md: 7, sm: 11, xs: 10 };
     const state = ref({});
     const services = createServices(state);
-    const refresh = async () => (state.value = await getState());
+    const refresh = async () => (state.value = await GetState());
     const storeAuth = useAuthStore();
 
     onMounted(() => refresh());
@@ -80,9 +73,6 @@ export default defineComponent({
       refresh,
       services,
 
-      RemountStorage,
-      UmountStorage,
-      MountStorage,
       Reboot,
       Shutdown,
     };

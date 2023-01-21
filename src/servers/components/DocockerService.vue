@@ -7,20 +7,25 @@
       icon="event_note"
       @click="handleLogging"
     />
-    <ui-square-btn-vue :tooltip="`Restart ${title} container`" color="primary" icon="mdi-restart" @click="restart" />
+    <ui-square-btn-vue
+      :tooltip="`Restart ${title} container`"
+      color="primary"
+      icon="mdi-restart"
+      @click="restart(value)"
+    />
     <ui-square-btn-vue
       :disable="disable"
       tooltip="Stop  ${title} container"
       color="warning"
       icon="mdi-stop"
-      @click="stop"
+      @click="stop(value)"
     />
     <ui-square-btn-vue
       :disable="!disable"
       tooltip="Start  ${title} container"
       color="primary"
       icon="start"
-      @click="start"
+      @click="start(value)"
     />
   </ui-row-container-vue>
 
@@ -45,6 +50,11 @@ export default defineComponent({
   props: {
     disable: {
       type: Boolean,
+      required: true,
+    },
+
+    value: {
+      type: String,
       required: true,
     },
 
@@ -85,7 +95,7 @@ export default defineComponent({
       async handleLogging() {
         visible.value = true;
         await nextTick();
-        form.value.show(props.logging, props.clear, props.title);
+        form.value.show(props.logging, props.clear, props.title, props.value);
       },
 
       handleClose() {

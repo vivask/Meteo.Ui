@@ -5,34 +5,34 @@
       tooltip="Run transmission jobs"
       color="primary"
       icon="mdi-play"
-      @click="RunJobsTransmission"
+      @click="TransmissionJobs('start')"
     />
     <ui-square-btn-vue
       :disable="disable"
       tooltip="Stop transmission jobs"
       color="primary"
       icon="mdi-pause"
-      @click="StopJobsTransmission"
+      @click="TransmissionJobs('stop')"
     />
     <ui-square-btn-vue
       tooltip="Restart transmission daemon"
       color="primary"
       icon="mdi-restart"
-      @click="RestartTransmission"
+      @click="MediaService('transmission', 'restart')"
     />
     <ui-square-btn-vue
       :disable="disable"
       tooltip="Stop transmission daemon"
       color="warning"
       icon="mdi-stop"
-      @click="StopTransmission"
+      @click="MediaService('transmission', 'stop')"
     />
     <ui-square-btn-vue
       :disable="!disable"
       tooltip="Start transmission daemon"
       color="primary"
       icon="start"
-      @click="StartTransmission"
+      @click="MediaService('transmission', 'start')"
     />
   </ui-row-container-vue>
 </template>
@@ -41,13 +41,7 @@
 import { defineComponent } from 'vue';
 import UiRowContainerVue from './UiRowContainer.vue';
 import UiSquareBtnVue from '../../app/components/UiSquareBtn.vue';
-import {
-  RunJobsTransmission,
-  StopJobsTransmission,
-  RestartTransmission,
-  StopTransmission,
-  StartTransmission,
-} from '../api/mainApi';
+import { TransmissionJobs, MediaService } from '../api/mainApi';
 
 export default defineComponent({
   name: 'MainTransmission',
@@ -66,11 +60,8 @@ export default defineComponent({
 
   setup() {
     return {
-      RunJobsTransmission,
-      StopJobsTransmission,
-      RestartTransmission,
-      StopTransmission,
-      StartTransmission,
+      TransmissionJobs,
+      MediaService,
     };
   },
 });
