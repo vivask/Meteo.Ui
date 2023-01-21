@@ -18,7 +18,7 @@
 
 <script>
 import { defineComponent, computed, watch } from 'vue';
-import { useLayoutStore } from '@/shared/stores/useLayoutStore.js';
+import { useLayoutStore } from '../../app/stores/useLayoutStore.js';
 
 const prefix = import.meta.env.VITE_ROUTER_MODE === 'hash' ? '#' : '';
 

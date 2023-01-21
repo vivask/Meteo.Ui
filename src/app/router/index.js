@@ -1,7 +1,7 @@
 import { createRouter, createMemoryHistory, createWebHistory, createWebHashHistory } from 'vue-router';
-import { useAuthStore } from '../../shared/stores/useAuthStore.js';
-import { useLayoutStore } from '../../shared/stores/useLayoutStore.js';
-import { useLoaderStore } from '../../shared/stores/useLoaderStore';
+import { useAuthStore } from '../stores/useAuthStore.js';
+import { useLayoutStore } from '../stores/useLayoutStore.js';
+import { useLoaderStore } from '../stores/useLoaderStore';
 import { layoutsRoutes } from '../../layouts/router/layoutsRoutes.js';
 import { authRoutes } from '../../auth/router/authRoutes';
 import { homeRoutes } from '../../home/router/homeRoutes';
@@ -12,6 +12,7 @@ import { secureRoutes } from '../../secure/router/secureRoutes.js';
 import { serversRoutes } from '../../servers/router/serversRoutes.js';
 import { radiusRoutes } from '../../radius/router/radiusRoutes.js';
 import { databaseRoutes } from '../../database/router/databaseRoutes.js';
+import { chartsRoutes } from '../../charts/router/chartsRoutes.js';
 
 const createHistory = import.meta.env.SERVER
   ? createMemoryHistory(import.meta.env.BASE_URL)
@@ -34,6 +35,7 @@ const layoutsChildren = [
   serversRoutes,
   radiusRoutes,
   databaseRoutes,
+  chartsRoutes,
 ];
 
 for (const children of layoutsChildren) {

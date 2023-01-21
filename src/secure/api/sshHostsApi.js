@@ -1,4 +1,4 @@
-import { tableWrapper } from '@/shared/api/tableWrapper.js';
+import { tableWrapper } from '../../app/api/tableWrapper.js';
 
 const api = '/sshclient/sshhosts';
 

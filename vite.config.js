@@ -13,7 +13,7 @@ export default defineConfig({
     }),
 
     quasar({
-      sassVariables: 'src/shared/assets/css/quasar-variables.sass',
+      sassVariables: 'src/app/assets/css/quasar-variables.sass',
     }),
 
     splitVendorChunkPlugin(),
@@ -30,18 +30,6 @@ export default defineConfig({
     proxy: {
       '/api/v1': {
         target: 'https://192.168.1.9',
-        changeOrigin: true,
-        secure: false,
-      },
-      '/api/v1/esp32': {
-        target: {
-          host: '192.168.1.9',
-          port: 17000,
-          protocol: 'https',
-          ca: '/home/w/Projects/Meteo/Backend/certs/ca.crt',
-          cert: '/home/w/Projects/Meteo/Backend/certs/client.crt',
-          key: '/home/w/Projects/Meteo/Backend/certs/client.key',
-        },
         changeOrigin: true,
         secure: false,
       },

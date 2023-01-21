@@ -1,5 +1,5 @@
 <template>
-  <ui-row-container-vue title="Transmission">
+  <ui-row-container-vue title="Transmission" :healthy="!disable">
     <ui-square-btn-vue
       :disable="disable"
       tooltip="Run transmission jobs"
@@ -15,7 +15,6 @@
       @click="StopJobsTransmission"
     />
     <ui-square-btn-vue
-      :disable="disable"
       tooltip="Restart transmission daemon"
       color="primary"
       icon="mdi-restart"
@@ -29,9 +28,9 @@
       @click="StopTransmission"
     />
     <ui-square-btn-vue
-      :disable="disable"
+      :disable="!disable"
       tooltip="Start transmission daemon"
-      color="warning"
+      color="primary"
       icon="start"
       @click="StartTransmission"
     />
@@ -41,7 +40,7 @@
 <script>
 import { defineComponent } from 'vue';
 import UiRowContainerVue from './UiRowContainer.vue';
-import UiSquareBtnVue from '@/shared/components/UiSquareBtn.vue';
+import UiSquareBtnVue from '../../app/components/UiSquareBtn.vue';
 import {
   RunJobsTransmission,
   StopJobsTransmission,

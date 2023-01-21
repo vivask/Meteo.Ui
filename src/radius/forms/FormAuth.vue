@@ -18,9 +18,9 @@
 
 <script>
 import { defineComponent, ref } from 'vue';
-import UiInputVue from '@/shared/components/UiInput.vue';
-import UiPasswordInputVue from '@/shared/components/UiPasswordInput.vue';
-import { useSubmitForm } from '@/shared/composables/useSubmitForm';
+import UiInputVue from '../../app/components/UiInput.vue';
+import UiPasswordInputVue from '../../app/components/UiPasswordInput.vue';
+import { useSubmitForm } from '../../app/composables/useSubmitForm';
 import { Notify } from 'quasar';
 
 export default defineComponent({
@@ -59,7 +59,7 @@ export default defineComponent({
       onSubmit() {
         if (localProp.value.value != confirm.value) {
           Notify.create({
-            timeout: import.meta.env.NOTIFY_TIMEOUT,
+            timeout: import.meta.env.ERROR_TIMEOUT,
             type: 'negative',
             message: 'Passwords do not match!',
           });

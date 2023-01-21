@@ -20,11 +20,11 @@
 
 <script>
 import { defineComponent, ref, onActivated, onMounted } from 'vue';
-import UiBoxVue from '@/shared/components/UiBox.vue';
-import { useUtils } from '@/shared/composables/useUtils.js';
+import UiBoxVue from '../../app/components/UiBox.vue';
+import { useUtils } from '../../app/composables/useUtils.js';
 import { createWrapper } from '../api/autoVpnApi';
-import UiRoundBtnVue from '@/shared/components/UiRoundBtn.vue';
-import { useConfirmDialog } from '@/shared/composables/useConfirmDialog.js';
+import UiRoundBtnVue from '../../app/components/UiRoundBtn.vue';
+import { useConfirmDialog } from '../../app/composables/useConfirmDialog.js';
 
 export default defineComponent({
   name: 'PageAutoVpn',

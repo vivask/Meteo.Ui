@@ -29,7 +29,7 @@
 <script>
 import { defineComponent, computed } from 'vue';
 import { Screen } from 'quasar';
-import { useLoaderStore } from '../../shared/stores/useLoaderStore';
+import { useLoaderStore } from '../stores/useLoaderStore';
 
 export default defineComponent({
   name: 'UiBox',

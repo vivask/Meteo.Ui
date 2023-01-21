@@ -56,10 +56,10 @@
 
 <script>
 import { defineComponent, ref, computed, onMounted, onActivated } from 'vue';
-import UiBoxVue from '@/shared/components/UiBox.vue';
-import UiRoundBtnVue from '@/shared/components/UiRoundBtn.vue';
+import UiBoxVue from '../../app/components/UiBox.vue';
+import UiRoundBtnVue from '../../app/components/UiRoundBtn.vue';
 import { createWarapper, createJob, updateJob, toggleJob, runJob } from '../api/jobsApi';
-import { useTableHandlers } from '@/shared/composables/useTableHandlers';
+import { useTableHandlers } from '../../app/composables/useTableHandlers';
 import FormJobVue from '../forms/FormJob.vue';
 import { Notify } from 'quasar';
 

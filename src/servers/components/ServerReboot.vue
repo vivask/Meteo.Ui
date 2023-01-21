@@ -1,14 +1,26 @@
 <template>
-  <ui-row-container-vue :title="title">
-    <ui-square-btn-vue :tooltip="`Reboot ${title}`" color="warning" icon="mdi-power-cycle" @click="reboot" />
-    <ui-square-btn-vue :tooltip="`Shutdown ${title}`" color="negative" icon="mdi-power" @click="shutdown" />
+  <ui-row-container-vue :title="title" :healthy="!disable">
+    <ui-square-btn-vue
+      :disable="disable"
+      :tooltip="`Reboot ${title}`"
+      color="warning"
+      icon="mdi-power-cycle"
+      @click="reboot"
+    />
+    <ui-square-btn-vue
+      :disable="disable"
+      :tooltip="`Shutdown ${title}`"
+      color="negative"
+      icon="mdi-power"
+      @click="shutdown"
+    />
   </ui-row-container-vue>
 </template>
 
 <script>
 import { defineComponent } from 'vue';
 import UiRowContainerVue from './UiRowContainer.vue';
-import UiSquareBtnVue from '@/shared/components/UiSquareBtn.vue';
+import UiSquareBtnVue from '../../app/components/UiSquareBtn.vue';
 
 export default defineComponent({
   name: 'ServerReboot',
@@ -29,6 +41,11 @@ export default defineComponent({
     shutdown: {
       type: Function,
       required: true,
+    },
+
+    disable: {
+      type: Boolean,
+      default: true,
     },
   },
 });

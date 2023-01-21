@@ -1,5 +1,6 @@
-import { webClient } from './webClient';
-import { useUtils } from '../../shared/composables/useUtils';
+import { webClient } from '../../app/api/webClient';
+import { jwtClient } from '../../app/api/jwtClient';
+import { useUtils } from '../../app/composables/useUtils';
 
 const MAX_DATA_UPDATE_PERIOD_S = 12;
 
@@ -41,4 +42,60 @@ export async function getEsp32Data() {
     .catch(() => {
       return empty;
     });
+}
+
+/**
+ * Reset bme280 temperature alarm
+ */
+export function checkBme280TemperatureAlarm() {
+  jwtClient.put('/esp32/bme280/temperature');
+}
+
+/**
+ * Reset ds18b20 temperature alarm
+ */
+export function checkDs18b20TemperatureAlarm() {
+  jwtClient.put('/esp32/ds18b20/temperature');
+}
+
+/**
+ * Reset mics6814 no2 alarm
+ */
+export function checkMics6814No2Alarm() {
+  jwtClient.put('/esp32/mics6814/no2');
+}
+
+/**
+ * Reset mics6814 nh3 alarm
+ */
+export function checkMics6814Nh3Alarm() {
+  jwtClient.put('/esp32/mics6814/nh3');
+}
+
+/**
+ * Reset mics6814 co alarm
+ */
+export function checkMics6814CoAlarm() {
+  jwtClient.put('/esp32/mics6814/co');
+}
+
+/**
+ * Reset radsens static alarm
+ */
+export function checkRadsensStaticAlarm() {
+  jwtClient.put('/esp32/radsens/static');
+}
+
+/**
+ * Reset radsens dynamic alarm
+ */
+export function checkRadsensDynamicAlarm() {
+  jwtClient.put('/esp32/radsens/dynamic');
+}
+
+/**
+ * Reset ze08 ch2o alarm
+ */
+export function checkZe08CH2OAlarm() {
+  jwtClient.put('/esp32/ze08ch2o/ch2o');
 }

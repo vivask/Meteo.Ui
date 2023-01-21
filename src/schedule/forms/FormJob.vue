@@ -141,12 +141,12 @@
 
 <script>
 import { defineComponent, computed, ref, watch, onMounted, nextTick } from 'vue';
-import UiInputVue from '@/shared/components/UiInput.vue';
-import UiRoundBtnVue from '@/shared/components/UiRoundBtn.vue';
-import { useSubmitForm } from '@/shared/composables/useSubmitForm';
-import { useConfirmDialog } from '@/shared/composables/useConfirmDialog.js';
-import { useUtils } from '@/shared/composables/useUtils';
-import UiSelectVue from '@/shared/components/UiSelect.vue';
+import UiInputVue from '../../app/components/UiInput.vue';
+import UiRoundBtnVue from '../../app/components/UiRoundBtn.vue';
+import { useSubmitForm } from '../../app/composables/useSubmitForm';
+import { useConfirmDialog } from '../../app/composables/useConfirmDialog.js';
+import { useUtils } from '../../app/composables/useUtils';
+import UiSelectVue from '../../app/components/UiSelect.vue';
 import FormJobParamVue from './FormJobParam.vue';
 import { Notify, date } from 'quasar';
 import { getExecutors, getTasks, getPeriods } from '../api/formJobApi';

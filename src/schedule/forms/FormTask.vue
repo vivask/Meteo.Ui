@@ -47,11 +47,11 @@
 
 <script>
 import { defineComponent, computed, ref } from 'vue';
-import UiInputVue from '@/shared/components/UiInput.vue';
-import UiRoundBtnVue from '@/shared/components/UiRoundBtn.vue';
-import { useSubmitForm } from '@/shared/composables/useSubmitForm';
+import UiInputVue from '../../app/components/UiInput.vue';
+import UiRoundBtnVue from '../../app/components/UiRoundBtn.vue';
+import { useSubmitForm } from '../../app/composables/useSubmitForm';
 import FormTaskParamVue from './FormTaskParam.vue';
-import { useConfirmDialog } from '@/shared/composables/useConfirmDialog.js';
+import { useConfirmDialog } from '../../app/composables/useConfirmDialog.js';
 
 const columns = [
   {

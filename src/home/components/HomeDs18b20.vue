@@ -4,7 +4,7 @@
     class="relative-position container cursor-pointer q-hoverable"
     @mouseover="hover = true"
     @mouseleave="hover = false"
-    @click.prevent="() => {}"
+    @click.prevent="router.push('/ds18b20/temperature')"
   >
     <q-item dense>
       <q-item-section side>
@@ -21,7 +21,7 @@
       label="Температура:"
       unit="°C"
       :alarm="alarm"
-      :check="check"
+      :check="checkDs18b20TemperatureAlarm"
       :available="available"
     />
   </div>
@@ -29,8 +29,9 @@
 
 <script>
 import { defineComponent, ref, computed } from 'vue';
-import HomeLabelVue from '@/home/components/HomeLabel.vue';
-import { jwtClient } from '../../shared/api/jwtClient';
+import HomeLabelVue from './HomeLabel.vue';
+import { checkDs18b20TemperatureAlarm } from '../api/homeApi';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   name: 'HomeDs18b20',
@@ -46,19 +47,18 @@ export default defineComponent({
   },
 
   setup() {
-    const whiteIcon = new URL('@/shared/assets/icons/temperature-48x48-white.png', import.meta.url).href;
-    const blueIcon = new URL('@/shared/assets/icons/temperature-48x48-blue.png', import.meta.url).href;
+    const router = useRouter();
+    const whiteIcon = new URL('../../app/assets/icons/temperature-48x48-white.png', import.meta.url).href;
+    const blueIcon = new URL('../../app/assets/icons/temperature-48x48-blue.png', import.meta.url).href;
     const iconColor = '#3092EA';
     const hover = ref(false);
 
     return {
+      router,
       hover,
       icon: computed(() => (hover.value ? blueIcon : whiteIcon)),
       color: computed(() => (hover.value ? iconColor : 'white')),
-
-      check() {
-        jwtClient.put('/esp32/ds18b20/temperature/chk');
-      },
+      checkDs18b20TemperatureAlarm,
     };
   },
 });

@@ -48,11 +48,11 @@
 
 <script>
 import { defineComponent, ref, computed, onMounted } from 'vue';
-import UiBoxVue from '@/shared/components/UiBox.vue';
-import UiRoundBtnVue from '@/shared/components/UiRoundBtn.vue';
-import { useTableHandlers } from '@/shared/composables/useTableHandlers';
+import UiBoxVue from '../../app/components/UiBox.vue';
+import UiRoundBtnVue from '../../app/components/UiRoundBtn.vue';
+import { useTableHandlers } from '../../app/composables/useTableHandlers';
 import FormSshKeyVue from '../forms/FormSshKey.vue';
-import { useUtils } from '@/shared/composables/useUtils.js';
+import { useUtils } from '../../app/composables/useUtils.js';
 import { createWrapper } from '../api/sshKeysApi';
 
 const columns = [{ name: 'state' }, { name: 'icon' }, { name: 'key' }, { name: 'actions' }];

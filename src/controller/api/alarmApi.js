@@ -1,4 +1,4 @@
-import { jwtClient } from '../../shared/api/jwtClient';
+import { jwtClient } from '../../app/api/jwtClient';
 
 /**
  * Request alarms setting
@@ -28,5 +28,5 @@ export function setAlarms(settings) {
   settings.max_rad_dyn = parseFloat(settings.max_rad_dyn);
   settings.max_ch2o = parseFloat(settings.max_ch2o);
 
-  jwtClient.put('/esp32/settings', settings.value);
+  jwtClient.put('/esp32/settings', settings);
 }

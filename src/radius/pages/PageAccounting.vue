@@ -28,10 +28,10 @@
 
 <script>
 import { defineComponent, ref, onMounted, watch, computed } from 'vue';
-import UiBoxVue from '@/shared/components/UiBox.vue';
-import { useUtils } from '@/shared/composables/useUtils.js';
-import { useConfirmDialog } from '@/shared/composables/useConfirmDialog.js';
-import { useLayoutStore } from '@/shared/stores/useLayoutStore.js';
+import UiBoxVue from '../../app/components/UiBox.vue';
+import { useUtils } from '../../app/composables/useUtils.js';
+import { useConfirmDialog } from '../../app/composables/useConfirmDialog.js';
+import { useLayoutStore } from '../../app/stores/useLayoutStore.js';
 import { getAccounting, applyValidation, Clear } from '../api/accountingApi';
 
 export default defineComponent({
@@ -105,7 +105,7 @@ export default defineComponent({
     const boxCols = { xl: 9, lg: 9, md: 7, sm: 11, xs: 10 };
     const { formatLongDate } = useUtils();
     const layoutStore = useLayoutStore();
-    const filter = computed(() => layoutStore.usersFilter);
+    const filter = computed(() => layoutStore.usersFilter.value);
 
     const isVerifiedUser = (row) => row.verified && row.verified.length > 0 && row.valid && row.valid.length > 0;
     const isValidUser = (row) => isVerifiedUser(row) && row.valid === row.username;

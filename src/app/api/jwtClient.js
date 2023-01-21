@@ -2,9 +2,10 @@ import axios from 'axios';
 import { createErrorResult, createSuccessResult } from './ResultContainer.js';
 import { NetworkError } from './NetworkError.js';
 import { useLoaderStore } from '../stores/useLoaderStore.js';
+import { useAuthStore } from '../stores/useAuthStore.js';
 
-export const webClient = axios.create({
-  baseURL: process.env.API_URL,
+export const jwtClient = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
   withCredentials: false,
   headers: {
     Accept: 'application/json',
@@ -20,19 +21,29 @@ export const webClient = axios.create({
   },
 });
 
-const loader = useLoaderStore();
+let timer = false;
+const duration = 60000;
+const loaderStore = useLoaderStore();
+const authStore = useAuthStore();
 
-webClient.interceptors.request.use((request) => {
-  if (request.method === 'get') loader.start();
+jwtClient.interceptors.request.use((request) => {
+  const account = authStore.user;
+  const isLoggedIn = authStore.loggedIn;
+
+  if (isLoggedIn) {
+    request.headers.Authorization = `Bearer ${account.token}`;
+    if (request.method === 'get') loaderStore.start();
+  }
   return request;
 });
 
-webClient.interceptors.response.use(
+jwtClient.interceptors.response.use(
   (response) => {
-    loader.stop();
+    loaderStore.stop();
     if (response.status >= 400) {
       const errorMessage = response.data.message ?? response.data ?? response.statusText;
-      loader.fault(errorMessage);
+      loaderStore.fault(errorMessage);
+      authStore.logout();
       return createErrorResult(
         {
           statusCode: response.status,
@@ -41,16 +52,23 @@ webClient.interceptors.response.use(
         response,
       );
     } else {
+      if (!timer) {
+        timer = true;
+        setTimeout(async () => {
+          authStore.refresh();
+          timer = false;
+        }, duration);
+      }
       return createSuccessResult(response.data.data, response);
     }
   },
-  (error) => {
-    loader.stop();
+  async (error) => {
+    loaderStore.stop();
     const { response } = error;
     const originalConfig = error.config;
     const errorMessage =
       `[${originalConfig.method} ${originalConfig.url}] error: ${response.data?.message}` || response.statusText;
-    loader.fault(errorMessage);
+    loaderStore.fault(errorMessage);
 
     if (!error.response || error.code === 'ECONNABORTED') {
       return Promise.reject(new NetworkError(error.request));

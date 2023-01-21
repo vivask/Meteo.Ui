@@ -4,7 +4,7 @@ export const serversRoutes = [
     component: () => import('@/servers/pages/PageServerMain.vue'),
     meta: {
       requiresAuth: true,
-      spinner: true,
+      spinner: false,
     },
   },
   {
@@ -12,7 +12,7 @@ export const serversRoutes = [
     component: () => import('@/servers/pages/PageServerBackup.vue'),
     meta: {
       requiresAuth: true,
-      spinner: true,
+      spinner: false,
     },
   },
 ];

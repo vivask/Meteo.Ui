@@ -10,7 +10,7 @@
       <q-card :style="Screen.name === 'xs' ? { width: '80%' } : { width: '50%' }">
         <q-card-section>
           <q-avatar size="103px" class="absolute-center shadow-10">
-            <img src="@/shared/assets/icons/account-circle-1.svg" alt="avatar" />
+            <img :src="icon" alt="avatar" />
           </q-avatar>
         </q-card-section>
         <q-card-section>
@@ -42,9 +42,10 @@
 <script>
 import { defineComponent, ref } from 'vue';
 import { Screen, Notify } from 'quasar';
-import { useAuthStore } from '@/shared/stores/useAuthStore.js';
-import UiInputVue from '@/shared/components/UiInput.vue';
-import UiPasswordInputVue from '@/shared/components/UiPasswordInput.vue';
+import { useAuthStore } from '../../app/stores/useAuthStore.js';
+import UiInputVue from '../../app/components/UiInput.vue';
+import UiPasswordInputVue from '../../app/components/UiPasswordInput.vue';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   name: 'PageSign',
@@ -55,11 +56,13 @@ export default defineComponent({
   },
 
   setup() {
+    const router = useRouter();
     const store = useAuthStore();
     const signup = ref({});
     const confirm = ref(null);
     const confirmInput = ref(null);
     const passwordInput = ref(null);
+    const icon = new URL('../../app/assets/icons/account-circle-1.svg', import.meta.url).href;
 
     return {
       signup,
@@ -67,24 +70,34 @@ export default defineComponent({
       confirm,
       confirmInput,
       passwordInput,
+      icon,
 
-      handelSubmit() {
+      async handelSubmit() {
         if (signup.value.password != signup.value.confirm) {
           Notify.create({
-            timeout: import.meta.env.NOTIFY_TIMEOUT,
+            timeout: import.meta.env.ERROR_TIMEOUT,
             type: 'negative',
             message: 'Passwords do not match!',
           });
           confirmInput.value.focus();
         } else if (signup.value.password.length < 6) {
           Notify.create({
-            timeout: import.meta.env.NOTIFY_TIMEOUT,
+            timeout: import.meta.env.ERROR_TIMEOUT,
             type: 'negative',
             message: 'Password must be 6 or more characters.',
           });
           passwordInput.value.focus();
         } else {
-          store.signup(signup);
+          try {
+            await store.signup(signup);
+            router.push('/');
+          } catch (error) {
+            Notify.create({
+              timeout: process.env.NOTIFY_TIMEOUT,
+              type: 'negative',
+              message: error,
+            });
+          }
         }
       },
     };

@@ -23,7 +23,7 @@
 <script>
 import { defineComponent, ref, onMounted } from 'vue';
 import ProxyServerVue from '../components/ProxyServer.vue';
-import UiBoxVue from '@/shared/components/UiBox.vue';
+import UiBoxVue from '../../app/components/UiBox.vue';
 import {
   getProxyState,
   toggleActiveMain,

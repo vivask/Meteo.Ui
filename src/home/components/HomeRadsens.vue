@@ -4,7 +4,7 @@
     class="relative-position container cursor-pointer q-hoverable"
     @mouseover="hover = true"
     @mouseleave="hover = false"
-    @click.prevent="() => {}"
+    @click.prevent="router.push('/radsens/static')"
   >
     <q-item dense>
       <q-item-section side>
@@ -21,7 +21,7 @@
       label="Статич. ИИ:"
       unit="мкР/ч"
       :alarm="alarmStatic"
-      :check="checkStatic"
+      :check="checkRadsensStaticAlarm"
       :available="available"
     />
     <home-label-vue
@@ -29,7 +29,7 @@
       label="Динамич. ИИ:"
       unit="мкР/ч"
       :alarm="alarmDynamic"
-      :check="checkDynamic"
+      :check="checkRadsensDynamicAlarm"
       :available="available"
     />
   </div>
@@ -37,8 +37,9 @@
 
 <script>
 import { defineComponent, ref, computed } from 'vue';
-import HomeLabelVue from '@/home/components/HomeLabel.vue';
-import { jwtClient } from '../../shared/api/jwtClient';
+import HomeLabelVue from './HomeLabel.vue';
+import { checkRadsensStaticAlarm, checkRadsensDynamicAlarm } from '../api/homeApi';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   name: 'HomeRadsens',
@@ -56,23 +57,19 @@ export default defineComponent({
   },
 
   setup() {
-    const whiteIcon = new URL('@/shared/assets/icons/Radiation-48x48-white.png', import.meta.url).href;
-    const blueIcon = new URL('@/shared/assets/icons/Radiation-48x48-blue.png', import.meta.url).href;
+    const router = useRouter();
+    const whiteIcon = new URL('../../app/assets/icons/Radiation-48x48-white.png', import.meta.url).href;
+    const blueIcon = new URL('../../app/assets/icons/Radiation-48x48-blue.png', import.meta.url).href;
     const iconColor = '#3092EA';
     const hover = ref(false);
 
     return {
+      router,
       hover,
       icon: computed(() => (hover.value ? blueIcon : whiteIcon)),
       color: computed(() => (hover.value ? iconColor : 'white')),
-
-      checkStatic() {
-        jwtClient.put('/esp32/radsens/static/chk');
-      },
-
-      checkDynamic() {
-        jwtClient.put('/esp32/radsens/dynamic/chk');
-      },
+      checkRadsensStaticAlarm,
+      checkRadsensDynamicAlarm,
     };
   },
 });

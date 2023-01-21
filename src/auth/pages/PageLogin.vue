@@ -5,7 +5,7 @@
       <q-card :style="$q.screen.lt.sm ? { width: '80%' } : { width: '50%' }">
         <q-card-section>
           <q-avatar size="103px" class="absolute-center shadow-10">
-            <img src="@/shared/assets/icons/account-circle-1.svg" alt="avatar" />
+            <img :src="icon" alt="avatar" />
           </q-avatar>
         </q-card-section>
         <q-card-section>
@@ -35,10 +35,10 @@
 
 <script>
 import { defineComponent, ref } from 'vue';
-import { useAuthStore } from '@/shared/stores/useAuthStore.js';
+import { useAuthStore } from '../../app/stores/useAuthStore.js';
 import { Notify } from 'quasar';
-import UiPasswordInputVue from '@/shared/components/UiPasswordInput.vue';
-import UiInputVue from '@/shared/components/UiInput.vue';
+import UiPasswordInputVue from '../../app/components/UiPasswordInput.vue';
+import UiInputVue from '../../app/components/UiInput.vue';
 import { useRouter } from 'vue-router';
 
 export default defineComponent({
@@ -50,21 +50,23 @@ export default defineComponent({
   },
 
   setup() {
-    const router = useRouter();
     const login = ref({});
+    const router = useRouter();
+    const icon = new URL('../../app/assets/icons/account-circle-1.svg', import.meta.url).href;
 
     return {
       login,
+      icon,
 
       async onSubmit() {
         const authStore = useAuthStore();
         try {
           await authStore.login(login.value.username, login.value.password);
-          //const to = router.currentRoute.value.query.next || '/';
-          //console.log(to);
+          const to = router.currentRoute.value.query.next || '/';
+          router.push(to);
         } catch (error) {
           Notify.create({
-            timeout: import.meta.env.NOTIFY_TIMEOUT,
+            timeout: process.env.NOTIFY_TIMEOUT,
             type: 'negative',
             message: error,
           });

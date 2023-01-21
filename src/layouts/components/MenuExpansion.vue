@@ -15,7 +15,7 @@
 
 <script>
 import { defineComponent, onMounted, ref, watch, toRefs } from 'vue';
-import { useLayoutStore } from '@/shared/stores/useLayoutStore.js';
+import { useLayoutStore } from '../../app/stores/useLayoutStore.js';
 
 export default defineComponent({
   name: 'UiMenuExpansion',

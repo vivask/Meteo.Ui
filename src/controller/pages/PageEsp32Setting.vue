@@ -82,8 +82,8 @@
 
 <script>
 import { defineComponent, ref, onActivated, onDeactivated } from 'vue';
-import UiBoxVue from '@/shared/components/UiBox.vue';
-import { useConfirmDialog } from '@/shared/composables/useConfirmDialog.js';
+import UiBoxVue from '../../app/components/UiBox.vue';
+import { useConfirmDialog } from '../../app/composables/useConfirmDialog.js';
 import { Notify } from 'quasar';
 import { getEsp32State, upgradeFirmware, setupMode, reboorEsp32, reboorAvr } from '../api/settingApi';
 

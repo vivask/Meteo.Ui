@@ -1,5 +1,5 @@
-import { tableWrapper } from '@/shared/api/tableWrapper.js';
-import { jwtClient } from '../../shared/api/jwtClient';
+import { tableWrapper } from '../../app/api/tableWrapper.js';
+import { jwtClient } from '../../app/api/jwtClient';
 
 const api = '/schedule/jobs';
 
@@ -18,7 +18,7 @@ export function createWarapper(rows) {
  * @param target
  */
 export function createJob(rows, target) {
-  jwtClient.put('/schedule/jobs').then(({ success, result }) => {
+  jwtClient.put('/schedule/jobs', target).then(({ success, result }) => {
     if (success) {
       target.id = result.id;
       target.active = result.activate;
@@ -33,7 +33,7 @@ export function createJob(rows, target) {
  * @param target
  */
 export function updateJob(rows, target) {
-  jwtClient.post('/schedule/jobs').then(({ success, result }) => {
+  jwtClient.post('/schedule/jobs', target).then(({ success, result }) => {
     if (success) {
       const idx = rows.value.findIndex((item) => item.id === target.id);
       target.active = result.activate;

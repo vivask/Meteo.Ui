@@ -1,4 +1,4 @@
-import { jwtClient } from '../../shared/api/jwtClient';
+import { jwtClient } from '../../app/api/jwtClient';
 
 /**
  * Request list executors

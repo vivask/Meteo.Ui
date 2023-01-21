@@ -1,5 +1,5 @@
-import { jwtClient } from '../../shared/api/jwtClient';
-import { useUtils } from '../../shared/composables/useUtils';
+import { jwtClient } from '../../app/api/jwtClient';
+import { useUtils } from '../../app/composables/useUtils';
 
 const MAX_DATA_UPDATE_PERIOD_S = 12;
 

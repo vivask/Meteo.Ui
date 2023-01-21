@@ -10,10 +10,12 @@
   "dependencies": {
     "@quasar/extras": "^1.15.9",
     "axios": "^1.2.2",
+    "chart.js": "^4.2.0",
     "lodash-es": "^4.17.21",
     "pinia": "^2.0.28",
     "quasar": "^2.11.3",
     "vue": "^3.2.45",
+    "vue-chartjs": "^5.2.0",
     "vue-router": "^4.1.6"
   },
   "devDependencies": {

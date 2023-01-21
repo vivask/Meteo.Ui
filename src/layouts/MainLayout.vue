@@ -5,10 +5,6 @@
 
     <q-ajax-bar position="bottom" color="yellow" size="10px" :hijack-filter="ajaxFilterFn" />
 
-    <q-footer elevated>
-      <q-toolbar> </q-toolbar>
-    </q-footer>
-
     <q-page-container>
       <router-view v-slot="{ Component }">
         <template v-if="Component">
@@ -22,12 +18,14 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed, watch } from 'vue';
+import { defineComponent, ref, computed, watch, onMounted } from 'vue';
 import { useAjaxFilter } from './options/ajaxFilter.js';
 import ToolBarVue from './components/ToolBar.vue';
 import MenuMainVue from './components/MenuMain.vue';
-import { useLoaderStore } from '../shared/stores/useLoaderStore';
-import { useQuasar, Notify, Loading, QSpinnerGears } from 'quasar';
+import { useLoaderStore } from '../app/stores/useLoaderStore';
+import { useQuasar, Notify, Loading } from 'quasar';
+import { useAuthStore } from '../app/stores/useAuthStore';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   name: 'MainLayout',
@@ -45,10 +43,12 @@ export default defineComponent({
     const message = computed(() => loader.message);
     const loading = computed(() => loader.loading);
     const spinner = computed(() => loader.spinner);
+    const { expired, logout, loggedIn } = useAuthStore();
+    const router = useRouter();
 
     const showError = (message) => {
       Notify.create({
-        timeout: import.meta.env.NOTIFY_TIMEOUT,
+        timeout: import.meta.env.ERROR_TIMEOUT,
         type: 'negative',
         message: message,
       });
@@ -66,6 +66,16 @@ export default defineComponent({
       } else {
         Loading.hide();
       }
+    });
+
+    onMounted(() => {
+      const timer = setInterval(async () => {
+        if (loggedIn && expired()) {
+          logout();
+          router.push('/login');
+          clearInterval(timer);
+        }
+      }, 30000);
     });
 
     return {

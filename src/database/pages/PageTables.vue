@@ -13,7 +13,7 @@
       :columns="columns"
       row-key="name"
       selection="multiple"
-      :rows-per-page-options="[10, 50, 100, 0]"
+      :rows-per-page-options="[0, 10, 50, 100]"
     >
       <template #body-cell-state="props">
         <q-td :props="props">
@@ -64,11 +64,11 @@
 
 <script>
 import { defineComponent, ref, computed, onMounted } from 'vue';
-import UiBoxVue from '@/shared/components/UiBox.vue';
-import UiRoundBtnVue from '@/shared/components/UiRoundBtn.vue';
-import { useTableHandlers } from '@/shared/composables/useTableHandlers';
+import UiBoxVue from '../../app/components/UiBox.vue';
+import UiRoundBtnVue from '../../app/components/UiRoundBtn.vue';
+import { useTableHandlers } from '../../app/composables/useTableHandlers';
 import FormTableVue from '../forms/FormTable.vue';
-import { useConfirmDialog } from '@/shared/composables/useConfirmDialog.js';
+import { useConfirmDialog } from '../../app/composables/useConfirmDialog.js';
 import { createWrapper, Delete, Import, Save, Drop } from '../api/tableApi';
 import { Notify } from 'quasar';
 
@@ -124,10 +124,10 @@ export default defineComponent({
         let ok = await confirm.show('Are you sure to delete this items?');
         if (ok) {
           const data = wrapper.Selected(row, selected.value);
-          selected.value = [];
           ok = await Delete(data);
           if (ok) {
             rows.value = await wrapper.Get();
+            selected.value = [];
           }
         }
       },
@@ -136,9 +136,9 @@ export default defineComponent({
         let ok = await confirm.show('Are you sure to import this table from csv?');
         if (ok) {
           const data = wrapper.Selected(row, selected.value);
-          selected.value = [];
           ok = await Import(data);
           if (ok) {
+            selected.value = [];
             Notify.create({
               type: 'info',
               message: 'Import completed',
@@ -151,9 +151,12 @@ export default defineComponent({
         let ok = await confirm.show('Are you sure to save this table to csv?');
         if (ok) {
           const data = wrapper.Selected(row, selected.value);
-          selected.value = [];
           ok = await Save(data);
           if (ok) {
+            for (let item of data) {
+              item.import = true;
+            }
+            selected.value = [];
             Notify.create({
               type: 'info',
               message: 'Import completed',
@@ -166,9 +169,9 @@ export default defineComponent({
         let ok = await confirm.show('Are you sure to drop this tables?');
         if (ok) {
           const data = wrapper.Selected(row, selected.value);
-          selected.value = [];
           ok = await Drop(data);
           if (ok) {
+            selected.value = [];
             Notify.create({
               type: 'info',
               message: 'Drop completed',

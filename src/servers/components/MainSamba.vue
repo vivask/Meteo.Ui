@@ -1,5 +1,5 @@
 <template>
-  <ui-row-container-vue title="Samba">
+  <ui-row-container-vue title="Samba" :healthy="!disable">
     <ui-square-btn-vue
       :disable="disable"
       tooltip="Restart samba daemon"
@@ -15,7 +15,7 @@
       @click="StopSamba"
     />
     <ui-square-btn-vue
-      :disable="disable"
+      :disable="!disable"
       tooltip="Start samba daemon"
       color="primary"
       icon="start"
@@ -27,7 +27,7 @@
 <script>
 import { defineComponent } from 'vue';
 import UiRowContainerVue from './UiRowContainer.vue';
-import UiSquareBtnVue from '@/shared/components/UiSquareBtn.vue';
+import UiSquareBtnVue from '../../app/components/UiSquareBtn.vue';
 import { RestartSamba, StopSamba, StartSamba } from '../api/mainApi';
 
 export default defineComponent({

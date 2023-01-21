@@ -17,8 +17,8 @@
 
 <script>
 import { defineComponent, ref } from 'vue';
-import UiInputVue from '@/shared/components/UiInput.vue';
-import { useSubmitForm } from '@/shared/composables/useSubmitForm';
+import UiInputVue from '../../app/components/UiInput.vue';
+import { useSubmitForm } from '../../app/composables/useSubmitForm';
 
 export default defineComponent({
   name: 'FormSshKey',
