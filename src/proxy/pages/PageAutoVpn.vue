@@ -86,7 +86,7 @@ export default defineComponent({
         if (ok) {
           const data = wrapper.Selected(row, selected.value);
           selected.value = [];
-          rows.value = await wrapper.Delete(rows.value, data);
+          rows.value = await wrapper.BatchDelete(data);
         }
       },
     };

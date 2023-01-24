@@ -81,6 +81,20 @@ export function tableWrapper(api, rows) {
       });
   };
 
+  const BatchDelete = async (target) => {
+    const url = api + '/delete';
+    return jwtClient
+      .post(url, target)
+      .then(({ success }) => {
+        if (success) modifyRelations(api);
+        return filter(target);
+      })
+      .catch((err) => {
+        console.log('delete error: ', err);
+        return rows.value;
+      });
+  };
+
   const Ignore = async (target) => {
     return jwtClient
       .put(api, target)
@@ -150,5 +164,5 @@ export function tableWrapper(api, rows) {
     return result;
   }
 
-  return { Get, Insert, Update, Delete, Ignore, Restore, Selected };
+  return { Get, Insert, Update, Delete, Ignore, Restore, Selected, BatchDelete };
 }
