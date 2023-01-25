@@ -3,7 +3,7 @@
     <q-card class="min-width">
       <q-card-section>
         <q-form class="q-gutter-md" @submit.prevent="handleSubmit">
-          <ui-input-vue v-model="localProp.name" hint="Name/IP Address *" rule="host" />
+          <ui-input-vue v-model="localProp.name" hint="Name/IP Address *" />
           <q-select
             v-model="localProp.list"
             outlined

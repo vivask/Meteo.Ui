@@ -9,7 +9,7 @@
     <q-table :rows="rows" :columns="columns" row-key="name" :rows-per-page-options="[0, 10, 50, 100]">
       <template #body-cell-state="props">
         <q-td :props="props" class="wd-30">
-          <q-icon :name="activeIcon(props.row)" size="1.2rem" :color="activeColor(props.row)" />
+          <q-icon :name="activeIcon(props.row.active)" size="1.2rem" :color="activeColor(props.row.active)" />
         </q-td>
       </template>
       <template #body-cell-actions="props">

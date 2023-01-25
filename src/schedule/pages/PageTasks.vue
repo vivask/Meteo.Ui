@@ -27,6 +27,7 @@
       <template #body-cell-actions="props">
         <q-td :props="props">
           <ui-round-btn-vue color="primary" icon="add" tooltip="Create task" @click="handleAdd" />
+          <ui-round-btn-vue color="primary" icon="mdi-run" tooltip="Run task" @click="handleRun(props.row)" />
           <ui-round-btn-vue color="positive" icon="mode_edit" tooltip="Edit task" @click="handleEdit(props.row)" />
           <ui-round-btn-vue color="negative" icon="delete" tooltip="Delete task" @click="handleDelete(props.row)" />
         </q-td>
@@ -41,9 +42,10 @@
 import { defineComponent, ref, computed, onMounted, inject } from 'vue';
 import UiBoxVue from '../../app/components/UiBox.vue';
 import UiRoundBtnVue from '../../app/components/UiRoundBtn.vue';
-import { createWarapper } from '../api/tasksApi';
+import { createWarapper, runTask } from '../api/tasksApi';
 import { useTableHandlers } from '../../app/composables/useTableHandlers';
 import FormTaskVue from '../forms/FormTask.vue';
+import { Notify } from 'quasar';
 
 const columns = [
   { name: 'state' },
@@ -99,6 +101,16 @@ export default defineComponent({
       handleSubmit,
       handleDelete,
       handleCancel,
+
+      handleRun: async (row) => {
+        const ok = await runTask(row.api);
+        if (ok) {
+          Notify.create({
+            type: 'info',
+            message: 'Task completed',
+          });
+        }
+      },
     };
   },
 });

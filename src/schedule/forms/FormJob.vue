@@ -198,11 +198,11 @@ export default defineComponent({
 
     watch(
       localProp,
-      async (newVal) => {
+      async (newVal, oldVal) => {
         showValue.value = newVal?.period ? newVal.period.id !== 'once' : false;
         paramsDisabled.value = !newVal?.task;
         await nextTick();
-        if (newVal?.period && periodValue?.value && newVal.period.id !== currentPeriod) {
+        if (oldVal && newVal?.period && periodValue?.value && newVal.period.id !== currentPeriod) {
           periodValue.value.focus();
           currentPeriod = newVal.period.id;
         }
