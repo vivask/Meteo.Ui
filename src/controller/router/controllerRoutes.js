@@ -20,7 +20,7 @@ export const controllerRoutes = [
     component: () => import('@/controller/pages/PageEsp32Logging.vue'),
     meta: {
       requiresAuth: true,
-      spinner: true,
+      spinner: false,
     },
   },
 ];
