@@ -34,9 +34,15 @@ export async function getEsp32State() {
 export function upgradeFirmware(file) {
   let data = new FormData();
   data.append('firmware', file.value);
-  jwtClient.put('/esp32/upgrade', data).then(() => {
-    file.value = null;
-  });
+  jwtClient
+    .post('/esp32/upgrade', data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    .then(() => {
+      file.value = null;
+    });
 }
 
 /**
