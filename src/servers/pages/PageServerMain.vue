@@ -1,5 +1,12 @@
 <template>
-  <ui-box-vue :columns="boxCols" header="Main Server Management">
+  <ui-box-vue
+    :columns="boxCols"
+    header="Main Server Management"
+    :buttonShow="true"
+    buttonLabel="Clear All"
+    :buttonClick="handleClearAll"
+    tooltip="Clear all services log"
+  >
     <q-markup-table>
       <tbody>
         <main-transmission-vue :disable="!state.TransmissionService" />
@@ -32,7 +39,7 @@ import MainStorageVue from '../components/MainStorage.vue';
 import { createServices } from '../options/mainTemplate';
 import DocockerServiceVue from '../components/DocockerService.vue';
 import ServerRebootVue from '../components/ServerReboot.vue';
-import { GetState, Reboot, Shutdown } from '../api/mainApi';
+import { GetState, Reboot, Shutdown, ClearLogging } from '../api/mainApi';
 import { useAuthStore } from '../../app/stores/useAuthStore.js';
 
 export default defineComponent({
@@ -75,6 +82,14 @@ export default defineComponent({
 
       Reboot,
       Shutdown,
+
+      handleClearAll() {
+        for (let service of services.value) {
+          if (service?.clear) {
+            ClearLogging(service.value);
+          }
+        }
+      },
     };
   },
 });

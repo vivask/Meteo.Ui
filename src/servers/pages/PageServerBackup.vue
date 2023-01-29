@@ -1,5 +1,12 @@
 <template>
-  <ui-box-vue :columns="boxCols" header="Backup Server Management">
+  <ui-box-vue
+    :columns="boxCols"
+    header="Backup Server Management"
+    :buttonShow="true"
+    buttonLabel="Clear All"
+    :buttonClick="handleClearAll"
+    tooltip="Clear all services log"
+  >
     <q-markup-table>
       <tbody>
         <backup-kodi-vue :disable="!state.WebService" />
@@ -32,7 +39,7 @@ import DocockerServiceVue from '../components/DocockerService.vue';
 import ServerRebootVue from '../components/ServerReboot.vue';
 import { useAuthStore } from '../../app/stores/useAuthStore.js';
 
-import { GetState, Reboot, Shutdown } from '../api/backupApi';
+import { GetState, Reboot, Shutdown, ClearLogging } from '../api/backupApi';
 
 export default defineComponent({
   name: 'PageServerBackup',
@@ -73,6 +80,14 @@ export default defineComponent({
 
       Reboot,
       Shutdown,
+
+      handleClearAll() {
+        for (let service of services.value) {
+          if (service?.clear) {
+            ClearLogging(service.value);
+          }
+        }
+      },
     };
   },
 });

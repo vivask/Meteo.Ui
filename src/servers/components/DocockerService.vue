@@ -2,6 +2,7 @@
   <ui-row-container-vue :title="`${title} container`" :healthy="!disable">
     <ui-square-btn-vue
       v-if="logging"
+      :disable="disable"
       :tooltip="`Logging ${title} container`"
       color="primary"
       icon="event_note"
