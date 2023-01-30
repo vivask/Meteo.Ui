@@ -1,7 +1,7 @@
 <template>
   <div
     v-ripple
-    class="relative-position container cursor-pointer q-hoverable"
+    class="relative-position container cursor-pointer q-hoverable mt-5"
     @mouseover="hover = true"
     @mouseleave="hover = false"
     @click.prevent="router.push('/ze08ch2o/ch2o')"
@@ -63,3 +63,8 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="sass" scoped>
+.mt-5
+  margin-top: 5px
+</style>
