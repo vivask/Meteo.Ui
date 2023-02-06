@@ -29,7 +29,7 @@
           <q-btn
             class="q-ml-xs"
             dense
-            color="warning"
+            :color="props.row.direction === 'Main => Back' ? 'positive' : 'warning'"
             size="md"
             :val="props.rowIndex"
             :label="props.row.direction"
@@ -39,7 +39,14 @@
       </template>
       <template #body-cell-action="props">
         <q-td :props="props">
-          <q-btn class="q-ml-xs" dense color="warning" size="md" icon="sync" @click="handleSync(props.row)" />
+          <q-btn
+            class="q-ml-xs"
+            dense
+            :color="props.row.direction === 'Main => Back' ? 'positive' : 'warning'"
+            size="md"
+            icon="sync"
+            @click="handleSync(props.row)"
+          />
         </q-td>
       </template>
     </q-table>
@@ -126,7 +133,7 @@ export default defineComponent({
       },
 
       handleDirection(idx) {
-        rows.value[idx].direction = rows.value[idx].direction === 'Main => Back' ? 'Main <= Back' : 'Main => Back';
+        rows.value[idx].direction = rows.value[idx].direction === 'Main => Back' ? 'Back => Main' : 'Main => Back';
       },
 
       async handleSync(row) {
