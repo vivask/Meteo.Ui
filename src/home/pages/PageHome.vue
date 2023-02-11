@@ -27,9 +27,9 @@
         <home-radsens-vue
           :available="sensors.alive.radsens"
           :static-intensity="sensors.data.radsens_static"
-          :static-alarm="sensors.data.max_rad_stat_alarm"
+          :alarm-static="sensors.data.max_rad_stat_alarm"
           :dynamic-intensity="sensors.data.radsens_dynamic"
-          :dynamic-alarm="sensors.data.max_rad_dyn_alarm"
+          :alarm-dynamic="sensors.data.max_rad_dyn_alarm"
           :hv-state="sensors.data.radsens_hv_state"
         />
       </div>

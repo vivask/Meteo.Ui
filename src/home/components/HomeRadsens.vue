@@ -26,7 +26,7 @@
     />
     <home-label-vue
       :value="dynamicIntensity"
-      label="Динам. ИИ:"
+      label="Динамич. ИИ:"
       unit="мкР/ч"
       :alarm="alarmDynamic"
       :check="checkRadsensDynamicAlarm"

@@ -1,15 +1,15 @@
 <template>
   <q-item dense>
-    <q-item-section class="label-width">
+    <q-item-section class="label-width" no-wrap>
       <q-item-label>{{ label }}</q-item-label>
     </q-item-section>
-    <q-item-section class="data-width text-right">
+    <q-item-section class="value-width text-right" no-wrap>
       <q-item-label :class="{ available: available }">{{ parseFloat(data).toFixed(resolution) }}</q-item-label>
     </q-item-section>
-    <q-item-section class="unit-width">
+    <q-item-section class="unit-width" no-wrap>
       <q-item-label>{{ unit }}</q-item-label>
     </q-item-section>
-    <q-item-section v-if="alarm" side>
+    <q-item-section v-if="alarm" side no-wrap>
       <q-btn dense round color="pink" size="xs" icon="mdi-check" @click.stop="check" />
     </q-item-section>
   </q-item>
@@ -54,9 +54,9 @@ export default defineComponent({
   },
 
   setup(props) {
-    const labelWidth = computed(() => (Screen.gt.sm ? 120 : 100));
-    const valueWidth = computed(() => (Screen.gt.sm ? 50 : 30));
-    const unitWidth = computed(() => (Screen.gt.sm ? 50 : 30));
+    const labelWidth = computed(() => (Screen.gt.sm ? 120 : 150));
+    const valueWidth = computed(() => (Screen.gt.sm ? 50 : 20));
+    const unitWidth = computed(() => (Screen.gt.sm ? 10 : 10));
     return {
       data: computed(() => props.value),
       labelWidth,
@@ -72,16 +72,20 @@ export default defineComponent({
   --label-width: labelWidth
   width: var(--label-width)px
   max-width: var(--label-width)px
-
+  min-width: var(--label-width)px
 .value-width
   --value-width: valueWidth
   width: var(--value-width)px
   max-width: var(--value-width)px
-
+  min-width: var(--value-width)px
 .unit-width
   --unit-width: unitWidth
   width: var(--unit-width)px
   max-width: var(--unit-width)px
+  min-width: var(--unit-width)px
+.button-width
+  margin-right: 10px
+  margin-left: 0px
 .available
   color: #1976D2
 </style>
