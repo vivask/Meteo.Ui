@@ -26,19 +26,24 @@
     />
     <home-label-vue
       :value="dynamicIntensity"
-      label="Динамич. ИИ:"
+      label="Динам. ИИ:"
       unit="мкР/ч"
       :alarm="alarmDynamic"
       :check="checkRadsensDynamicAlarm"
       :available="available"
     />
+    <q-item dense>
+      <q-item-section class="button-width">
+        <q-btn dense :color="stateColor" :label="stateLabel" size="xs" @click.stop="toggleHvRadsens" />
+      </q-item-section>
+    </q-item>
   </div>
 </template>
 
 <script>
 import { defineComponent, ref, computed } from 'vue';
 import HomeLabelVue from './HomeLabel.vue';
-import { checkRadsensStaticAlarm, checkRadsensDynamicAlarm } from '../api/homeApi';
+import { checkRadsensStaticAlarm, checkRadsensDynamicAlarm, toggleHvRadsens } from '../api/homeApi';
 import { useRouter } from 'vue-router';
 
 export default defineComponent({
@@ -54,14 +59,18 @@ export default defineComponent({
     alarmStatic: Boolean,
     dynamicIntensity: [String, Number],
     alarmDynamic: Boolean,
+    hvState: Boolean,
   },
 
-  setup() {
+  setup(props) {
     const router = useRouter();
     const whiteIcon = new URL('../../app/assets/icons/Radiation-48x48-white.png', import.meta.url).href;
     const blueIcon = new URL('../../app/assets/icons/Radiation-48x48-blue.png', import.meta.url).href;
     const iconColor = '#3092EA';
     const hover = ref(false);
+
+    const stateLabel = computed(() => (props.hvState ? 'HV ON' : 'HV OFF'));
+    const stateColor = computed(() => (props.hvState ? 'primary' : 'grey'));
 
     return {
       router,
@@ -70,6 +79,9 @@ export default defineComponent({
       color: computed(() => (hover.value ? iconColor : 'white')),
       checkRadsensStaticAlarm,
       checkRadsensDynamicAlarm,
+      toggleHvRadsens,
+      stateLabel,
+      stateColor,
     };
   },
 });
@@ -78,4 +90,7 @@ export default defineComponent({
 <style lang="sass" scoped>
 .mt-5
   margin-top: 5px
+.button-width
+  width: 80px
+  max-width: 80px
 </style>

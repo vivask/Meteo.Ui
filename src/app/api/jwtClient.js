@@ -42,8 +42,8 @@ jwtClient.interceptors.response.use(
     loaderStore.stop();
     if (response.status >= 400) {
       const errorMessage = response.data.message ?? response.data ?? response.statusText;
+      if (authStore.loggedIn) authStore.logout();
       loaderStore.fault(errorMessage);
-      authStore.logout();
       return createErrorResult(
         {
           statusCode: response.status,
@@ -68,6 +68,7 @@ jwtClient.interceptors.response.use(
     const originalConfig = error.config;
     const errorMessage =
       `[${originalConfig.method} ${originalConfig.url}] error: ${response.data?.message}` || response.statusText;
+    console.log(errorMessage);
     loaderStore.fault(errorMessage);
 
     if (!error.response || error.code === 'ECONNABORTED') {

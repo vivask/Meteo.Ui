@@ -99,3 +99,10 @@ export function checkRadsensDynamicAlarm() {
 export function checkZe08CH2OAlarm() {
   jwtClient.put('/esp32/ze08ch2o/ch2o');
 }
+
+/**
+ * Toggle hv generator radsens
+ */
+export function toggleHvRadsens() {
+  jwtClient.put('/esp32/radsens/hv');
+}

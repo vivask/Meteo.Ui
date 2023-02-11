@@ -26,10 +26,11 @@
       <div class="q-ml-sm square rounded-borders shadow-8" :class="cols">
         <home-radsens-vue
           :available="sensors.alive.radsens"
-          :static="sensors.data.radsens_static"
+          :static-intensity="sensors.data.radsens_static"
           :static-alarm="sensors.data.max_rad_stat_alarm"
-          :dynamic="sensors.data.radsens_dynamic"
+          :dynamic-intensity="sensors.data.radsens_dynamic"
           :dynamic-alarm="sensors.data.max_rad_dyn_alarm"
+          :hv-state="sensors.data.radsens_hv_state"
         />
       </div>
       <div v-if="$q.screen.name == 'xs'" class="flex-break" />

@@ -57,7 +57,9 @@ export default defineComponent({
     //$q.dark.set(true);
 
     watch(error, () => {
-      showError(message);
+      if (message?.value && message.value.length > 0) {
+        showError(message.value);
+      }
     });
 
     watch(loading, (value) => {
