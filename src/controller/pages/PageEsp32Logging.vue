@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, onMounted, onActivated, onDeactivated } from 'vue';
+import { defineComponent, ref, onActivated, onDeactivated } from 'vue';
 import UiBoxVue from '../../app/components/UiBox.vue';
 import { useConfirmDialog } from '../../app/composables/useConfirmDialog.js';
 import { useUtils } from '../../app/composables/useUtils.js';
@@ -61,8 +61,7 @@ export default defineComponent({
 
     const refresh = async () => (rows.value = await getLogging());
 
-    onMounted(() => refresh());
-    onActivated(() => (timer = setInterval(() => refresh(), 1000)));
+    onActivated(() => (timer = setInterval(async () => await refresh(), 1000)));
     onDeactivated(() => clearTimeout(timer));
 
     return {

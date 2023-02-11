@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, onMounted, onActivated, onDeactivated } from 'vue';
+import { defineComponent, ref, onActivated, onDeactivated } from 'vue';
 import UiBoxVue from '../../app/components/UiBox.vue';
 import BackupKodiVue from '../components/BackupKodi.vue';
 import BackupStorageVue from '../components/BackupStorage.vue';
@@ -60,11 +60,9 @@ export default defineComponent({
     const refresh = async () => (state.value = await GetState());
     const storeAuth = useAuthStore();
 
-    onMounted(() => refresh());
-
     onActivated(() => {
       timer = setInterval(async () => {
-        if (storeAuth.loggedIn) refresh();
+        if (storeAuth.loggedIn) await refresh();
       }, 1000);
     });
 
