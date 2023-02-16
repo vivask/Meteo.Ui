@@ -17,6 +17,7 @@
           :value="item.value"
           :title="item.title"
           :disable="item.disable"
+          :log-empty="item.empty"
           :logging="item.logging"
           :clear="item.clear"
           :restart="item.restart"
@@ -57,12 +58,20 @@ export default defineComponent({
     const boxCols = { xl: 5, lg: 5, md: 7, sm: 11, xs: 10 };
     const state = ref({});
     const services = createServices(state);
-    const refresh = async () => (state.value = await GetState());
     const storeAuth = useAuthStore();
+    const answer = ref(true);
 
     onActivated(() => {
-      timer = setInterval(async () => {
-        if (storeAuth.loggedIn) await refresh();
+      timer = setInterval(() => {
+        if (storeAuth.loggedIn && answer.value) {
+          answer.value = false;
+          GetState()
+            .then((result) => {
+              state.value = result;
+              answer.value = true;
+            })
+            .catch(() => (answer.value = true));
+        }
       }, 1000);
     });
 
@@ -73,7 +82,6 @@ export default defineComponent({
     return {
       state,
       boxCols,
-      refresh,
       services,
 
       Reboot,

@@ -86,6 +86,7 @@ import UiBoxVue from '../../app/components/UiBox.vue';
 import { useConfirmDialog } from '../../app/composables/useConfirmDialog.js';
 import { Notify } from 'quasar';
 import { getEsp32State, upgradeFirmware, setupMode, reboorEsp32, reboorAvr } from '../api/settingApi';
+import { useAuthStore } from '../../app/stores/useAuthStore.js';
 
 export default defineComponent({
   name: 'PageEsp32Setting',
@@ -100,10 +101,20 @@ export default defineComponent({
     const boxCols = { xl: 6, lg: 6, md: 7, sm: 11, xs: 10 };
     const file = ref(null);
     const status = ref({ alive: false });
+    const answer = ref(true);
+    const storeAuth = useAuthStore();
 
     onActivated(() => {
-      timer = setInterval(async () => {
-        status.value = await getEsp32State();
+      timer = setInterval(() => {
+        if (storeAuth.loggedIn && answer.value) {
+          answer.value = false;
+          getEsp32State()
+            .then((result) => {
+              status.value = result;
+              answer.value = true;
+            })
+            .catch(() => (answer.value = true));
+        }
       }, 1000);
     });
 

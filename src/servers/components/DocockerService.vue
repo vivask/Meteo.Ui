@@ -2,7 +2,7 @@
   <ui-row-container-vue :title="`${title} container`" :healthy="!disable">
     <ui-square-btn-vue
       v-if="logging"
-      :disable="disable"
+      :disable="logDisable"
       :tooltip="`Logging ${title} container`"
       color="primary"
       icon="event_note"
@@ -14,13 +14,7 @@
       icon="mdi-restart"
       @click="restart(value)"
     />
-    <ui-square-btn-vue
-      :disable="disable"
-      tooltip="Stop  ${title} container"
-      color="warning"
-      icon="mdi-stop"
-      @click="stop(value)"
-    />
+    <ui-square-btn-vue tooltip="Stop  ${title} container" color="warning" icon="mdi-stop" @click="stop(value)" />
     <ui-square-btn-vue
       :disable="!disable"
       tooltip="Start  ${title} container"
@@ -34,7 +28,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, nextTick } from 'vue';
+import { defineComponent, ref, nextTick, computed } from 'vue';
 import UiRowContainerVue from './UiRowContainer.vue';
 import UiSquareBtnVue from '../../app/components/UiSquareBtn.vue';
 import LoggingShowVue from './LoggingShow.vue';
@@ -52,6 +46,11 @@ export default defineComponent({
     disable: {
       type: Boolean,
       required: true,
+    },
+
+    logEmpty: {
+      type: Boolean,
+      default: false,
     },
 
     value: {
@@ -88,10 +87,12 @@ export default defineComponent({
   setup(props) {
     const visible = ref(false);
     const form = ref(null);
+    const logDisable = computed(() => props.disable || props.logEmpty);
 
     return {
       form,
       visible,
+      logDisable,
 
       async handleLogging() {
         visible.value = true;

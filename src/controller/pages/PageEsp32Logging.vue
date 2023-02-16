@@ -26,6 +26,7 @@ import UiBoxVue from '../../app/components/UiBox.vue';
 import { useConfirmDialog } from '../../app/composables/useConfirmDialog.js';
 import { useUtils } from '../../app/composables/useUtils.js';
 import { getLogging, clearLogging } from '../api/loggingApi';
+import { useAuthStore } from '../../app/stores/useAuthStore.js';
 
 const columns = [
   {
@@ -58,10 +59,23 @@ export default defineComponent({
     const boxCols = { xl: 9, lg: 9, md: 7, sm: 11, xs: 10 };
     const { shortDate, shortTime } = useUtils();
     const confirm = useConfirmDialog();
+    const answer = ref(true);
+    const storeAuth = useAuthStore();
 
-    const refresh = async () => (rows.value = await getLogging());
+    onActivated(() => {
+      timer = setInterval(() => {
+        if (storeAuth.loggedIn && answer.value) {
+          answer.value = false;
+          getLogging()
+            .then((result) => {
+              rows.value = result;
+              answer.value = true;
+            })
+            .catch(() => (answer.value = true));
+        }
+      }, 1000);
+    });
 
-    onActivated(() => (timer = setInterval(async () => await refresh(), 1000)));
     onDeactivated(() => clearTimeout(timer));
 
     return {
@@ -69,7 +83,6 @@ export default defineComponent({
       rows,
       confirm,
       boxCols,
-      refresh,
       shortDate,
       shortTime,
 

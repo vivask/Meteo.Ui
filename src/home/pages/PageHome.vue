@@ -87,10 +87,19 @@ export default defineComponent({
     const columns = { xl: 3, lg: 3, md: 4, sm: 5, xs: 10 };
     const cols = computed(() => `col-${columns[$q.screen.name]}`);
     const sensors = ref(sensorsTemplate);
+    const answer = ref(true);
 
     onActivated(() => {
-      timer = setInterval(async () => {
-        sensors.value = await getEsp32Data();
+      timer = setInterval(() => {
+        if (answer.value) {
+          answer.value = false;
+          getEsp32Data()
+            .then((result) => {
+              sensors.value = result;
+              answer.value = true;
+            })
+            .catch(() => (answer.value = true));
+        }
       }, 1000);
     });
 
