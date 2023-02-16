@@ -18,6 +18,7 @@
           :value="item.value"
           :title="item.title"
           :disable="item.disable"
+          :log-empty="item.empty"
           :logging="item.logging"
           :clear="item.clear"
           :restart="item.restart"
