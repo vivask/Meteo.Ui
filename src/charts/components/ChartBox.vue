@@ -40,6 +40,7 @@ import { defineComponent, computed, watch, toRefs, ref, onMounted } from 'vue';
 import { Screen } from 'quasar';
 import UiSquareBtnVue from '../../app/components/UiSquareBtn.vue';
 import { useLayoutStore } from '../../app/stores/useLayoutStore.js';
+import { useRouter } from 'vue-router';
 import { Line } from 'vue-chartjs';
 import {
   Chart as ChartJS,
@@ -98,12 +99,19 @@ export default defineComponent({
     const { values } = toRefs(props);
     const priorDisable = ref(false);
     const nextDisable = ref(true);
+    const router = useRouter();
+
+    const label = computed(() => {
+      const current = router.currentRoute.value.fullPath;
+      const pathStrSplit = current.split('/');
+      return props.label + ' ' + pathStrSplit[pathStrSplit.length - 1];
+    });
 
     const data = computed(() => ({
       labels: props.labels,
       datasets: [
         {
-          label: props.label,
+          label: label.value,
           backgroundColor: '#f87979',
           borderColor: '#f87979',
           data: props.values,
@@ -159,7 +167,10 @@ export default defineComponent({
 
     watch(period, () => initPeriod());
 
-    onMounted(() => initPeriod());
+    onMounted(() => {
+      console.log(label.value);
+      initPeriod();
+    });
 
     watch(values, (newVal) => {
       if (period.value === 'day') {

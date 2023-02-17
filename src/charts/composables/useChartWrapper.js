@@ -8,7 +8,7 @@ export function useChartWrapper(sensorParameter, sensorData, api) {
   const { shortTime, shortDate } = useUtils();
   const period = computed(() => layoutStore.periodFilter.value);
   const range = computed(() => layoutStore.rangeFilter);
-  const chartLabel = computed(() => `${range.value.label} ${sensorParameter}`);
+  const chartLabel = computed(() => `${range.value.label}`);
   const chartPeriod = ref({});
   const chartLabels = computed(() => {
     return !sensorData?.value
