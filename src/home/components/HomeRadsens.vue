@@ -15,6 +15,16 @@
       <q-item-section>
         <q-item-label class="text-bold text-h6" :color="color">RadSens</q-item-label>
       </q-item-section>
+      <q-item v-if="isAuthenticated" dense>
+        <q-item-section class="button-width">
+          <q-btn dense :color="stateHVColor" :label="stateHVLabel" size="xs" @click.stop="toggleHvRadsens" />
+        </q-item-section>
+      </q-item>
+      <q-item v-if="isAuthenticated" dense>
+        <q-item-section class="button-width">
+          <q-btn dense color="primary" :label="stateSensLabel" size="xs" @click.stop="setSens" />
+        </q-item-section>
+      </q-item>
     </q-item>
     <home-label-vue
       :value="staticIntensity"
@@ -32,25 +42,25 @@
       :check="checkRadsensDynamicAlarm"
       :available="available"
     />
-    <q-item dense>
-      <q-item-section class="button-width">
-        <q-btn dense :color="stateColor" :label="stateLabel" size="xs" @click.stop="toggleHvRadsens" />
-      </q-item-section>
-    </q-item>
   </div>
+
+  <form-sens-vue ref="form" @submit="handleSensSubmit" />
 </template>
 
 <script>
 import { defineComponent, ref, computed } from 'vue';
 import HomeLabelVue from './HomeLabel.vue';
-import { checkRadsensStaticAlarm, checkRadsensDynamicAlarm, toggleHvRadsens } from '../api/homeApi';
+import { checkRadsensStaticAlarm, checkRadsensDynamicAlarm, toggleHvRadsens, setSensitilvity } from '../api/homeApi';
 import { useRouter } from 'vue-router';
+import FormSensVue from '../forms/FormSens.vue';
+import { useAuthStore } from '../../app/stores/useAuthStore.js';
 
 export default defineComponent({
   name: 'HomeRadsens',
 
   components: {
     HomeLabelVue,
+    FormSensVue,
   },
 
   props: {
@@ -60,6 +70,7 @@ export default defineComponent({
     dynamicIntensity: [String, Number],
     alarmDynamic: Boolean,
     hvState: Boolean,
+    sens: [String, Number],
   },
 
   setup(props) {
@@ -68,20 +79,36 @@ export default defineComponent({
     const blueIcon = new URL('../../app/assets/icons/Radiation-48x48-blue.png', import.meta.url).href;
     const iconColor = '#3092EA';
     const hover = ref(false);
+    const form = ref(null);
 
-    const stateLabel = computed(() => (props.hvState ? 'HV ON' : 'HV OFF'));
-    const stateColor = computed(() => (props.hvState ? 'primary' : 'grey'));
+    const stateHVLabel = computed(() => (props.hvState ? 'HV OFF' : 'HV ON'));
+    const stateHVColor = computed(() => (props.hvState ? 'primary' : 'grey'));
+    const stateSensLabel = computed(() => 'Sens: ' + props.sens);
+    const isAuthenticated = computed(() => useAuthStore().loggedIn);
 
     return {
       router,
       hover,
+      form,
+      isAuthenticated,
       icon: computed(() => (hover.value ? blueIcon : whiteIcon)),
       color: computed(() => (hover.value ? iconColor : 'white')),
       checkRadsensStaticAlarm,
       checkRadsensDynamicAlarm,
       toggleHvRadsens,
-      stateLabel,
-      stateColor,
+      setSensitilvity,
+      stateHVLabel,
+      stateHVColor,
+      stateSensLabel,
+      setSens() {
+        form.value.show(props.sens);
+      },
+
+      handleSensSubmit(event) {
+        if (!event.update) {
+          setSensitilvity(event.data);
+        }
+      },
     };
   },
 });

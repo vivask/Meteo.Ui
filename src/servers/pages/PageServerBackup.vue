@@ -9,8 +9,8 @@
   >
     <q-markup-table>
       <tbody>
-        <backup-kodi-vue :disable="!state.WebService" />
-        <backup-storage-vue :disable="!state.StorageService" />
+        <!-- <backup-kodi-vue :disable="!state.WebService" />
+        <backup-storage-vue :disable="!state.StorageService" /> -->
         <dococker-service-vue
           v-for="item in services"
           :key="item.value"
@@ -24,7 +24,7 @@
           :start="item.start"
           :stop="item.stop"
         />
-        <server-reboot-vue title="Odroid N2" :reboot="Reboot" :shutdown="Shutdown" :disable="!state.WebService" />
+        <server-reboot-vue title="Gk3" :reboot="Reboot" :shutdown="Shutdown" :disable="!state.WebService" />
       </tbody>
     </q-markup-table>
   </ui-box-vue>

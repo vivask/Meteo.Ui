@@ -106,8 +106,7 @@ export default defineComponent({
   setup(props) {
     const localModel = ref(null);
     const { drawer } = toRefs(props);
-    const authStore = useAuthStore();
-    const isAuthenticated = computed(() => authStore.loggedIn);
+    const isAuthenticated = computed(() => useAuthStore().loggedIn);
     const menuHome = useMenuHome;
     const menuPeripheral = ref(useMenuPeripheral);
     const menuController = ref(useMenuController);

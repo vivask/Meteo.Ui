@@ -37,6 +37,7 @@
       <template #body-cell-actions="props">
         <q-td :props="props">
           <ui-round-btn-vue color="primary" icon="add" tooltip="Create ssh key" @click="handleAdd" />
+          <!-- <ui-round-btn-vue color="positive" icon="mode_edit" tooltip="Edit ssh key" @click="handleEdit(props.row)" /> -->
           <ui-round-btn-vue color="negative" icon="delete" tooltip="Delete ssh key" @click="handleDelete(props.row)" />
         </q-td>
       </template>
@@ -74,7 +75,13 @@ export default defineComponent({
     const buttonShow = computed(() => rows.value.length === 0);
     const visible = ref(false);
 
-    const { handleAdd, handleSubmit, handleDelete, handleCancel } = useTableHandlers(visible, form, rows, wrapper, {});
+    const { handleAdd, /*handleEdit,*/ handleSubmit, handleDelete, handleCancel } = useTableHandlers(
+      visible,
+      form,
+      rows,
+      wrapper,
+      {},
+    );
 
     const { formatLongDate, isEmptyTime, activeIcon, activeColor } = useUtils();
 
@@ -95,6 +102,7 @@ export default defineComponent({
       activeColor,
 
       handleAdd,
+      // handleEdit,
       handleSubmit,
       handleDelete,
       handleCancel,
