@@ -31,6 +31,15 @@
           :dynamic-intensity="sensors.data.radsens_dynamic"
           :alarm-dynamic="sensors.data.max_rad_dyn_alarm"
           :hv-state="sensors.data.radsens_hv_state"
+          :sens="sensors.data.radsens_sens"
+        />
+      </div>
+      <div v-if="$q.screen.name == 'xs'" class="flex-break" />
+      <div class="q-ml-sm square rounded-borders shadow-8" :class="cols">
+        <home-aht25-vue
+          :available="sensors.alive.aht25"
+          :temperature="sensors.data.aht25_tempr"
+          :humidity="sensors.data.aht25_hum"
         />
       </div>
       <div v-if="$q.screen.name == 'xs'" class="flex-break" />
@@ -63,6 +72,7 @@ import HomeMics6814Vue from '../components/HomeMics6814.vue';
 import HomeRadsensVue from '../components/HomeRadsens.vue';
 import HomeDs18b20Vue from '../components/HomeDs18b20.vue';
 import HomeZe08ch2oVue from '../components/HomeZe08ch2o.vue';
+import HomeAht25Vue from '../components/HomeAht25.vue';
 import { getEsp32Data } from '../api/homeApi';
 
 const sensorsTemplate = {
@@ -79,6 +89,7 @@ export default defineComponent({
     HomeRadsensVue,
     HomeDs18b20Vue,
     HomeZe08ch2oVue,
+    HomeAht25Vue,
   },
 
   setup() {

@@ -15,6 +15,11 @@
       <q-item-section>
         <q-item-label class="text-bold text-h6" :color="color">MICS6814</q-item-label>
       </q-item-section>
+      <q-item v-if="isAuthenticated" dense>
+        <q-item-section class="button-width">
+          <q-btn dense color="primary" label="RESET" size="xs" @click.stop="toggleAvrReset" />
+        </q-item-section>
+      </q-item>
     </q-item>
     <home-label-vue
       :value="nh3"
@@ -46,8 +51,9 @@
 <script>
 import { defineComponent, ref, computed } from 'vue';
 import HomeLabelVue from './HomeLabel.vue';
-import { checkMics6814No2Alarm, checkMics6814Nh3Alarm, checkMics6814CoAlarm } from '../api/homeApi';
+import { checkMics6814No2Alarm, checkMics6814Nh3Alarm, checkMics6814CoAlarm, toggleAvrReset } from '../api/homeApi';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '../../app/stores/useAuthStore.js';
 
 export default defineComponent({
   name: 'HomeMics6814',
@@ -72,15 +78,18 @@ export default defineComponent({
     const blueIcon = new URL('../../app/assets/icons/NH3-48x48-blue.png', import.meta.url).href;
     const iconColor = '#3092EA';
     const hover = ref(false);
+    const isAuthenticated = computed(() => useAuthStore().loggedIn);
 
     return {
       router,
       hover,
+      isAuthenticated,
       icon: computed(() => (hover.value ? blueIcon : whiteIcon)),
       color: computed(() => (hover.value ? iconColor : 'white')),
       checkMics6814No2Alarm,
       checkMics6814Nh3Alarm,
       checkMics6814CoAlarm,
+      toggleAvrReset,
     };
   },
 });
@@ -89,4 +98,7 @@ export default defineComponent({
 <style lang="sass" scoped>
 .mt-5
   margin-top: 5px
+.button-width
+  width: 80px
+  max-width: 80px
 </style>

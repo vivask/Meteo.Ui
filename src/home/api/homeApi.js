@@ -19,6 +19,7 @@ export async function getEsp32Data() {
       radsens: false,
       ds18b20: false,
       ze08ch2o: false,
+      aht25: false,
     },
     available: false,
   };
@@ -34,6 +35,7 @@ export async function getEsp32Data() {
           radsens: duration(result.radsens_created) < MAX_DATA_UPDATE_PERIOD_S,
           ds18b20: duration(result.ds18b20_created) < MAX_DATA_UPDATE_PERIOD_S,
           ze08ch2o: duration(result.ze08_created) < MAX_DATA_UPDATE_PERIOD_S,
+          aht25: duration(result.aht25_created) < MAX_DATA_UPDATE_PERIOD_S,
         },
         available: duration(result.esp32_date_time_now) < MAX_DATA_UPDATE_PERIOD_S,
       };
@@ -80,6 +82,13 @@ export function checkMics6814CoAlarm() {
 }
 
 /**
+ * Calibrate mics6814
+ */
+export function toggleAvrReset() {
+  jwtClient.put('/esp32/mics6814/calibrate');
+}
+
+/**
  * Reset radsens static alarm
  */
 export function checkRadsensStaticAlarm() {
@@ -105,4 +114,12 @@ export function checkZe08CH2OAlarm() {
  */
 export function toggleHvRadsens() {
   jwtClient.put('/esp32/radsens/hv');
+}
+
+/**
+ * Set sensetivity radsens
+ */
+export function setSensitilvity(sensitivity) {
+  const url = '/esp32/radsens/sens/' + sensitivity;
+  jwtClient.put(url);
 }
