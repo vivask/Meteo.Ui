@@ -1,7 +1,18 @@
 # Vue 3 + Vite
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+# Quasar frontend Meteo
 
-## Recommended IDE Setup
+This is the frontend pet of the merteo station project. More can be seen here https://github.com/vivask/Meteo.Backend
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+## Install the dependencies
+
+```sh
+~cd /tmp
+~git clone https://github.com/vivask/Meteo.Ui.git
+~cd Meteo.Ui
+~npm install
+~npm run dev - for development
+~./build - for build
+```
+
+The finished build must be copied to the backend ui project folder
