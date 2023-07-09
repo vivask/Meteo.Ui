@@ -7,33 +7,6 @@
     <q-markup-table>
       <tbody>
         <tr>
-          <td class="wd-max">
-            <q-file
-              v-model="file"
-              :disable="!status.alive"
-              accept=".bin"
-              label="Firmware file"
-              outlined
-              use-chips
-              :multiple="false"
-            />
-          </td>
-        </tr>
-        <tr>
-          <td class="wd-max text-right">
-            <q-btn
-              class="wd-max"
-              :disable="!status.alive"
-              dense
-              color="warning"
-              icon="upgrade"
-              @click="handelFirmware()"
-            >
-              <q-tooltip>Firmware upgrade</q-tooltip>
-            </q-btn>
-          </td>
-        </tr>
-        <tr>
           <td class="wd-max text-right">
             <q-btn
               class="wd-max"
@@ -57,7 +30,7 @@
               icon="mdi-power-cycle"
               @click="handleRebotEsp32()"
             >
-              <q-tooltip>Reboot esp32</q-tooltip>
+              <q-tooltip>Reboot stm32</q-tooltip>
             </q-btn>
           </td>
         </tr>

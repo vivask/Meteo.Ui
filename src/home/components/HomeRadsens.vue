@@ -17,12 +17,19 @@
       </q-item-section>
       <q-item v-if="isAuthenticated" dense>
         <q-item-section class="button-width">
-          <q-btn dense :color="stateHVColor" :label="stateHVLabel" size="xs" @click.stop="toggleHvRadsens" />
+          <q-btn
+            :disabled="!available"
+            dense
+            :color="stateHVColor"
+            :label="stateHVLabel"
+            size="xs"
+            @click.stop="toggleHvRadsens"
+          />
         </q-item-section>
       </q-item>
       <q-item v-if="isAuthenticated" dense>
         <q-item-section class="button-width">
-          <q-btn dense color="primary" :label="stateSensLabel" size="xs" @click.stop="setSens" />
+          <q-btn :disabled="!available" dense color="primary" :label="stateSensLabel" size="xs" @click.stop="setSens" />
         </q-item-section>
       </q-item>
     </q-item>

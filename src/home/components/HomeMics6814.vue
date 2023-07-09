@@ -17,7 +17,7 @@
       </q-item-section>
       <q-item v-if="isAuthenticated" dense>
         <q-item-section class="button-width">
-          <q-btn dense color="primary" label="RESET" size="xs" @click.stop="toggleAvrReset" />
+          <q-btn :disabled="!available" dense color="primary" label="RESET" size="xs" @click.stop="toggleAvrReset" />
         </q-item-section>
       </q-item>
     </q-item>

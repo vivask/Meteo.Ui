@@ -79,14 +79,14 @@
               </tr>
               <tr>
                 <td class="text-left">
-                  <q-input v-model="settings.min_temp" dense label="DS18B20/Min temperatuer (°C)" type="number">
+                  <q-input v-model="settings.min_ds18b20" dense label="DS18B20/Min temperatuer (°C)" type="number">
                     <q-tooltip>Minimum alarm temperature</q-tooltip>
                   </q-input>
                 </td>
               </tr>
               <tr>
                 <td class="text-left">
-                  <q-input v-model="settings.max_temp" dense label="DS18B20/Min temperatuer (°C)" type="number">
+                  <q-input v-model="settings.max_ds18b20" dense label="DS18B20/Min temperatuer (°C)" type="number">
                     <q-tooltip>Minimum alarm temperature</q-tooltip>
                   </q-input>
                 </td>
