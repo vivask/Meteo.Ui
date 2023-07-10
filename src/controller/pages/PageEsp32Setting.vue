@@ -1,9 +1,9 @@
 <template>
-  <ui-box-vue :columns="boxCols" header="ESP32 Management">
-    <template #header>
+  <ui-box-vue :columns="boxCols" header="Controller Management">
+    <!-- <template #header>
       <q-badge v-if="status.alive" color="grey-1"> Core0: {{ status.core_0_load }}% </q-badge>
       <q-badge v-if="status.alive" color="grey-1"> Core1: {{ status.core_1_load }}% </q-badge>
-    </template>
+    </template> -->
     <q-markup-table>
       <tbody>
         <tr>
@@ -58,7 +58,7 @@ import { defineComponent, ref, onActivated, onDeactivated } from 'vue';
 import UiBoxVue from '../../app/components/UiBox.vue';
 import { useConfirmDialog } from '../../app/composables/useConfirmDialog.js';
 import { Notify } from 'quasar';
-import { getEsp32State, upgradeFirmware, setupMode, reboorEsp32, reboorAvr } from '../api/settingApi';
+import { getEsp32State, upgradeFirmware, setupMode, rebootStm32, rebootAvr } from '../api/settingApi';
 import { useAuthStore } from '../../app/stores/useAuthStore.js';
 
 export default defineComponent({
@@ -123,16 +123,16 @@ export default defineComponent({
       },
 
       async handleRebotEsp32() {
-        const ok = await confirm.show('Are you sure you want to reload esp32?');
+        const ok = await confirm.show('Are you sure you want to reload stm32 and esp32?');
         if (ok) {
-          reboorEsp32();
+          rebootStm32();
         }
       },
 
       async handleRebotAvr() {
         const ok = await confirm.show('Are you sure you want to reload avr?');
         if (ok) {
-          reboorAvr();
+          rebootAvr();
         }
       },
     };

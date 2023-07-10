@@ -49,19 +49,19 @@ export function upgradeFirmware(file) {
  * Activae setup mode on esp32
  */
 export function setupMode() {
-  jwtClient.put('esp32/setup').then(() => {});
+  jwtClient.put('esp32/reset/ap').then(() => {});
 }
 
 /**
- * Rebott esp32
+ * Reboot stm32 & esp32
  */
-export function reboorEsp32() {
-  jwtClient.put('esp32/reboot').then(() => {});
+export function rebootStm32() {
+  jwtClient.put('esp32/reset/stm32').then(() => {});
 }
 
 /**
- * Rebott avr
+ * Reboot avr
  */
-export function reboorAvr() {
-  jwtClient.put('esp32/reboot/avr').then(() => {});
+export function rebootAvr() {
+  jwtClient.put('esp32/reset/avr').then(() => {});
 }
