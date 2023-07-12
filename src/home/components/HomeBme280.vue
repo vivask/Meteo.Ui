@@ -25,7 +25,7 @@
       :available="available"
     />
     <home-label-vue :value="pressure" label="Давлeние:" unit="mmHg" :available="available" />
-    <home-label-vue :value="humidity" label="Влажность:" unit="%" :available="available" />
+    <home-label-vue :value="humidity" label="Влажность:" unit="%" :available="available" class="mb-5" />
   </div>
 </template>
 
@@ -71,4 +71,6 @@ export default defineComponent({
 <style lang="sass" scoped>
 .mt-5
   margin-top: 5px
+.mb-5
+  margin-bottom: 5px
 </style>

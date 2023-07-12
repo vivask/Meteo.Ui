@@ -44,6 +44,7 @@
       :alarm="alarmCo"
       :check="checkMics6814CoAlarm"
       :available="available"
+      class="mb-5"
     />
   </div>
 </template>
@@ -101,4 +102,6 @@ export default defineComponent({
 .button-width
   width: 80px
   max-width: 80px
+.mb-5
+  margin-bottom: 5px
 </style>

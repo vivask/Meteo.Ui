@@ -23,6 +23,7 @@
       :alarm="alarm"
       :check="checkDs18b20TemperatureAlarm"
       :available="available"
+      class="mb-5"
     />
   </div>
 </template>
@@ -67,4 +68,6 @@ export default defineComponent({
 <style lang="sass" scoped>
 .mt-5
   margin-top: 5px
+.mb-5
+  margin-bottom: 5px
 </style>

@@ -22,7 +22,8 @@
           :alarm-co="sensors.data.max_6814_co_alarm"
         />
       </div>
-      <div v-if="$q.screen.name == 'xs' || $q.screen.name == 'sm'" class="flex-break" />
+      <!-- <div v-if="$q.screen.name == 'xs' || $q.screen.name == 'sm'" class="flex-break" /> -->
+      <div v-if="$q.screen.name == 'xs'" class="flex-break" />
       <div class="q-ml-sm square rounded-borders shadow-8" :class="cols">
         <home-radsens-vue
           :available="sensors.alive.radsens"
@@ -50,7 +51,8 @@
           :alarm="sensors.data.max_ds18b20_alarm || sensors.data.min_ds18b20_alarm"
         />
       </div>
-      <div v-if="$q.screen.name == 'xs' || $q.screen.name == 'sm'" class="flex-break" />
+      <!-- <div v-if="$q.screen.name == 'xs' || $q.screen.name == 'sm'" class="flex-break" /> -->
+      <div v-if="$q.screen.name == 'xs'" class="flex-break" />
       <div class="q-ml-sm square rounded-borders shadow-8" :class="cols">
         <home-ze08ch2o-vue
           :available="sensors.alive.ze08ch2o"
