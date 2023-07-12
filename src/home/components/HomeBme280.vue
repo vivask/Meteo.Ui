@@ -13,7 +13,7 @@
         </q-avatar>
       </q-item-section>
       <q-item-section>
-        <q-item-label class="text-bold text-h6" :color="color">BME280</q-item-label>
+        <q-item-label class="text-bold text-h6" :color="color">{{ bme ? 'BME280' : 'BMP280' }}</q-item-label>
       </q-item-section>
     </q-item>
     <home-label-vue
@@ -25,7 +25,7 @@
       :available="available"
     />
     <home-label-vue :value="pressure" label="Давлeние:" unit="mmHg" :available="available" />
-    <home-label-vue :value="humidity" label="Влажность:" unit="%" :available="available" class="mb-5" />
+    <home-label-vue v-if="bme" :value="humidity" label="Влажность:" unit="%" :available="available" class="mb-5" />
   </div>
 </template>
 
@@ -50,10 +50,10 @@ export default defineComponent({
     humidity: [String, Number],
   },
 
-  setup() {
+  setup(props) {
     const router = useRouter();
-    const whiteIcon = new URL('../../app/assets/icons/humidity-48x48-white.png', import.meta.url).href;
-    const blueIcon = new URL('../../app/assets/icons/humidity-48x48-blue.png', import.meta.url).href;
+    const whiteIcon = new URL('../../app/assets/icons/pressure-48x48-white.png', import.meta.url).href;
+    const blueIcon = new URL('../../app/assets/icons/pressure-48x48-blue.png', import.meta.url).href;
     const iconColor = '#3092EA';
     const hover = ref(false);
 
@@ -62,6 +62,7 @@ export default defineComponent({
       hover,
       icon: computed(() => (hover.value ? blueIcon : whiteIcon)),
       color: computed(() => (hover.value ? iconColor : 'white')),
+      bme: computed(() => props.humidity !== 0.0),
       checkBme280TemperatureAlarm,
     };
   },
