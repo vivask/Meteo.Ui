@@ -11,7 +11,7 @@ export const useMenuPeripheral = {
   toggle: false,
   menu: [
     {
-      title: 'BME280',
+      title: 'BMP280',
       value: 'bme280',
       toggle: false,
       menu: [
@@ -25,11 +25,11 @@ export const useMenuPeripheral = {
           title: 'Pressure',
           value: 'pressure',
         },
-        {
-          icon: 'mdi-water-percent',
-          title: 'Humidity',
-          value: 'humidity',
-        },
+        // {
+        //   icon: 'mdi-water-percent',
+        //   title: 'Humidity',
+        //   value: 'humidity',
+        // },
       ],
     },
     {
@@ -55,6 +55,23 @@ export const useMenuPeripheral = {
       ],
     },
     {
+      title: 'AHT25',
+      value: 'aht25',
+      toggle: false,
+      menu: [
+        {
+          icon: 'mdi-thermometer',
+          title: 'Temperature',
+          value: 'temperature',
+        },
+        {
+          icon: 'mdi-water-percent',
+          title: 'Humidity',
+          value: 'humidity',
+        },
+      ],
+    },
+    {
       title: 'RadSens',
       value: 'radsens',
       toggle: false,
@@ -72,7 +89,7 @@ export const useMenuPeripheral = {
       ],
     },
     {
-      title: 'ZE08CH2O',
+      title: 'ZE08',
       value: 'ze08ch2o',
       toggle: false,
       menu: [

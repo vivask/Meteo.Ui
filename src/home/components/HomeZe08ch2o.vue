@@ -13,7 +13,7 @@
         </q-avatar>
       </q-item-section>
       <q-item-section>
-        <q-item-label class="text-bold text-h6" :color="color">ZE08CH2O</q-item-label>
+        <q-item-label class="text-bold text-h6" :color="color">ZE08</q-item-label>
       </q-item-section>
     </q-item>
     <home-label-vue

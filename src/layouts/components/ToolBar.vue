@@ -5,8 +5,12 @@
 
       <q-toolbar-title> Meteo </q-toolbar-title>
 
-      <q-btn v-if="!isLoged" flat dense size="md" round icon="mdi-login" to="/login"></q-btn>
-      <q-btn v-else flat dense size="md" round icon="mdi-logout" @click="logout"></q-btn>
+      <q-btn v-if="!isLoged" flat dense size="md" round icon="mdi-login" to="/login">
+        <q-tooltip>Login</q-tooltip>
+      </q-btn>
+      <q-btn v-else flat dense size="md" round icon="mdi-logout" @click="logout">
+        <q-tooltip>Logout</q-tooltip>
+      </q-btn>
       <period-filter-vue />
       <range-filter-vue />
       <users-filter-vue />
