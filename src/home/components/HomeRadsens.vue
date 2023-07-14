@@ -126,7 +126,7 @@ export default defineComponent({
 .mt-5
   margin-top: 5px
 .button-width
-  width: 80px
+  width: 60px
   max-width: 80px
 .mb-5
   margin-bottom: 5px

@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-md">
     <div class="row" :class="$q.screen.gt.xs ? 'justify-center' : 'justify-left'">
-      <div class="q-ml-sm square rounded-borders shadow-8" :class="cols">
+      <div v-if="!sensors.data.bmx280_lock" class="q-ml-sm square rounded-borders shadow-8" :class="cols">
         <home-bme280-vue
           :available="sensors.alive.bme280"
           :temperature="sensors.data.bmx280_tempr"
@@ -11,7 +11,7 @@
         />
       </div>
       <div v-if="$q.screen.name == 'xs'" class="flex-break"></div>
-      <div class="q-ml-sm square rounded-borders shadow-8" :class="cols">
+      <div v-if="!sensors.data.mics6814_lock" class="q-ml-sm square rounded-borders shadow-8" :class="cols">
         <home-mics6814-vue
           :available="sensors.alive.mics6814"
           :nh3="sensors.data.mics6814_nh3"
@@ -22,9 +22,8 @@
           :alarm-co="sensors.data.max_6814_co_alarm"
         />
       </div>
-      <!-- <div v-if="$q.screen.name == 'xs' || $q.screen.name == 'sm'" class="flex-break" /> -->
       <div v-if="$q.screen.name == 'xs'" class="flex-break" />
-      <div class="q-ml-sm square rounded-borders shadow-8" :class="cols">
+      <div v-if="!sensors.data.radsens_lock" class="q-ml-sm square rounded-borders shadow-8" :class="cols">
         <home-radsens-vue
           :available="sensors.alive.radsens"
           :static-intensity="sensors.data.radsens_static"
@@ -36,7 +35,7 @@
         />
       </div>
       <div v-if="$q.screen.name == 'xs'" class="flex-break" />
-      <div class="q-ml-sm square rounded-borders shadow-8" :class="cols">
+      <div v-if="!sensors.data.aht25_lock" class="q-ml-sm square rounded-borders shadow-8" :class="cols">
         <home-aht25-vue
           :available="sensors.alive.aht25"
           :temperature="sensors.data.aht25_tempr"
@@ -44,7 +43,7 @@
         />
       </div>
       <div v-if="$q.screen.name == 'xs'" class="flex-break" />
-      <div class="q-ml-sm square rounded-borders shadow-8" :class="cols">
+      <div v-if="!sensors.data.ds18b20_lock" class="q-ml-sm square rounded-borders shadow-8" :class="cols">
         <home-ds18b20-vue
           :available="sensors.alive.ds18b20"
           :temperature="sensors.data.ds18b20_tempr"
@@ -53,7 +52,7 @@
       </div>
       <!-- <div v-if="$q.screen.name == 'xs' || $q.screen.name == 'sm'" class="flex-break" /> -->
       <div v-if="$q.screen.name == 'xs'" class="flex-break" />
-      <div class="q-ml-sm square rounded-borders shadow-8" :class="cols">
+      <div v-if="!sensors.data.ze08_lock" class="q-ml-sm square rounded-borders shadow-8" :class="cols">
         <home-ze08ch2o-vue
           :available="sensors.alive.ze08ch2o"
           :ch2o="sensors.data.ze08_ch2o"
@@ -78,7 +77,14 @@ import HomeAht25Vue from '../components/HomeAht25.vue';
 import { getEsp32Data } from '../api/homeApi';
 
 const sensorsTemplate = {
-  data: {},
+  data: {
+    bmx280_lock: true,
+    ds18b20_lock: true,
+    mics6814_lock: true,
+    radsens_lock: true,
+    ze08_lock: true,
+    aht25_lock: true,
+  },
   alive: {},
   available: false,
 };
