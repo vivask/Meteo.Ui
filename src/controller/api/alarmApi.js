@@ -20,8 +20,8 @@ export function setAlarms(settings) {
   settings.max_6814_nh3 = parseFloat(settings.max_6814_nh3);
   settings.max_6814_no2 = parseFloat(settings.max_6814_no2);
   settings.max_6814_co = parseFloat(settings.max_6814_co);
-  settings.min_temp = parseFloat(settings.min_temp);
-  settings.max_temp = parseFloat(settings.max_temp);
+  settings.min_ds18b20 = parseFloat(settings.min_ds18b20);
+  settings.max_ds18b20 = parseFloat(settings.max_ds18b20);
   settings.min_bmx280_tempr = parseFloat(settings.min_bmx280_tempr);
   settings.max_bmx280_tempr = parseFloat(settings.max_bmx280_tempr);
   settings.max_rad_stat = parseFloat(settings.max_rad_stat);

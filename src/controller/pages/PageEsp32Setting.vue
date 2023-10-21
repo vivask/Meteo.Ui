@@ -84,7 +84,7 @@ import {
   lockAht25,
 } from '../api/settingApi';
 import { useAuthStore } from '../../app/stores/useAuthStore.js';
-import { useSensors } from '../composables/sensors';
+// import { useSensors } from '../composables/sensors';
 import SensorLockVue from '../components/SensorLock.vue';
 
 export default defineComponent({

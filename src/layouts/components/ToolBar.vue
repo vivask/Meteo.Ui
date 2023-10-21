@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { defineComponent, toRefs, computed, ref, watch } from 'vue';
+import { defineComponent, toRefs, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import PeriodFilterVue from './PeriodFilter.vue';
 import RangeFilterVue from './RangeFilter.vue';
