@@ -15,6 +15,63 @@
         <sensor-lock-vue label="MICS6814" :state="status.mics6814_lock" :lock="lockMics6814" />
         <sensor-lock-vue label="ZE08" :state="status.ze08_lock" :lock="lockZe08" />
         <sensor-lock-vue label="AHT25" :state="status.aht25_lock" :lock="lockAht25" />
+
+        <tr>
+          <td class="wd-max">
+            <q-file
+              v-model="esp32_file"
+              :disable="!status.alive"
+              accept=".bin"
+              label="ESP32 Firmware file"
+              outlined
+              use-chips
+              :multiple="false"
+            />
+          </td>
+        </tr>
+        <tr>
+          <td class="wd-max text-right">
+            <q-btn
+              class="wd-max"
+              :disable="!status.alive"
+              dense
+              color="warning"
+              icon="upgrade"
+              @click="handelEsp32Firmware()"
+            >
+              <q-tooltip>ESP32 firmware upgrade</q-tooltip>
+            </q-btn>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="wd-max">
+            <q-file
+              v-model="stm32_file"
+              :disable="!status.alive"
+              accept=".bin"
+              label="STM32 Firmware file"
+              outlined
+              use-chips
+              :multiple="false"
+            />
+          </td>
+        </tr>
+        <tr>
+          <td class="wd-max text-right">
+            <q-btn
+              class="wd-max"
+              :disable="!status.alive"
+              dense
+              color="warning"
+              icon="upgrade"
+              @click="handelStm32Firmware()"
+            >
+              <q-tooltip>STM32 firmware upgrade</q-tooltip>
+            </q-btn>
+          </td>
+        </tr>
+
         <tr>
           <td>Setup mode</td>
           <td class="wd-max text-right">
@@ -30,6 +87,7 @@
             </q-btn>
           </td>
         </tr>
+
         <tr>
           <td>Reboot stm32</td>
           <td class="wd-max text-right">
@@ -45,6 +103,7 @@
             </q-btn>
           </td>
         </tr>
+
         <tr>
           <td>Reboot avr</td>
           <td class="wd-max text-right">
@@ -66,13 +125,14 @@
 </template>
 
 <script>
-import { defineComponent, ref, onActivated, onDeactivated, watch } from 'vue';
+import { defineComponent, ref, onActivated, onDeactivated } from 'vue';
 import UiBoxVue from '../../app/components/UiBox.vue';
 import { useConfirmDialog } from '../../app/composables/useConfirmDialog.js';
 import { Notify } from 'quasar';
 import {
   getControllerState,
-  upgradeFirmware,
+  upgradeEsp32Firmware,
+  upgradeStm32Firmware,
   setupMode,
   rebootStm32,
   rebootAvr,
@@ -99,7 +159,8 @@ export default defineComponent({
     let timer;
     const confirm = useConfirmDialog();
     const boxCols = { xl: 6, lg: 6, md: 7, sm: 11, xs: 10 };
-    const file = ref(null);
+    const esp32_file = ref(null);
+    const stm32_file = ref(null);
     const status = ref({
       alive: false,
       bmx280_lock: false,
@@ -137,7 +198,8 @@ export default defineComponent({
 
     return {
       boxCols,
-      file,
+      esp32_file,
+      stm32_file,
       status,
       // sensors,
       lockBmx280,
@@ -147,8 +209,8 @@ export default defineComponent({
       lockZe08,
       lockAht25,
 
-      async handelFirmware() {
-        if (!(file?.value && file.value.name.length > 0)) {
+      async handelEsp32Firmware() {
+        if (!(esp32_file?.value && esp32_file.value.name.length > 0)) {
           Notify.create({
             type: 'negative',
             message: 'Please select firmware file',
@@ -157,7 +219,22 @@ export default defineComponent({
         } else {
           const ok = await confirm.show('Are you sure to upgrade esp32?');
           if (ok) {
-            upgradeFirmware(file);
+            upgradeEsp32Firmware(esp32_file);
+          }
+        }
+      },
+
+      async handelStm32Firmware() {
+        if (!(stm32_file?.value && stm32_file.value.name.length > 0)) {
+          Notify.create({
+            type: 'negative',
+            message: 'Please select firmware file',
+          });
+          return;
+        } else {
+          const ok = await confirm.show('Are you sure to upgrade esp32?');
+          if (ok) {
+            upgradeStm32Firmware(stm32_file);
           }
         }
       },

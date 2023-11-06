@@ -32,14 +32,32 @@ export async function getControllerState() {
 }
 
 /**
- * Upgrade controller firmware
+ * Upgrade esp32 firmware
  * @param file
  */
-export function upgradeFirmware(file) {
+export function upgradeEsp32Firmware(file) {
   let data = new FormData();
   data.append('firmware', file.value);
   jwtClient
-    .post('/esp32/upgrade', data, {
+    .post('/esp32/upgrade/esp32', data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    .then(() => {
+      file.value = null;
+    });
+}
+
+/**
+ * Upgrade stm32 firmware
+ * @param file
+ */
+export function upgradeStm32Firmware(file) {
+  let data = new FormData();
+  data.append('firmware', file.value);
+  jwtClient
+    .post('/esp32/upgrade/stm32', data, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
