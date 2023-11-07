@@ -37,7 +37,7 @@ export async function getControllerState() {
  */
 export function upgradeEsp32Firmware(file) {
   let data = new FormData();
-  data.append('firmware', file.value);
+  data.append('firmware', file);
   jwtClient
     .post('/esp32/upgrade/esp32', data, {
       headers: {
@@ -45,7 +45,7 @@ export function upgradeEsp32Firmware(file) {
       },
     })
     .then(() => {
-      file.value = null;
+      file = null;
     });
 }
 
@@ -55,7 +55,7 @@ export function upgradeEsp32Firmware(file) {
  */
 export function upgradeStm32Firmware(file) {
   let data = new FormData();
-  data.append('firmware', file.value);
+  data.append('firmware', file);
   jwtClient
     .post('/esp32/upgrade/stm32', data, {
       headers: {
@@ -63,7 +63,7 @@ export function upgradeStm32Firmware(file) {
       },
     })
     .then(() => {
-      file.value = null;
+      file = null;
     });
 }
 

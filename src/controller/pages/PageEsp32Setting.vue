@@ -17,19 +17,7 @@
         <sensor-lock-vue label="AHT25" :state="status.aht25_lock" :lock="lockAht25" />
 
         <tr>
-          <td class="wd-max">
-            <q-file
-              v-model="esp32_file"
-              :disable="!status.alive"
-              accept=".bin"
-              label="ESP32 Firmware file"
-              outlined
-              use-chips
-              :multiple="false"
-            />
-          </td>
-        </tr>
-        <tr>
+          <td>ESP32 upgrade</td>
           <td class="wd-max text-right">
             <q-btn
               class="wd-max"
@@ -45,19 +33,7 @@
         </tr>
 
         <tr>
-          <td class="wd-max">
-            <q-file
-              v-model="stm32_file"
-              :disable="!status.alive"
-              accept=".bin"
-              label="STM32 Firmware file"
-              outlined
-              use-chips
-              :multiple="false"
-            />
-          </td>
-        </tr>
-        <tr>
+          <td>STM32 upgrade</td>
           <td class="wd-max text-right">
             <q-btn
               class="wd-max"
@@ -159,8 +135,6 @@ export default defineComponent({
     let timer;
     const confirm = useConfirmDialog();
     const boxCols = { xl: 6, lg: 6, md: 7, sm: 11, xs: 10 };
-    const esp32_file = ref(null);
-    const stm32_file = ref(null);
     const status = ref({
       alive: false,
       bmx280_lock: false,
@@ -198,8 +172,6 @@ export default defineComponent({
 
     return {
       boxCols,
-      esp32_file,
-      stm32_file,
       status,
       // sensors,
       lockBmx280,
@@ -210,33 +182,37 @@ export default defineComponent({
       lockAht25,
 
       async handelEsp32Firmware() {
-        if (!(esp32_file?.value && esp32_file.value.name.length > 0)) {
-          Notify.create({
-            type: 'negative',
-            message: 'Please select firmware file',
-          });
-          return;
-        } else {
+        let input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.bin';
+        input.multiple = false;
+
+        input.onchange = async (e) => {
+          let file = e.target.files[0];
           const ok = await confirm.show('Are you sure to upgrade esp32?');
           if (ok) {
-            upgradeEsp32Firmware(esp32_file);
+            upgradeEsp32Firmware(file);
           }
-        }
+        };
+
+        input.click();
       },
 
       async handelStm32Firmware() {
-        if (!(stm32_file?.value && stm32_file.value.name.length > 0)) {
-          Notify.create({
-            type: 'negative',
-            message: 'Please select firmware file',
-          });
-          return;
-        } else {
-          const ok = await confirm.show('Are you sure to upgrade esp32?');
+        let input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.bin';
+        input.multiple = false;
+
+        input.onchange = async (e) => {
+          let file = e.target.files[0];
+          const ok = await confirm.show('Are you sure to upgrade stm32?');
           if (ok) {
-            upgradeStm32Firmware(stm32_file);
+            upgradeStm32Firmware(file);
           }
-        }
+        };
+
+        input.click();
       },
 
       async handeleSetupMode() {
