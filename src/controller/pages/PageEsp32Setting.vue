@@ -9,12 +9,11 @@
           :state="item.state"
           :lock="item.func"
         /> -->
-        <sensor-lock-vue label="BMP280" :state="status.bmx280_lock" :lock="lockBmx280" />
-        <sensor-lock-vue label="DS18B20" :state="status.ds18b20_lock" :lock="lockDs18b20" />
-        <sensor-lock-vue label="Radsens" :state="status.radsens_lock" :lock="lockRadsens" />
-        <sensor-lock-vue label="MICS6814" :state="status.mics6814_lock" :lock="lockMics6814" />
-        <sensor-lock-vue label="ZE08" :state="status.ze08_lock" :lock="lockZe08" />
         <sensor-lock-vue label="AHT25" :state="status.aht25_lock" :lock="lockAht25" />
+        <sensor-lock-vue label="RADSENS" :state="status.radsens_lock" :lock="lockRadsens" />
+        <sensor-lock-vue label="GY39V3" :state="status.gy39v3_lock" :lock="lockGy39v3" />
+        <sensor-lock-vue label="SC16" :state="status.sc16_lock" :lock="lockSc16" />
+        <sensor-lock-vue label="ZE08" :state="status.ze08_lock" :lock="lockZe08" />
 
         <tr>
           <td>ESP32 upgrade</td>
@@ -32,7 +31,7 @@
           </td>
         </tr>
 
-        <tr>
+        <!-- <tr>
           <td>STM32 upgrade</td>
           <td class="wd-max text-right">
             <q-btn
@@ -46,7 +45,7 @@
               <q-tooltip>STM32 firmware upgrade</q-tooltip>
             </q-btn>
           </td>
-        </tr>
+        </tr> -->
 
         <tr>
           <td>Setup mode</td>
@@ -65,7 +64,7 @@
         </tr>
 
         <tr>
-          <td>Reboot stm32</td>
+          <td>Reboot Esp32</td>
           <td class="wd-max text-right">
             <q-btn
               class="wd-max"
@@ -75,23 +74,7 @@
               icon="mdi-power-cycle"
               @click="handleRebotEsp32()"
             >
-              <q-tooltip>Reboot stm32</q-tooltip>
-            </q-btn>
-          </td>
-        </tr>
-
-        <tr>
-          <td>Reboot avr</td>
-          <td class="wd-max text-right">
-            <q-btn
-              class="wd-max"
-              :disable="!status.alive"
-              dense
-              color="primary"
-              icon="mdi-power-cycle"
-              @click="handleRebotAvr()"
-            >
-              <q-tooltip>Reboot avr</q-tooltip>
+              <q-tooltip>Reboot Esp32</q-tooltip>
             </q-btn>
           </td>
         </tr>
@@ -110,14 +93,12 @@ import {
   upgradeEsp32Firmware,
   upgradeStm32Firmware,
   setupMode,
-  rebootStm32,
-  rebootAvr,
-  lockBmx280,
-  lockDs18b20,
-  lockRadsens,
-  lockMics6814,
-  lockZe08,
+  rebootEsp32,
   lockAht25,
+  lockRadsens,
+  lockGy39v3,
+  lockSc16,
+  lockZe08,
 } from '../api/settingApi';
 import { useAuthStore } from '../../app/stores/useAuthStore.js';
 // import { useSensors } from '../composables/sensors';
@@ -137,12 +118,11 @@ export default defineComponent({
     const boxCols = { xl: 6, lg: 6, md: 7, sm: 11, xs: 10 };
     const status = ref({
       alive: false,
-      bmx280_lock: false,
-      ds18b20_lock: false,
-      radsens_lock: false,
-      mics6814_lock: false,
-      ze08_lock: false,
       aht25_lock: false,
+      radsens_lock: false,
+      gy39v3_lock: false,
+      sc16_lock: false,
+      ze08_lock: false,
     });
     const answer = ref(true);
     const storeAuth = useAuthStore();
@@ -174,12 +154,11 @@ export default defineComponent({
       boxCols,
       status,
       // sensors,
-      lockBmx280,
-      lockDs18b20,
-      lockRadsens,
-      lockMics6814,
-      lockZe08,
       lockAht25,
+      lockRadsens,
+      lockGy39v3,
+      lockSc16,
+      lockZe08,
 
       async handelEsp32Firmware() {
         let input = document.createElement('input');
@@ -225,14 +204,7 @@ export default defineComponent({
       async handleRebotEsp32() {
         const ok = await confirm.show('Are you sure you want to reload stm32 and esp32?');
         if (ok) {
-          rebootStm32();
-        }
-      },
-
-      async handleRebotAvr() {
-        const ok = await confirm.show('Are you sure you want to reload avr?');
-        if (ok) {
-          rebootAvr();
+          rebootEsp32();
         }
       },
     };

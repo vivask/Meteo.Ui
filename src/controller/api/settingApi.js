@@ -18,12 +18,11 @@ export async function getControllerState() {
         ? empty
         : {
             alive: duration(result.esp32_date_time_now) < MAX_DATA_UPDATE_PERIOD_S,
-            bmx280_lock: result.bmx280_lock,
-            ds18b20_lock: result.ds18b20_lock,
-            mics6814_lock: result.mics6814_lock,
-            radsens_lock: result.radsens_lock,
-            ze08_lock: result.ze08_lock,
             aht25_lock: result.aht25_lock,
+            radsens_lock: result.radsens_lock,
+            gy39v3_lock: result.gy39v3_lock,
+            sc16_lock: result.sc16_lock,
+            ze08_lock: result.ze08_lock,
           };
     })
     .catch(() => {
@@ -77,31 +76,15 @@ export function setupMode() {
 /**
  * Reboot stm32 & esp32
  */
-export function rebootStm32() {
-  jwtClient.put('esp32/reset/stm32').then(() => {});
+export function rebootEsp32() {
+  jwtClient.put('esp32/reset/esp32').then(() => {});
 }
 
 /**
- * Reboot avr
+ * Lock/Unlock GY39V3
  */
-export function rebootAvr() {
-  jwtClient.put('esp32/reset/avr').then(() => {});
-}
-
-/**
- * Lock/Unlock bmx280
- */
-export function lockBmx280(val) {
-  const url = '/esp32/lock/bmx280/' + val;
-  console.log(url);
-  jwtClient.put(url).then(() => {});
-}
-
-/**
- * Lock/Unlock ds18b20
- */
-export function lockDs18b20(val) {
-  const url = '/esp32/lock/ds18b20/' + val;
+export function lockGy39v3(val) {
+  const url = '/esp32/lock/gy39v3/' + val;
   console.log(url);
   jwtClient.put(url).then(() => {});
 }
@@ -116,10 +99,10 @@ export function lockRadsens(val) {
 }
 
 /**
- * Lock/Unlock mics6814
+ * Lock/Unlock SC16
  */
-export function lockMics6814(val) {
-  const url = '/esp32/lock/mics6814/' + val;
+export function lockSc16(val) {
+  const url = '/esp32/lock/sc16/' + val;
   console.log(url);
   jwtClient.put(url).then(() => {});
 }

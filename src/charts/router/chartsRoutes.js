@@ -1,16 +1,7 @@
 export const chartsRoutes = [
   {
-    path: '/bme280/:parameter',
-    component: () => import('@/charts/pages/PageBme280.vue'),
-    meta: {
-      requiresAuth: false,
-      spinner: true,
-    },
-    props: true,
-  },
-  {
-    path: '/mics6814/:parameter',
-    component: () => import('@/charts/pages/PageMics6814.vue'),
+    path: '/gy39v3/:parameter',
+    component: () => import('@/charts/pages/PageGy39v3.vue'),
     meta: {
       requiresAuth: false,
       spinner: true,
@@ -27,6 +18,15 @@ export const chartsRoutes = [
     props: true,
   },
   {
+    path: '/aht25/:parameter',
+    component: () => import('@/charts/pages/PageAht25.vue'),
+    meta: {
+      requiresAuth: false,
+      spinner: true,
+    },
+    props: true,
+  },
+  {
     path: '/ze08ch2o/:parameter',
     component: () => import('@/charts/pages/PageZe08.vue'),
     meta: {
@@ -36,8 +36,8 @@ export const chartsRoutes = [
     props: true,
   },
   {
-    path: '/ds18b20/:parameter',
-    component: () => import('@/charts/pages/PageDs18b20.vue'),
+    path: '/sc16/:parameter',
+    component: () => import('@/charts/pages/PageSc16.vue'),
     meta: {
       requiresAuth: false,
       spinner: true,

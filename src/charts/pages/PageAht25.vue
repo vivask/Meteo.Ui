@@ -5,11 +5,11 @@
 <script>
 import { defineComponent, ref, computed } from 'vue';
 import ChartBoxVue from '../components/ChartBox.vue';
-import { getData } from '../api/ze08Api';
+import { getData } from '../api/aht25Api';
 import { useChartWrapper } from '../composables/useChartWrapper';
 
 export default defineComponent({
-  name: 'PageZe08',
+  name: 'PageAht25',
 
   components: {
     ChartBoxVue,

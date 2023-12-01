@@ -11,8 +11,8 @@ export const useMenuPeripheral = {
   toggle: false,
   menu: [
     {
-      title: 'BMP280',
-      value: 'bme280',
+      title: 'GY39V3',
+      value: 'gy39v3',
       toggle: false,
       menu: [
         {
@@ -25,32 +25,15 @@ export const useMenuPeripheral = {
           title: 'Pressure',
           value: 'pressure',
         },
-        // {
-        //   icon: 'mdi-water-percent',
-        //   title: 'Humidity',
-        //   value: 'humidity',
-        // },
-      ],
-    },
-    {
-      title: 'MICS6814',
-      value: 'mics6814',
-      toggle: false,
-      menu: [
         {
-          icon: 'mdi-gas-cylinder',
-          title: 'NO2',
-          value: 'no2',
+          icon: 'mdi-water-percent',
+          title: 'Humidity',
+          value: 'humidity',
         },
         {
-          icon: 'mdi-gas-cylinder',
-          title: 'NH3',
-          value: 'nh3',
-        },
-        {
-          icon: 'mdi-gas-cylinder',
-          title: 'CO',
-          value: 'co',
+          icon: 'mdi-sun-wireless',
+          title: 'Lux',
+          value: 'lux',
         },
       ],
     },
@@ -62,12 +45,12 @@ export const useMenuPeripheral = {
         {
           icon: 'mdi-thermometer',
           title: 'Temperature',
-          value: 'temperature',
+          value: 'tempr',
         },
         {
           icon: 'mdi-water-percent',
           title: 'Humidity',
-          value: 'humidity',
+          value: 'hum',
         },
       ],
     },
@@ -101,14 +84,14 @@ export const useMenuPeripheral = {
       ],
     },
     {
-      title: 'DS18B20',
-      value: 'ds18b20',
+      title: 'SC16',
+      value: 'sc16',
       toggle: false,
       menu: [
         {
-          icon: 'mdi-thermometer',
-          title: 'Temperature',
-          value: 'temperature',
+          icon: 'mdi-gas-cylinder',
+          title: 'CO',
+          value: 'co',
         },
       ],
     },

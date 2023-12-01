@@ -5,11 +5,11 @@
 <script>
 import { defineComponent, ref, computed } from 'vue';
 import ChartBoxVue from '../components/ChartBox.vue';
-import { getData } from '../api/ze08Api';
+import { getData } from '../api/gy39v3Api';
 import { useChartWrapper } from '../composables/useChartWrapper';
 
 export default defineComponent({
-  name: 'PageZe08',
+  name: 'PageGy39v3',
 
   components: {
     ChartBoxVue,
@@ -28,7 +28,9 @@ export default defineComponent({
 
     const chartData = computed(() => {
       const field = props.parameter;
-      const result = data?.value ? data.value.map((item) => item[field]) : [];
+      const result = data?.value
+        ? data.value.map((item) => (field === 'pressure' ? item[field] / 133 : item[field]))
+        : [];
       return result;
     });
 

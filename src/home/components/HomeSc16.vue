@@ -4,7 +4,7 @@
     class="relative-position container cursor-pointer q-hoverable mt-5"
     @mouseover="hover = true"
     @mouseleave="hover = false"
-    @click.prevent="router.push('/aht25/tempr')"
+    @click.prevent="router.push('/sc16/co')"
   >
     <q-item dense>
       <q-item-section side>
@@ -13,21 +13,29 @@
         </q-avatar>
       </q-item-section>
       <q-item-section>
-        <q-item-label class="text-bold text-h6" :color="color">AHT25</q-item-label>
+        <q-item-label class="text-bold text-h6" :color="color">SC16</q-item-label>
       </q-item-section>
     </q-item>
-    <home-label-vue :value="temperature" label="Температура:" unit="°C" :available="available" />
-    <home-label-vue :value="humidity" label="Влажность:" unit="%" :available="available" class="mb-5" />
+    <home-label-vue
+      :value="co"
+      label="CO:"
+      unit="ppm"
+      :alarm="alarm"
+      :check="checkSc16Alarm"
+      :available="available"
+      class="mb-5"
+    />
   </div>
 </template>
 
 <script>
 import { defineComponent, ref, computed } from 'vue';
 import HomeLabelVue from './HomeLabel.vue';
+import { checkSc16Alarm } from '../api/homeApi';
 import { useRouter } from 'vue-router';
 
 export default defineComponent({
-  name: 'HomeAht25',
+  name: 'HomeSc16',
 
   components: {
     HomeLabelVue,
@@ -35,14 +43,14 @@ export default defineComponent({
 
   props: {
     available: Boolean,
-    temperature: [String, Number],
-    humidity: [String, Number],
+    co: [String, Number],
+    alarm: Boolean,
   },
 
   setup() {
     const router = useRouter();
-    const whiteIcon = new URL('../../app/assets/icons/humidity-48x48-white.png', import.meta.url).href;
-    const blueIcon = new URL('../../app/assets/icons/humidity-48x48-blue.png', import.meta.url).href;
+    const whiteIcon = new URL('../../app/assets/icons/CH2O-48x48-white.png', import.meta.url).href;
+    const blueIcon = new URL('../../app/assets/icons/CH2O-48x48-blue.png', import.meta.url).href;
     const iconColor = '#3092EA';
     const hover = ref(false);
 
@@ -51,6 +59,7 @@ export default defineComponent({
       hover,
       icon: computed(() => (hover.value ? blueIcon : whiteIcon)),
       color: computed(() => (hover.value ? iconColor : 'white')),
+      checkSc16Alarm,
     };
   },
 });

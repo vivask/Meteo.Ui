@@ -14,12 +14,11 @@ export async function getEsp32Data() {
   const empty = {
     data: {},
     alive: {
-      bme280: false,
-      mics6814: false,
-      radsens: false,
-      ds18b20: false,
-      ze08ch2o: false,
       aht25: false,
+      radsens: false,
+      gy39v3: false,
+      sc16co: false,
+      ze08ch2o: false,
     },
     available: false,
   };
@@ -30,12 +29,11 @@ export async function getEsp32Data() {
       const response = {
         data: result,
         alive: {
-          bme280: duration(result.bmx280_created) < MAX_DATA_UPDATE_PERIOD_S,
-          mics6814: duration(result.mics6814_created) < MAX_DATA_UPDATE_PERIOD_S,
-          radsens: duration(result.radsens_created) < MAX_DATA_UPDATE_PERIOD_S,
-          ds18b20: duration(result.ds18b20_created) < MAX_DATA_UPDATE_PERIOD_S,
-          ze08ch2o: duration(result.ze08_created) < MAX_DATA_UPDATE_PERIOD_S,
           aht25: duration(result.aht25_created) < MAX_DATA_UPDATE_PERIOD_S,
+          radsens: duration(result.radsens_created) < MAX_DATA_UPDATE_PERIOD_S,
+          gy39v3: duration(result.gy39v3_created) < MAX_DATA_UPDATE_PERIOD_S,
+          sc16co: duration(result.sc16_created) < MAX_DATA_UPDATE_PERIOD_S,
+          ze08ch2o: duration(result.ze08_created) < MAX_DATA_UPDATE_PERIOD_S,
         },
         available: duration(result.esp32_date_time_now) < MAX_DATA_UPDATE_PERIOD_S,
       };
@@ -44,6 +42,20 @@ export async function getEsp32Data() {
     .catch(() => {
       return empty;
     });
+}
+
+/**
+ * Reset gy39v3 temperature alarm
+ */
+export function checkGy39v3TemperatureAlarm() {
+  jwtClient.put('/esp32/gy39v3/temperature');
+}
+
+/**
+ * Reset aht25 temperature alarm
+ */
+export function checkAht25TemperatureAlarm() {
+  jwtClient.put('/esp32/aht25/temperature');
 }
 
 /**
@@ -100,6 +112,13 @@ export function checkRadsensStaticAlarm() {
  */
 export function checkRadsensDynamicAlarm() {
   jwtClient.put('/esp32/radsens/dynamic');
+}
+
+/**
+ * Reset sc16 co alarm
+ */
+export function checkSc16Alarm() {
+  jwtClient.put('/esp32/sc16/co');
 }
 
 /**

@@ -28,7 +28,7 @@ export default defineComponent({
 
     const chartData = computed(() => {
       const field = props.parameter;
-      const result = !data?.value ? [] : data.value.map((item) => item[field]);
+      const result = data?.value ? data.value.map((item) => item[field]) : [];
       return result;
     });
 

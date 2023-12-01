@@ -1,17 +1,18 @@
 <template>
   <div class="q-pa-md">
     <div class="row" :class="$q.screen.gt.xs ? 'justify-center' : 'justify-left'">
-      <div v-if="!sensors.data.bmx280_lock" class="q-ml-sm square rounded-borders shadow-8" :class="cols">
-        <home-bme280-vue
-          :available="sensors.alive.bme280"
-          :temperature="sensors.data.bmx280_tempr"
-          :pressure="sensors.data.bmx280_press"
-          :humidity="sensors.data.bmx280_hum"
-          :alarm="sensors.data.max_bmx280_tempr_alarm || sensors.data.min_bmx280_tempr_alarm"
+      <div v-if="!sensors.data.gy39v3_lock" class="q-ml-sm square rounded-borders shadow-8" :class="cols">
+        <home-gy39v3-vue
+          :available="sensors.alive.gy39v3"
+          :temperature="sensors.data.gy39v3_temperature"
+          :pressure="sensors.data.gy39v3_pressure"
+          :humidity="sensors.data.gy39v3_humidity"
+          :lux="sensors.data.gy39v3_lux"
+          :alarm="sensors.data.max_gy39v3_alarm || sensors.data.min_gy39v3_alarm"
         />
       </div>
       <div v-if="$q.screen.name == 'xs'" class="flex-break"></div>
-      <div v-if="!sensors.data.mics6814_lock" class="q-ml-sm square rounded-borders shadow-8" :class="cols">
+      <!-- <div v-if="!sensors.data.mics6814_lock" class="q-ml-sm square rounded-borders shadow-8" :class="cols">
         <home-mics6814-vue
           :available="sensors.alive.mics6814"
           :nh3="sensors.data.mics6814_nh3"
@@ -22,7 +23,7 @@
           :alarm-co="sensors.data.max_6814_co_alarm"
         />
       </div>
-      <div v-if="$q.screen.name == 'xs'" class="flex-break" />
+      <div v-if="$q.screen.name == 'xs'" class="flex-break" /> -->
       <div v-if="!sensors.data.radsens_lock" class="q-ml-sm square rounded-borders shadow-8" :class="cols">
         <home-radsens-vue
           :available="sensors.alive.radsens"
@@ -38,16 +39,16 @@
       <div v-if="!sensors.data.aht25_lock" class="q-ml-sm square rounded-borders shadow-8" :class="cols">
         <home-aht25-vue
           :available="sensors.alive.aht25"
-          :temperature="sensors.data.aht25_tempr"
-          :humidity="sensors.data.aht25_hum"
+          :temperature="sensors.data.aht25_temperature"
+          :humidity="sensors.data.aht25_humidity"
         />
       </div>
       <div v-if="$q.screen.name == 'xs'" class="flex-break" />
-      <div v-if="!sensors.data.ds18b20_lock" class="q-ml-sm square rounded-borders shadow-8" :class="cols">
-        <home-ds18b20-vue
-          :available="sensors.alive.ds18b20"
-          :temperature="sensors.data.ds18b20_tempr"
-          :alarm="sensors.data.max_ds18b20_alarm || sensors.data.min_ds18b20_alarm"
+      <div v-if="!sensors.data.sc16_lock" class="q-ml-sm square rounded-borders shadow-8" :class="cols">
+        <home-sc16-vue
+          :available="sensors.alive.sc16co"
+          :co="sensors.data.sc16_co"
+          :alarm="sensors.data.max_sc16_alarm"
         />
       </div>
       <!-- <div v-if="$q.screen.name == 'xs' || $q.screen.name == 'sm'" class="flex-break" /> -->
@@ -68,19 +69,17 @@
 <script>
 import { defineComponent, computed, onActivated, onDeactivated, ref } from 'vue';
 import { useQuasar } from 'quasar';
-import HomeBme280Vue from '../components/HomeBme280.vue';
-import HomeMics6814Vue from '../components/HomeMics6814.vue';
-import HomeRadsensVue from '../components/HomeRadsens.vue';
-import HomeDs18b20Vue from '../components/HomeDs18b20.vue';
-import HomeZe08ch2oVue from '../components/HomeZe08ch2o.vue';
 import HomeAht25Vue from '../components/HomeAht25.vue';
+import HomeRadsensVue from '../components/HomeRadsens.vue';
+import HomeGy39v3Vue from '../components/HomeGy39v3.vue';
+import HomeSc16Vue from '../components/HomeSc16.vue';
+import HomeZe08ch2oVue from '../components/HomeZe08ch2o.vue';
 import { getEsp32Data } from '../api/homeApi';
 
 const sensorsTemplate = {
   data: {
-    bmx280_lock: true,
-    ds18b20_lock: true,
-    mics6814_lock: true,
+    gy39v3_lock: true,
+    sc16_lock: true,
     radsens_lock: true,
     ze08_lock: true,
     aht25_lock: true,
@@ -92,12 +91,11 @@ const sensorsTemplate = {
 export default defineComponent({
   name: 'PageHome',
   components: {
-    HomeBme280Vue,
-    HomeMics6814Vue,
-    HomeRadsensVue,
-    HomeDs18b20Vue,
-    HomeZe08ch2oVue,
     HomeAht25Vue,
+    HomeRadsensVue,
+    HomeGy39v3Vue,
+    HomeSc16Vue,
+    HomeZe08ch2oVue,
   },
 
   setup() {
