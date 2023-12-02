@@ -1,6 +1,6 @@
 <template>
   <ui-box-vue :columns="boxCols" header="Message log" :buttonShow="true" buttonLabel="Clear" :buttonClick="handleClear">
-    <q-table dense :rows="rows" :columns="columns" row-key="date" :rows-per-page-options="[10, 50, 100, 0]">
+    <q-table dense :rows="rows" :columns="columns" row-key="date" :rows-per-page-options="[0, 10, 50, 100]">
       <template #body-cell-date="props">
         <q-td :props="props" class="wd-80" :class="logColor(props.row.type)">
           {{ shortDate(props.row.date_time) }}

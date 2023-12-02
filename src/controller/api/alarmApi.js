@@ -19,13 +19,13 @@ export async function getAlarms() {
 export function setAlarms(settings) {
   jwtClient.get('/esp32/settings').then(({ success, result }) => {
     if (success) {
-      result.max_6814_nh3 = parseFloat(settings.max_6814_nh3);
-      result.max_6814_no2 = parseFloat(settings.max_6814_no2);
-      result.max_6814_co = parseFloat(settings.max_6814_co);
-      result.min_ds18b20 = parseFloat(settings.min_ds18b20);
-      result.max_ds18b20 = parseFloat(settings.max_ds18b20);
-      result.min_bmx280_tempr = parseFloat(settings.min_bmx280_tempr);
-      result.max_bmx280_tempr = parseFloat(settings.max_bmx280_tempr);
+      result.min_gy39v3 = parseFloat(settings.min_gy39v3);
+      result.max_gy39v3 = parseFloat(settings.max_gy39v3);
+      result.min_aht25_t = parseFloat(settings.min_aht25_t);
+      result.max_aht25_t = parseFloat(settings.max_aht25_t);
+      result.min_aht25_h = parseFloat(settings.min_aht25_h);
+      result.max_aht25_h = parseFloat(settings.max_aht25_h);
+      result.max_sc16 = parseFloat(settings.max_sc16);
       result.max_rad_stat = parseFloat(settings.max_rad_stat);
       result.max_rad_dyn = parseFloat(settings.max_rad_dyn);
       result.max_ch2o = parseFloat(settings.max_ch2o);
