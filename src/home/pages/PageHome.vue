@@ -41,6 +41,7 @@
           :available="sensors.alive.aht25"
           :temperature="sensors.data.aht25_temperature"
           :humidity="sensors.data.aht25_humidity"
+          :alarm="sensors.data.min_aht25_alarm"
         />
       </div>
       <div v-if="$q.screen.name == 'xs'" class="flex-break" />

@@ -16,7 +16,14 @@
         <q-item-label class="text-bold text-h6" :color="color">AHT25</q-item-label>
       </q-item-section>
     </q-item>
-    <home-label-vue :value="temperature" label="Температура:" unit="°C" :available="available" />
+    <home-label-vue
+      :value="temperature"
+      label="Температура:"
+      unit="°C"
+      :alarm="alarm"
+      :check="checkAht25TemperatureAlarm"
+      :available="available"
+    />
     <home-label-vue :value="humidity" label="Влажность:" unit="%" :available="available" class="mb-5" />
   </div>
 </template>
@@ -25,6 +32,7 @@
 import { defineComponent, ref, computed } from 'vue';
 import HomeLabelVue from './HomeLabel.vue';
 import { useRouter } from 'vue-router';
+import { checkAht25TemperatureAlarm } from '../api/homeApi';
 
 export default defineComponent({
   name: 'HomeAht25',
@@ -37,6 +45,7 @@ export default defineComponent({
     available: Boolean,
     temperature: [String, Number],
     humidity: [String, Number],
+    alarm: Boolean,
   },
 
   setup() {
@@ -51,6 +60,7 @@ export default defineComponent({
       hover,
       icon: computed(() => (hover.value ? blueIcon : whiteIcon)),
       color: computed(() => (hover.value ? iconColor : 'white')),
+      checkAht25TemperatureAlarm,
     };
   },
 });
