@@ -11,7 +11,7 @@
         v-for="expansion in menuPeripheral.menu"
         :key="expansion.value"
         :title="expansion.title"
-        :value="expansion.title"
+        :value="expansion.value"
         :nested="true"
         :toggle="expansion.toggle"
         @active="menuPeripheral.toggle = !menuPeripheral.toggle"
