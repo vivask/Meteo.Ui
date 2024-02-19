@@ -58,7 +58,7 @@
         <home-ze08ch2o-vue
           :available="sensors.alive.ze08ch2o"
           :ch2o="sensors.data.ze08_ch2o"
-          :alarm="sensors.data.max_ch2o_alarm"
+          :alarm="sensors.data.max_ze08_alarm"
         />
       </div>
       <div v-if="$q.screen.name == 'xs'" class="flex-break"></div>
