@@ -199,7 +199,7 @@ export default defineComponent({
     watch(
       localProp,
       async (newVal, oldVal) => {
-        showValue.value = newVal?.period ? newVal.period.id !== 'once' : false;
+        showValue.value = newVal?.period ? newVal.period.id !== 'once' && newVal.period.id !== 'year' : false;
         paramsDisabled.value = !newVal?.task;
         await nextTick();
         if (oldVal && newVal?.period && periodValue?.value && newVal.period.id !== currentPeriod) {

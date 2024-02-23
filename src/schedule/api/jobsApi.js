@@ -54,8 +54,8 @@ export function toggleJob(row) {
     });
   } else {
     const url = '/schedule/job/activate/' + row.id;
-    jwtClient.put(url).then(({ success }) => {
-      if (success) row.active = true;
+    jwtClient.put(url).then(({ success, result }) => {
+      if (success) row.active = result.activate;
     });
   }
 }
