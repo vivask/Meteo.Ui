@@ -262,3 +262,9 @@ export const useMenuServices = {
     },
   ],
 };
+
+export const useMenuCommunal = {
+  href: 'communal',
+  icon: 'mdi-home',
+  title: 'Communal',
+};

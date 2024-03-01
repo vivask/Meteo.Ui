@@ -6,7 +6,7 @@
     buttonLabel="Refresh"
     :buttonClick="refresh"
   >
-    <q-table hide-header :rows="rows" :columns="columns" row-key="name" :rows-per-page-options="[10, 50, 100, 0]">
+    <q-table hide-header :rows="rows" :columns="columns" row-key="name" :rows-per-page-options="[0, 10, 50, 100]">
       <template #body-cell-state="props">
         <q-td :props="props" class="wd-40">
           <q-icon name="schedule" size="2rem" />
@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed, onMounted, inject, onActivated } from 'vue';
+import { defineComponent, ref, onMounted, onActivated } from 'vue';
 import UiBoxVue from '../../app/components/UiBox.vue';
 import { createWarapper } from '../api/cronApi';
 import { useUtils } from '../../app/composables/useUtils';

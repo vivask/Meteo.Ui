@@ -25,5 +25,15 @@ export function useUtils() {
     return date instanceof Date && !isNaN(date);
   };
 
-  return { formatLongDate, isEmptyTime, activeIcon, activeColor, shortDate, shortTime, duration, isDate, isTime };
+  return {
+    formatLongDate,
+    isEmptyTime,
+    activeIcon,
+    activeColor,
+    shortDate,
+    shortTime,
+    duration,
+    isDate,
+    isTime,
+  };
 }

@@ -68,12 +68,25 @@
         />
       </menu-expansion-vue>
     </menu-expansion-vue>
+    <menu-item-vue
+      v-if="isAuthenticated"
+      :icon="menuCommunal.icon"
+      :title="menuCommunal.title"
+      :nested="false"
+      :href="[menuCommunal.href]"
+    />
   </q-drawer>
 </template>
 
 <script>
 import { defineComponent, computed, ref, watch, toRefs } from 'vue';
-import { useMenuHome, useMenuPeripheral, useMenuController, useMenuServices } from '../options/menuMain.js';
+import {
+  useMenuHome,
+  useMenuPeripheral,
+  useMenuController,
+  useMenuServices,
+  useMenuCommunal,
+} from '../options/menuMain.js';
 import MenuItemVue from './MenuItem.vue';
 import MenuExpansionVue from './MenuExpansion.vue';
 import { useAuthStore } from '../../app/stores/useAuthStore.js';
@@ -111,6 +124,7 @@ export default defineComponent({
     const menuPeripheral = ref(useMenuPeripheral);
     const menuController = ref(useMenuController);
     const menuServices = ref(useMenuServices);
+    const menuCommunal = useMenuCommunal;
 
     watch(drawer, () => {
       localModel.value = !localModel.value;
@@ -122,6 +136,7 @@ export default defineComponent({
       menuPeripheral,
       menuController,
       menuServices,
+      menuCommunal,
       isAuthenticated,
     };
   },

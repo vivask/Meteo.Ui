@@ -13,6 +13,7 @@ import { serversRoutes } from '../../servers/router/serversRoutes.js';
 import { radiusRoutes } from '../../radius/router/radiusRoutes.js';
 import { databaseRoutes } from '../../database/router/databaseRoutes.js';
 import { chartsRoutes } from '../../charts/router/chartsRoutes.js';
+import { communalRoutes } from '../../communal/router/communalRoutes.js';
 
 const createHistory = import.meta.env.SERVER
   ? createMemoryHistory(import.meta.env.BASE_URL)
@@ -36,6 +37,7 @@ const layoutsChildren = [
   radiusRoutes,
   databaseRoutes,
   chartsRoutes,
+  communalRoutes,
 ];
 
 for (const children of layoutsChildren) {
