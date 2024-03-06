@@ -9,6 +9,7 @@ export function useSubmitForm(popup, emit) {
 
   const show = (prop) => {
     isUpdate.value = !!prop?.id;
+    console.log(prop);
     localProp.value = deepClone(prop);
     popup.value.show();
   };

@@ -265,6 +265,6 @@ export const useMenuServices = {
 
 export const useMenuCommunal = {
   href: 'communal',
-  icon: 'mdi-home',
+  icon: 'mdi-credit-card',
   title: 'Communal',
 };
